@@ -4,7 +4,7 @@
 class Node
 {
   public:
-    Node *next;			// null for leaf
+    Node * next;		// null for leaf
     Node *prev;			// null for root
     Point3d point;
       Node ():point (0, 0, 0)

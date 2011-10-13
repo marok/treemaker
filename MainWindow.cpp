@@ -108,36 +108,41 @@ class MainWindow
     {
 
 	static int generated = 0;
-	    static ColonizationMethod cm;
+
+	static ColonizationMethod cm;
 
 	if (generated == 0) {
-	  cm.init();
-	  cm.generate (20);
+	    cm.init ();
+	    cm.generate (60);
 	    generated = 1;
 	}
 
 	int i;
+	glPointSize (3);
 
-	glColor3f (1, 0, 0);
-	glBegin (GL_POINTS);
-	for(int i=0;i<cm.aPoints.size();i++)
-	{Point3d *p=&cm.aPoints[i];
-	  glVertex3f(p->x,p->y,p->z);
-	}
 
-	glEnd ();
 
 
 	glColor3f (0, 0, 0);
 	glPointSize (2);
 	glBegin (GL_POINTS);
-for(int i=0;i<cm.nodes.size();i++)
-	{Point3d *p=&cm.nodes[i].point;
-	  glVertex3f(p->x,p->y,p->z);
+	for (int i = 0; i < cm.nodes.size (); i++) {
+	    Point3d *p = &cm.nodes[i].point;
+
+	    glVertex3f (p->x, p->y, p->z);
 	}
 
 	glEnd ();
 
+		glColor3f (1, 0, 0);
+	glBegin (GL_POINTS);
+	for (int i = 0; i < cm.aPointsCopy.size (); i++) {
+	    Point3d *p = &cm.aPointsCopy[i];
+
+	    glVertex3f (p->x+0.1, p->y+0.1, p->z+0.1);
+	}
+
+	glEnd ();
     }
     static void drawWireframe ()
     {
