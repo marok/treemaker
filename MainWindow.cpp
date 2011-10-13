@@ -25,7 +25,7 @@ using namespace std;
 
 #define DEFAULT_WIDTH  800
 #define DEFAULT_HEIGHT 600
-#define DEFAULT_TITLE  "CoolWave"
+#define DEFAULT_TITLE  "TreeMaker"
 
 #define TIMEOUT_INTERVAL 10
 
@@ -37,19 +37,12 @@ using namespace std;
  * Global variable declarations.
  **************************************************************************/
 
-static gboolean animate = TRUE;
 
 static gboolean coordinates = FALSE;
 
 static int grid = (MAXGRID / 2);
 
 static int beginX, beginY;
-
-static float force[MAXGRID][MAXGRID];
-
-static float veloc[MAXGRID][MAXGRID];
-
-static float posit[MAXGRID][MAXGRID];
 
 static float sphi = 90.0;
 
@@ -65,8 +58,6 @@ static float aspect = 5.0 / 4.0;
 
 static float lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
 
-static guint timeout_id = 0;
-
 
 
 
@@ -75,17 +66,10 @@ class MainWindow
     GtkWidget *window;
     GdkGLConfig *glconfig;
 
-    static void getforce ()
-    {
-    } static void getvelocity ()
-    {
-    }
-    static void getposition ()
-    {
-    }
+
     static void drawCoordinates ()
     {
-	glTranslatef (grid / 2 + 0.5, grid / 2 + 0.5, 0);
+	glTranslatef ((float)grid / 2.0 + 0.5, (float)grid / 2 + 0.5, 0);
 	glRotatef (90, 1, 0, 0);
 	glRotatef (270, 0, 1, 0);
 	if (coordinates) {
@@ -154,9 +138,6 @@ for(int i=0;i<cm.nodes.size();i++)
 	    glEnd ();
 	}
     }
-    static void resetWireframe ()
-    {
-    }
 
     static void realize (GtkWidget * widget, gpointer data)
     {
@@ -196,8 +177,6 @@ for(int i=0;i<cm.nodes.size();i++)
 	glEnable (GL_LIGHT0);
 	glShadeModel (GL_FLAT);
 	glDisable (GL_LIGHTING);
-
-	resetWireframe ();
 
 	gdk_gl_drawable_gl_end (gldrawable);
   /*** OpenGL END ***/
@@ -275,21 +254,6 @@ for(int i=0;i<cm.nodes.size();i++)
 	return TRUE;
     }
 
-    static gboolean timeout (GtkWidget * widget)
-    {
-	MainWindow::getforce ();
-	MainWindow::getvelocity ();
-	MainWindow::getposition ();
-
-	/* Invalidate the whole window. */
-	gdk_window_invalidate_rect (widget->window, &widget->allocation,
-				    FALSE);
-
-	/* Update synchronously (fast). */
-	gdk_window_process_updates (widget->window, FALSE);
-
-	return TRUE;
-    }
     static gboolean
 	motion_notify_event (GtkWidget * widget,
 			     GdkEventMotion * event, gpointer data)
@@ -313,7 +277,7 @@ for(int i=0;i<cm.nodes.size();i++)
 	beginX = event->x;
 	beginY = event->y;
 
-	if (redraw && !animate)
+	if (redraw)
 	    gdk_window_invalidate_rect (widget->window,
 					&widget->allocation, FALSE);
 
@@ -370,15 +334,6 @@ for(int i=0;i<cm.nodes.size();i++)
 	    init_wireframe (widget);
 	    break;
 
-	case GDK_a:
-	    toggle_animation (widget);
-	    break;
-
-	case GDK_w:
-	    if (!animate)
-		timeout (widget);
-	    break;
-
 	case GDK_plus:
 	    sdepth -= 2.0;
 	    break;
@@ -394,9 +349,8 @@ for(int i=0;i<cm.nodes.size();i++)
 	default:
 	    return FALSE;
 	}
-
-	if (!animate)
-	    gdk_window_invalidate_rect (widget->window,
+	
+        gdk_window_invalidate_rect (widget->window,
 					&widget->allocation, FALSE);
 
 	return TRUE;
@@ -409,71 +363,16 @@ for(int i=0;i<cm.nodes.size();i++)
     }
 
 
-    static void timeout_add (GtkWidget * widget)
-    {
-	if (timeout_id == 0) {
-	    timeout_id = g_timeout_add (TIMEOUT_INTERVAL,
-					(GSourceFunc) timeout, widget);
-	}
-    }
-    static void timeout_remove (GtkWidget * widget)
-    {
-	if (timeout_id != 0) {
-	    g_source_remove (timeout_id);
-	    timeout_id = 0;
-	}
-    }
-    static gboolean map_event (GtkWidget * widget, GdkEvent * event,
-			       gpointer data)
-    {
-	if (animate)
-	    timeout_add (widget);
-
-	return TRUE;
-    }
-    static gboolean
-	unmap_event (GtkWidget * widget, GdkEvent * event, gpointer data)
-    {
-	timeout_remove (widget);
-
-	return TRUE;
-    }
-    static gboolean
-	visibility_notify_event (GtkWidget * widget,
-				 GdkEventVisibility * event, gpointer data)
-    {
-	if (animate) {
-	    if (event->state == GDK_VISIBILITY_FULLY_OBSCURED)
-		timeout_remove (widget);
-	    else
-		timeout_add (widget);
-	}
-
-	return TRUE;
-    }
-
-    static void toggle_animation (GtkWidget * widget)
-    {
-	animate = !animate;
-
-	if (animate) {
-	    MainWindow::timeout_add (widget);
-	}
-	else {
-	    MainWindow::timeout_remove (widget);
-	    gdk_window_invalidate_rect (widget->window,
-					&widget->allocation, FALSE);
-	}
-    }
     static void init_wireframe (GtkWidget * widget)
     {
-	MainWindow::resetWireframe ();
 	gdk_window_invalidate_rect (widget->window, &widget->allocation,
 				    FALSE);
     }
     static void show_coordinates (GtkWidget * widget)
     {
 	coordinates = !coordinates;
+        gdk_window_invalidate_rect (widget->window,
+					&widget->allocation, FALSE);
     }
 
     GtkWidget *create_popup_menu (GtkWidget * drawing_area)
@@ -484,13 +383,6 @@ for(int i=0;i<cm.nodes.size();i++)
 
 	menu = gtk_menu_new ();
 
-	/* Toggle animation */
-	menu_item = gtk_menu_item_new_with_label ("Toggle Animation");
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menu_item);
-	g_signal_connect_swapped (G_OBJECT (menu_item), "activate",
-				  G_CALLBACK (toggle_animation),
-				  drawing_area);
-	gtk_widget_show (menu_item);
 
 	/* Init wireframe model */
 	menu_item = gtk_menu_item_new_with_label ("Initialize");
@@ -594,14 +486,6 @@ for(int i=0;i<cm.nodes.size();i++)
 	g_signal_connect_swapped (G_OBJECT (window), "key_press_event",
 				  G_CALLBACK (key_press_event), drawing_area);
 
-	/* For timeout function. */
-	g_signal_connect (G_OBJECT (drawing_area), "map_event",
-			  G_CALLBACK (map_event), NULL);
-	g_signal_connect (G_OBJECT (drawing_area), "unmap_event",
-			  G_CALLBACK (unmap_event), NULL);
-	g_signal_connect (G_OBJECT (drawing_area),
-			  "visibility_notify_event",
-			  G_CALLBACK (visibility_notify_event), NULL);
 
 	gtk_box_pack_start (GTK_BOX (vbox), drawing_area, TRUE, TRUE, 0);
 
