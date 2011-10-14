@@ -445,7 +445,7 @@ class MainWindow
     static gboolean
 	button_press_event_popup_menu (GtkWidget * widget,
 				       GdkEventButton * event, gpointer data)
-    {
+    
 	if (event->button == 3) {
 	    /* Popup menu. */
 	    gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL,
