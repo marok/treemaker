@@ -3,7 +3,7 @@ CONFIG=`pkg-config --cflags --libs  gtkglext-1.0`
 EXECUTABLE=treemaker
 SOURCES = MainWindow.cpp Point3d.h Vector3d.h Node.h ColonizationMethod.h Bmp.h
 default:
-	g++ -g $(CONFIG) $(SOURCES) -o $(EXECUTABLE)
+	g++ -g -Wall $(CONFIG) $(SOURCES) -o $(EXECUTABLE)
 
 clean :
 	rm -rf $(EXECUTABLE)
