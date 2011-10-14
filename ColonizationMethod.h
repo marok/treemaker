@@ -18,11 +18,11 @@ class GenerationMethod
 
 class ColonizationMethod:public GenerationMethod
 {
-  /*
-  static const float di = 5.0;	//influence distance
-    static const float dk = 0.6;	//kill distance
-    static const float D = 0.3;	//node length
-*/
+    /*
+       static const float di = 5.0;       //influence distance
+       static const float dk = 0.6;       //kill distance
+       static const float D = 0.3;        //node length
+     */
     static const float di = 5.0;	//influence distance
     static const float dk = 0.1;	//kill distance
     static const float D = 0.2;	//node length
@@ -38,9 +38,9 @@ class ColonizationMethod:public GenerationMethod
 	int runda = 0;
 
 	while (left && runda++ < 1000 && nodes.size () < 1000) {
-	    left=aPoints.size();
-	    printf ("runda %d left=%d\n", runda, left);
-	    printf ("old nodes size = %d\n", nodes.size ());
+	    left = aPoints.size ();
+	    //    printf ("runda %d left=%d\n", runda, left);
+	    //    printf ("old nodes size = %d\n", nodes.size ());
 
 	    bool added = 0;
 
@@ -59,7 +59,8 @@ class ColonizationMethod:public GenerationMethod
 
 		for (j = 0; j < nodes.size (); j++) {
 		    float newDistance = ap->getDistance (&nodes[j].point);
-		  //  printf("odl(%d,%d)=%f\n",i,j,newDistance);
+
+		    //  printf("odl(%d,%d)=%f\n",i,j,newDistance);
 		    if (newDistance <= di && newDistance <= dis[i]) {
 			dis[i] = newDistance;
 			//printf("newdist=%f\n",dis[i]);
@@ -73,25 +74,25 @@ class ColonizationMethod:public GenerationMethod
 	    for (i = 0; i < 1000; i++)
 		N[i].clear ();
 
-	    for (i = 0; i < left; i++)
-	    {
-	    //  printf("ids[%d] =  %d\n",i,ids[i]);
-	      if(ids[i]!=-1)
-	     N[ids[i]].push_back (i);
+	    for (i = 0; i < left; i++) {
+		//  printf("ids[%d] =  %d\n",i,ids[i]);
+		if (ids[i] != -1)
+		    N[ids[i]].push_back (i);
 	    }
-	    int oldNodesSize = nodes.size();
-	    
+	    int oldNodesSize = nodes.size ();
+
 	    for (i = 0; i < oldNodesSize; i++)
 		if (N[i].size () != 0) {
-		    puts("dla noda");
-		    nodes[i].print();
+		    //          puts ("dla noda");
+		    //          nodes[i].print ();
 		    Vector3d sum (0, 0, 0);
 
-		    puts("znalazlem");
+		    //          puts ("znalazlem");
 		    for (j = 0; j < N[i].size (); j++) {
-			
+
 			int index = N[i][j];
-			aPoints[index].print();
+
+			//              aPoints[index].print ();
 			Point3d *s = &aPoints[index];
 
 			Vector3d p (&nodes[i].point);
@@ -123,12 +124,12 @@ class ColonizationMethod:public GenerationMethod
 			}
 		    if (duplication == 0) {
 			nodes.push_back (newNode);
-			puts ("utworzony pkt");
-			newNode.point.print ();
-			
-			for (j = 0; j < aPoints.size(); j++) {
+			//              puts ("utworzony pkt");
+			//              newNode.point.print ();
+
+			for (j = 0; j < aPoints.size (); j++) {
 			    if (newNode.point.getDistance (&aPoints[j]) <= dk) {
-				puts ("usuwam");
+				//                      puts ("usuwam");
 				removeAPoint (j--);
 			    }
 
@@ -255,11 +256,11 @@ class ColonizationMethod:public GenerationMethod
 
 	    if (a.getDistance (crownCenter) <= crownRadius) {
 		aPoints.push_back (a);
-		aPointsCopy.push_back(a);
+		aPointsCopy.push_back (a);
 		points--;
 	    }
 	}
-	
+
     }
     void init ()
     {
@@ -279,12 +280,12 @@ class ColonizationMethod:public GenerationMethod
 
 	for (i = 0; i < 6; i++) {
 	    nodes.push_back (Node (0, i, 0));
-	//    nodes[nodes.size () - 1].print ();
+	    //    nodes[nodes.size () - 1].print ();
 	}
 	//puts ("apoints:\n");
 	//for (i = 0; i < aPoints.size (); i++)
 	//    printf ("glVertex3f(%f,%f,%f);\n", aPoints[i].x,
-	//	    aPoints[i].y, aPoints[i].z);
+	//          aPoints[i].y, aPoints[i].z);
 
 	//getchar ();
 	puts ("");
@@ -292,7 +293,7 @@ class ColonizationMethod:public GenerationMethod
 	puts ("colonized");
 	//for (i = 0; i < nodes.size (); i++)
 	//    printf ("glVertex3f(%f,%f,%f);\n", nodes[i].point.x,
-	//	    nodes[i].point.y, nodes[i].point.z);
+	//          nodes[i].point.y, nodes[i].point.z);
 	//nodes[i].point.print ();
     }
 
