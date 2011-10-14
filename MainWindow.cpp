@@ -499,6 +499,39 @@ class MainWindow
 	static void unrealize (GtkWidget * widget, gpointer data) {
 		/*** Fill in the details here ***/
 
+    }
+    static gboolean
+	scroll_event (GtkWidget * widget,
+		      GdkEventScroll * event, gpointer data)
+    {
+        gboolean redraw = FALSE;
+        
+	if (event->direction == GDK_SCROLL_UP)
+        {
+	    sdepth -= 2;
+            redraw = TRUE;
+        }
+	if (event->direction == GDK_SCROLL_DOWN)
+        {
+	    sdepth += 2;
+            redraw = TRUE;
+        }
+        
+        if(redraw)
+            gdk_window_invalidate_rect (widget->window,
+					&widget->allocation, FALSE);
+        
+	return TRUE;
+    }
+    static gboolean
+	button_press_event_popup_menu (GtkWidget * widget,
+				       GdkEventButton * event, gpointer data)
+    {
+	if (event->button == 3) {
+	    /* Popup menu. */
+	    gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL,
+			    NULL, event->button, event->time);
+	    return TRUE;
 	}
 
 
