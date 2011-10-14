@@ -1,7 +1,6 @@
 #ifndef MODEL3D_H
 #define	MODEL3D_H
 
-#include "Segment.h"
 
 class Model3d {
 public:
@@ -12,55 +11,46 @@ public:
         }
        
 
-        Segment * generateModel() {
-                Node *node = root;
-                Segment *prvSegment = NULL;
-                Segment *firstSegment = NULL;
-                while(node)
-                {
-                        prvSegment = computeSegment(prvSegment, node);
-                        if(firstSegment ==NULL)
-                                firstSegment = prvSegment;
-                        
-                        
-                        node = node->next;
-                }
-                
-                prvSegment = firstSegment;
-                while(prvSegment)
-                {
-                        computeConnectedPts(prvSegment);
-                        prvSegment = prvSegment->next;
-                }
-                
-                return firstSegment;
+        void generateModel() {            
+                computeSegment(root);
+                computeConnectedPts(root);
         }
 private:
-        Segment * computeSegment(Segment * prvSegment, Node *node) {
+        void computeSegment(Node *node) {
                 Vector3d *norm;
+                int childLen = node->getChildLen();
                 
-                if(node->prev && node->next)
+                if(childLen > 0)
                 {
-                        Vector3d *AB = new Vector3d(&node->prev->point, &node->point);
-                        AB->normalize();
+                        Vector3d *fromParent;
                         
-                        Vector3d *BC = new Vector3d(&node->point, &node->next->point );
-                        BC->normalize();
+                        //Jeśli node jest korzeniem to wektor from parent jest rowny (0,0,0)
+                        if(node->prev)
+                        {
+                                fromParent = new Vector3d(&node->prev->point, &node->point);
+                                fromParent->normalize();
+                        } else
+                                fromParent = new Vector3d();
                         
                         norm = new Vector3d();
-                        norm->add(AB);
-                        norm->add(BC);
+                        norm->add(fromParent);
+                        delete(fromParent);
                         
-                        delete(AB);
-                        delete(BC);
+                        for(int i=0; i<childLen; i++)
+                        {
+                                Node *child = node->getChildAt(i);
+                                Vector3d *toChild = new Vector3d(&node->point, &child->point );
+                                
+                                toChild->normalize();
+                                norm->add(toChild);
+                                delete(toChild);
+                        }
+                        
                        
-                } else if(node->next== NULL)
+                } else if(childLen == 0)//jeżeli node jest liściem
                 {
                         norm = new Vector3d(&node->point, &node->prev->point);
                         norm->mul(-1);
-                } else
-                {
-                        norm = new Vector3d(&node->point, &node->next->point);
                 }
                         
 
@@ -82,11 +72,9 @@ private:
 
                 float angle = 2 * M_PI / CIRCLE_PTS_COUNT;
 
-                Segment * result = new Segment(node);
-                if(prvSegment)
-                        prvSegment->next = result;
-                
-                result->next = NULL;
+                Segment *segment = new Segment();
+                node->segment = segment;
+              
                 
                 for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
                         Vector3d *u, *v;
@@ -99,11 +87,13 @@ private:
                         v->mul(node->r * sin((float) i * angle));
                         u->add(v);
 
-                        result->circlePts[i] = new Point3d(&(node->point));
-                        result->circlePts[i]->x += u->d[0];
-                        result->circlePts[i]->y += u->d[1];
-                        result->circlePts[i]->z += u->d[2];
+                        segment->circlePts[i] = new Point3d(&(node->point));
+                        segment->circlePts[i]->x += u->d[0];
+                        segment->circlePts[i]->y += u->d[1];
+                        segment->circlePts[i]->z += u->d[2];
 
+                        //printf("%d. %f %f %f %f %f %f\n",i,node->point.x,node->point.y,node->point.z, node->segment->circlePts[i]->x,node->segment->circlePts[i]->y,node->segment->circlePts[i]->z);
+                        
                         delete(u);
                         delete(v);
                 }
@@ -111,43 +101,52 @@ private:
                 delete(V);
                 delete(norm);
                 
-                return result;
+                for(int i=0; i < childLen; i++)
+                {
+                        computeSegment(node->getChildAt(i));
+                }
+                
+                
         }
         
         
-        void computeConnectedPts(Segment *s)
+        void computeConnectedPts(Node *root)
         {
                 
-                Segment * nextS = s->next;
-                if(nextS)
+                int childLen = root->getChildLen();
+                
+                if(childLen > 0)
                 {
-                        Vector3d *r = new Vector3d(&s->node->point, s->circlePts[0]);
-                        Point3d *p = new Point3d(&nextS->node->point);
-                        p->x += r->d[0];
-                        p->y += r->d[1];
-                        p->z += r->d[2];
-                        
-                        int index;
-                        float minDistance;
-                        for(int i = 0; i<CIRCLE_PTS_COUNT; i++)
+                        Segment *rootSegment = root->segment;
+                        for(int i =0; i< childLen; i++)
                         {
-                                if(i == 0)
-                                {
-                                        index = i;
-                                        minDistance = p->getDistance(nextS->circlePts[i]);
-                                }
-                                else
-                                {
-                                        float currentDistance = p->getDistance(nextS->circlePts[i]);
-                                        if(currentDistance < minDistance)
-                                        {
-                                                minDistance = currentDistance;
+                                Node *child =root->getChildAt(i);
+                                Segment *childSegment = child->segment;
+                                
+                                Vector3d *r = new Vector3d(&root->point, rootSegment->circlePts[0]);
+                                Point3d *p = new Point3d(&child->point);
+                                p->x += r->d[0];
+                                p->y += r->d[1];
+                                p->z += r->d[2];
+                                
+                                int index;
+                                float minDistance;
+                                for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
+                                        if (i == 0) {
                                                 index = i;
+                                                minDistance = p->getDistance(childSegment->circlePts[i]);
+                                        } else {
+                                                float currentDistance = p->getDistance(childSegment->circlePts[i]);
+                                                if (currentDistance < minDistance) {
+                                                        minDistance = currentDistance;
+                                                        index = i;
+                                                }
                                         }
                                 }
+                                childSegment->index = index;
+                                
+                                computeConnectedPts(child);
                         }
-                        s->index = index;
-                        
                 }
         }
 };

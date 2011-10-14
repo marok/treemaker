@@ -7,18 +7,15 @@
 class Segment
 {
 public:
-        Segment(Node *node)
+        Segment()
         {
-                this->node = node;
                 index = -1;
         }
         
-        Segment *next;
-        Node *node;
         Point3d * circlePts[CIRCLE_PTS_COUNT];
         
-        /*okresla z ktorym punktem na nastepnym segmencie polaczyc circlePts[0] z tego segmentu
-         w ostatnim segmencie ta wartosc rowna sie -1*/
+        /*okresla ktory punkt z tego segmentu, polaczyc z circlePts[0] poprzedniego segmentu.
+         w pierwszym(korzeniu) segmencie ta wartosc rowna sie -1*/
         int index;
 };
 
