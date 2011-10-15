@@ -19,7 +19,8 @@
 #include <cassert>
 #include "ColonizationMethod.h"
 #include "Bmp.h"
-using namespace std;
+#include "Model3d.h"
+
 
 
 #define DEFAULT_WIDTH  800
@@ -84,11 +85,82 @@ class MainWindow
 
 		}
 	}
+        
+        static void drawCircle(Node *root)
+        {
+                Segment *s = root->segment;
+                glPointSize(4);
+                glColor3f (1, 0, 0);
+                
+                glBegin(GL_POINTS);
+                        glVertex3f(root->point.x,
+                                root->point.y,
+                                root->point.z);
+                glEnd();
+                
+                glColor3f (1, 1, 0);
+                glBegin(GL_POINTS);
+                for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
+
+                        glVertex3f(s->circlePts[i]->x,
+                                s->circlePts[i]->y,
+                                s->circlePts[i]->z);
+
+                }
+                glEnd();
+                
+                int childLen = root->getChildLen();
+                
+                for(int i=0; i< childLen; i++)
+                {
+                        drawCircle(root->getChildAt(i));
+                }
+        }
+        
+        static void drawLines(Node *root)
+        {
+                int childLen = root->getChildLen();
+                for(int i=0; i<childLen; i++)
+                {
+                        Node *child = root->getChildAt(i);
+                        int index = child->segment->index;
+                        glBegin(GL_LINES);
+                        for(int i0=0; i0<CIRCLE_PTS_COUNT; i0++)
+                        {
+                                int j0 = (index + i0)%CIRCLE_PTS_COUNT;
+                                
+                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+                                glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+                                
+//                                int i1 = (i0+1)%CIRCLE_PTS_COUNT;
+//                                int j1 = (j0+1)%CIRCLE_PTS_COUNT;
+//                                
+//                                Vector3d *v1 = new Vector3d(root->segment->circlePts[i0],root->segment->circlePts[i1]);
+//                                Vector3d *v2 = new Vector3d(root->segment->circlePts[i0], child->segment->circlePts[j1]);
+//                                Vector3d *normal1 = v1->crossProduct(v2);
+//                                normal1->mul(-1);
+//                                
+//                                glNormal3f(normal1->d[0],normal1->d[1],normal1->d[2]);
+//                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+//                                glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+//                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+//                                
+//                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+//                                glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
+//                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+                        }
+                        
+                        glEnd();
+                        drawLines(child);
+                }
+        }
+        
 
 	static void drawTreeModel () {
 		glPushMatrix();
 		glRotatef (90, 1, 0, 0);
 		glRotatef (270, 0, 1, 0);
+                
 		static int generated = 0;
 
 		static ColonizationMethod cm;
@@ -103,14 +175,11 @@ class MainWindow
 
 		glPointSize (3);
 
-
-
-
 		glColor3f (0, 0, 0);
 		glPointSize (2);
 		glBegin (GL_POINTS);
 		for (int i = 0; i < cm.nodes.size (); i++) {
-			Point3d *p = &cm.nodes[i].point;
+			Point3d *p = &cm.nodes[i]->point;
 
 			glVertex3f (p->x, p->y, p->z);
 		}
@@ -127,84 +196,87 @@ class MainWindow
 
 		glEnd ();
 
-
+                Model3d *m = new Model3d(cm.nodes[0]);
+                m->generateModel();
+                drawLines(cm.nodes[0]);
+                
 		glPopMatrix();
 
 
 		//drawing textures
-		static int tgen = 0;
-
-		GLuint texId;
-
-		if (tgen == 0) {
-			static Bmp bmp;
-
-			//char tex_path[] = "textures/leaf_wiki256.bmp";
-			char tex_path[]="textures/bark_256.bmp";
-
-
-			bmp.load (tex_path);
-			// bmp.addAlpha();//
-			g_print ("loaded");
-			tgen = 1;
-
-			int height = bmp.header.biHeight;
-
-			int width = bmp.header.biWidth;
-
-			glGenTextures (1, &texId);
-			glBindTexture (GL_TEXTURE_2D, texId);
-			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
-			              GL_UNSIGNED_BYTE, bmp.data);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
-
-
-		}
-
-		vector<Point3d> circles[10];
-		glColor4f (1, 1, 1, 0);
-
-		int n=8;//liczba punktow na okregu
-		int m=6;//liczba punktow pnia
-		float r=1;
-		//oblicz coordynaty pnia
-		for (int i = 0; i < m; i++) {
-			Point3d *p = &cm.nodes[i].point;
-			for(int j=0; j<n; j++) {
-				int oldX=p->x;
-				int oldY=p->z;
-				float newZ=p->y;
-				float newX=oldX+r*cos(6.28318 * j / n);
-				float newY=oldY+r*sin(6.28318 * j / n);
-				circles[i].push_back(Point3d(newX,newY,newZ));
-
-			}
-			r*=0.8;
-		}
-		glEnable (GL_TEXTURE_2D);
-		for(int i=0; i<m-1; i++)
-			for(int j=0; j<n; j++) {
-				Point3d a=circles[i][j];
-				Point3d b=circles[i][(j+1)%n];
-				Point3d c=circles[i+1][(j+1)%n];
-				Point3d d=circles[i+1][j];
-
-				glBegin(GL_QUADS);
-				glTexCoord2f (0.0f, 0.0f);
-				glVertex3f(a.x,a.y,a.z);
-				glTexCoord2f (1.0f, 0.0f);
-
-				glVertex3f(b.x,b.y,b.z);
-				glTexCoord2f (1.0f, 1.0f);
-
-				glVertex3f(c.x,c.y,c.z);
-				glTexCoord2f (0.0f, 1.0f);
-
-				glVertex3f(d.x,d.y,d.z);
-				glEnd();
-			}
-		glDisable (GL_TEXTURE_2D);
+//		static int tgen = 0;
+//
+//		GLuint texId;
+//
+//		if (tgen == 0) {
+//			static Bmp bmp;
+//
+//			//char tex_path[] = "textures/leaf_wiki256.bmp";
+//			char tex_path[]="textures/bark_256.bmp";
+//
+//
+//			bmp.load (tex_path);
+//			// bmp.addAlpha();//
+//			g_print ("loaded");
+//			tgen = 1;
+//
+//			int height = bmp.header.biHeight;
+//
+//			int width = bmp.header.biWidth;
+//
+//			glGenTextures (1, &texId);
+//			glBindTexture (GL_TEXTURE_2D, texId);
+//			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+//			              GL_UNSIGNED_BYTE, bmp.data);
+//			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+//			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+//
+//
+//		}
+//
+//		vector<Point3d> circles[10];
+//		glColor4f (1, 1, 1, 0);
+//
+//		int n=8;//liczba punktow na okregu
+//		int m=6;//liczba punktow pnia
+//		float r=1;
+//		//oblicz coordynaty pnia
+//		for (int i = 0; i < m; i++) {
+//			Point3d *p = &cm.nodes[i].point;
+//			for(int j=0; j<n; j++) {
+//				int oldX=p->x;
+//				int oldY=p->z;
+//				float newZ=p->y;
+//				float newX=oldX+r*cos(6.28318 * j / n);
+//				float newY=oldY+r*sin(6.28318 * j / n);
+//				circles[i].push_back(Point3d(newX,newY,newZ));
+//
+//			}
+//			r*=0.8;
+//		}
+//		glEnable (GL_TEXTURE_2D);
+//		for(int i=0; i<m-1; i++)
+//			for(int j=0; j<n; j++) {
+//				Point3d a=circles[i][j];
+//				Point3d b=circles[i][(j+1)%n];
+//				Point3d c=circles[i+1][(j+1)%n];
+//				Point3d d=circles[i+1][j];
+//
+//				glBegin(GL_QUADS);
+//				glTexCoord2f (0.0f, 0.0f);
+//				glVertex3f(a.x,a.y,a.z);
+//				glTexCoord2f (1.0f, 0.0f);
+//
+//				glVertex3f(b.x,b.y,b.z);
+//				glTexCoord2f (1.0f, 1.0f);
+//
+//				glVertex3f(c.x,c.y,c.z);
+//				glTexCoord2f (0.0f, 1.0f);
+//
+//				glVertex3f(d.x,d.y,d.z);
+//				glEnd();
+//			}
+//		glDisable (GL_TEXTURE_2D);
 
 
 //glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
