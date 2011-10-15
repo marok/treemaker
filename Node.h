@@ -10,7 +10,6 @@ private:
         std::vector<Node*> children;
         
 public:
-        Node * next;		// null for leaf
         Node *prev;			// null for root
         Point3d point;
         Segment *segment;
@@ -18,30 +17,27 @@ public:
         float r; //radius
         
         Node ():point (0, 0, 0) {
-                prev = next = NULL;
-                r = 0.5;
+                prev = NULL;
                 segment = NULL;
                 children.clear();
         }
 
         Node (Point3d * p) {
-                prev = next = NULL;
+                prev =  NULL;
                 point.x = p->x;
                 point.y = p->y;
                 point.z = p->z;
                 
-                r=0.5;
                 segment = NULL;
                 children.clear();
         }
         
         Node (float x, float y, float z) {
-                prev = next = NULL;
+                prev =  NULL;
                 point.x = x;
                 point.y = y;
                 point.z = z;
                 
-                r=0.5;
                 segment = NULL;
                 children.clear();
         }

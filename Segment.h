@@ -2,7 +2,7 @@
 #ifndef _SEGMENT_H
 #define	_SEGMENT_H
 
-#define CIRCLE_PTS_COUNT 8
+#define CIRCLE_PTS_COUNT 10
 
 class Segment
 {

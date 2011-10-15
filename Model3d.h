@@ -1,11 +1,17 @@
 #ifndef MODEL3D_H
 #define	MODEL3D_H
 
+#include <cmath>
+
+#define CHILD_RADIUS 0.02
+#define RADIUS_FACTOR 2.0
+
 
 class Model3d {
-public:
+private:
         Node *root;
-        
+  
+public:
         Model3d(Node *root) {
                 this->root = root;
         }
@@ -14,6 +20,7 @@ public:
         void generateModel() {            
                 computeSegment(root);
                 computeConnectedPts(root);
+                computeRadius(root);
         }
 private:
         void computeSegment(Node *node) {
@@ -105,8 +112,6 @@ private:
                 {
                         computeSegment(node->getChildAt(i));
                 }
-                
-                
         }
         
         
@@ -148,6 +153,25 @@ private:
                                 computeConnectedPts(child);
                         }
                 }
+        }
+        
+        float computeRadius(Node *root)
+        {
+                int childLen = root->getChildLen();
+                root->r = 0.0;
+                if(childLen > 0)
+                {
+                        for(int i=0; i< childLen; i++)
+                        {
+                                root->r +=  powf(computeRadius(root->getChildAt(i)), RADIUS_FACTOR);
+                        }
+                        root->r = powf(root->r, 1.0/RADIUS_FACTOR);
+                } else
+                {
+                        root->r = CHILD_RADIUS;
+                }
+                
+                return root->r;
         }
 };
 #endif
