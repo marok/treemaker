@@ -28,7 +28,7 @@ class ColonizationMethod:public GenerationMethod
 	}
 	void colonize ()
 	{
-		int i, j, k, left = aPoints.size ();
+		unsigned int i, j, k, left = aPoints.size ();
 
 		int runda = 0;
 
@@ -69,7 +69,7 @@ class ColonizationMethod:public GenerationMethod
 				if (ids[i] != -1)
 					N[ids[i]].push_back (i);
 			}
-			int oldNodesSize = nodes.size ();
+			unsigned int oldNodesSize = nodes.size ();
 
 			for (i = 0; i < oldNodesSize; i++)
 				if (N[i].size () != 0) {

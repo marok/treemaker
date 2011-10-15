@@ -80,7 +80,7 @@ class Bmp
 	    //is white
 	    unsigned char alpha = 0;
 
-	    if (*p = 0 && *p + 1 == 0 && *p + 2 == 0) {
+	    if (*p == 0 && *p + 1 == 0 && *p + 2 == 0) {
 		alpha = 1;
 	    }
 	    q[0] = p[0];

@@ -1,5 +1,5 @@
-#ifndef MODEL3D_H
-#define	MODEL3D_H
+#ifndef _MODEL3D_H
+#define	_MODEL3D_H
 
 #include <cmath>
 
@@ -8,22 +8,9 @@
 
 
 class Model3d {
-private:
         Node *root;
   
-public:
-        Model3d(Node *root) {
-                this->root = root;
-        }
-       
-
-        void generateModel() {            
-                computeSegment(root);
-                computeConnectedPts(root);
-                computeRadius(root);
-        }
-private:
-        void computeSegment(Node *node) {
+void computeSegment(Node *node) {
                 Vector3d *norm;
                 int childLen = node->getChildLen();
                 
@@ -172,6 +159,17 @@ private:
                 }
                 
                 return root->r;
+        }
+        public:
+        Model3d(Node *root) {
+                this->root = root;
+        }
+       
+
+        void generateModel() {            
+                computeSegment(root);
+                computeConnectedPts(root);
+                computeRadius(root);
         }
 };
 #endif

@@ -1,7 +1,8 @@
 #ifndef _NODE_H
 #define _NODE_H
-#include "Point3d.h"
 #include<vector>
+
+#include "Point3d.h"
 #include "Segment.h"
 
 class Node

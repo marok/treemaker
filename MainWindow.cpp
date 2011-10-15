@@ -171,14 +171,12 @@ class MainWindow
 			generated = 1;
 		}
 
-		int i;
-
 		glPointSize (3);
 
 		glColor3f (0, 0, 0);
 		glPointSize (2);
 		glBegin (GL_POINTS);
-		for (int i = 0; i < cm.nodes.size (); i++) {
+		for (unsigned int i = 0; i < cm.nodes.size (); i++) {
 			Point3d *p = &cm.nodes[i]->point;
 
 			glVertex3f (p->x, p->y, p->z);
@@ -188,7 +186,7 @@ class MainWindow
 
 		glColor3f (1, 0, 0);
 		glBegin (GL_POINTS);
-		for (int i = 0; i < cm.aPointsCopy.size (); i++) {
+		for (unsigned int i = 0; i < cm.aPointsCopy.size (); i++) {
 			Point3d *p = &cm.aPointsCopy[i];
 
 			glVertex3f (p->x + 0.1, p->y + 0.1, p->z + 0.1);
@@ -283,7 +281,7 @@ class MainWindow
 	}
 
 	static void drawWireframe () {
-		int i = 0, j = 0;
+		int i;
 
 		glColor3f (0.0, 0.6, 0);
 
