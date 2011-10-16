@@ -6,6 +6,7 @@
 #include "Vector3d.h"
 #include <vector>
 #include <cassert>
+#include "ColonizationParameters.h"
 using namespace std;
 
 class GenerationMethod
@@ -18,20 +19,8 @@ public:
 
 class ColonizationMethod:public GenerationMethod
 {
-  
-	int seed;
-	float di;	//influence distance
-	float dk;	//kill distance
-	float D;	//node length
+        
 	int points;//attraction points
-	
-	void setDefaults(){
-	 seed=42;
-	 di=5.0;
-	 dk=0.1;
-	 D=0.2;
-	 points=60;
-	}
 	
 
 	void removeAPoint (int index)
@@ -65,7 +54,7 @@ class ColonizationMethod:public GenerationMethod
 				for (j = 0; j < nodes.size (); j++) {
 					float newDistance = ap->getDistance (&nodes[j]->point);
 
-					if (newDistance <= di && newDistance <= dis[i]) {
+					if (newDistance <= params->di && newDistance <= dis[i]) {
 						dis[i] = newDistance;
 						ids[i] = j;
 					}
@@ -104,7 +93,7 @@ class ColonizationMethod:public GenerationMethod
 						sum.add (&tmp);
 					}
 					sum.normalize ();
-					sum.mul (D);
+					sum.mul (params->D);
 
 					Node *newNode = new Node(&nodes[i]->point);
 
@@ -128,7 +117,7 @@ class ColonizationMethod:public GenerationMethod
 						nodes[i]->addChildren(nodes.at(nodes.size()-1));
 
 						for (j = 0; j < aPoints.size (); j++) {
-							if (newNode->point.getDistance (&aPoints[j]) <= dk) {
+							if (newNode->point.getDistance (&aPoints[j]) <= params->dk) {
 								//                      puts ("usuwam");
 								removeAPoint (j--);
 							}
@@ -147,8 +136,14 @@ public:
 	vector < Node *> nodes;	//tree nodes
 	vector < Point3d > aPoints;	//attraction points
 	vector < Point3d > aPointsCopy;	//attraction points
+        
+        ColonizationParameters *params;
 
-
+        ColonizationMethod(ColonizationParameters *params)
+        {
+                this->params = params;
+        }
+        
 	void createAttractionPoints (Point3d * crownCenter, float crownRadius,
 	                             int points)
 	{
@@ -174,8 +169,10 @@ public:
 	}
 	void init ()
 	{
-	  setDefaults();
-	  srand (seed);
+          nodes.clear();
+          aPoints.clear();
+          aPointsCopy.clear();
+	  srand (params->seed);
 	}
 
 	void generate (int aPointsNum)
@@ -200,20 +197,7 @@ public:
 			prvNode = newNode;
 		}
 		colonize ();
-	}
-	
-	void setSeed(int newSeed){
-	 seed=newSeed; 
-	}
-	void setDi(float newDi){
-	 di=newDi; 
-	}
-	void setDk(float newDk){
-	 dk=newDk;
-	}
-	void setPoints(int newPoints){
-	 points=newPoints; 
-	}
+        }
 
 };
 #endif

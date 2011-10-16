@@ -17,10 +17,13 @@
 #include <algorithm>
 #include <vector>
 #include <cassert>
-#include "ColonizationMethod.h"
 #include "ColonizationParameters.h"
-#include "Bmp.h"
+#include "ColonizationMethod.h"
 #include "Model3d.h"
+#include "ColonizationParametersPanel.h"
+
+#include "Bmp.h"
+
 
 
 
@@ -60,7 +63,7 @@ static float aspect = 5.0 / 4.0;
 static float lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
 
 
-
+static ColonizationMethod *cm = NULL;
 
 class MainWindow
 {
@@ -162,42 +165,8 @@ class MainWindow
 		glRotatef (90, 1, 0, 0);
 		glRotatef (270, 0, 1, 0);
 
-		static int generated = 0;
-
-		static ColonizationMethod cm;
-
-		if (generated == 0) {
-			cm.init ();
-			cm.generate (60);
-			generated = 1;
-		}
-
-		glPointSize (3);
-
-		glColor3f (0, 0, 0);
-		glPointSize (2);
-		glBegin (GL_POINTS);
-		for (unsigned int i = 0; i < cm.nodes.size (); i++) {
-			Point3d *p = &cm.nodes[i]->point;
-
-			glVertex3f (p->x, p->y, p->z);
-		}
-
-		glEnd ();
-
-		glColor3f (1, 0, 0);
-		glBegin (GL_POINTS);
-		for (unsigned int i = 0; i < cm.aPointsCopy.size (); i++) {
-			Point3d *p = &cm.aPointsCopy[i];
-
-			glVertex3f (p->x + 0.1, p->y + 0.1, p->z + 0.1);
-		}
-
-		glEnd ();
-
-		Model3d *m = new Model3d(cm.nodes[0]);
-		m->generateModel();
-		drawLines(cm.nodes[0]);
+                if(cm!=NULL && cm->nodes.size() > 0 && cm->nodes[0]!=NULL)
+                        drawLines(cm->nodes[0]);
 
 		glPopMatrix();
 
@@ -420,13 +389,6 @@ class MainWindow
 
 			redraw = TRUE;
 		}
-
-		/*if (event->state & GDK_BUTTON2_MASK)
-		   {
-		   sdepth -= ((event->y - beginY)/(widget->allocation.height))*(MAXGRID/2);
-
-		   redraw = TRUE;
-		   } */
 
 		beginX = event->x;
 		beginY = event->y;
@@ -664,36 +626,19 @@ class MainWindow
 		                          "button_press_event",
 		                          G_CALLBACK (button_press_event_popup_menu),
 		                          menu);
-
-		/* Colonization algorithm parameters */
-		//	GtkWidget *colonizationParameters;
 		GtkWidget *otherParameters;
 
 		otherParameters=gtk_frame_new("Other Parameters");
-		//gtk_frame_set_shadow_type(GTK_FRAME(colonizationParameters),GTK_SHADOW_IN);
-
-		//
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
 
-		ColonizationParameters cparams(vbox);
-		//	gtk_box_pack_start(GTK_BOX(vbox),colonizationParameters,FALSE,FALSE,1);
+                
+		ColonizationParametersPanel *cpanel = new ColonizationParametersPanel(cm);
+                
+                GtkWidget *cpanelWidget = cpanel->createPanel();
+		gtk_box_pack_start(GTK_BOX(vbox),cpanelWidget,FALSE,FALSE,1);
 		gtk_box_pack_start(GTK_BOX(vbox),otherParameters,FALSE,FALSE,1);
 
-//		gtk_widget_show(colonizationParameters);
 		gtk_widget_show(otherParameters);
-
-		/*
-		 * Simple quit button.
-		 */
-
-		//button = gtk_button_new_with_label ("Quit");
-
-		//g_signal_connect (G_OBJECT (button), "clicked",
-		//                 G_CALLBACK (gtk_main_quit), NULL);
-
-		//gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-
-		//gtk_widget_show (button);
 
 		return window;
 
@@ -741,6 +686,10 @@ main (int argc, char *argv[])
 {
 	MainWindow mw;
 
+        ColonizationParameters *cparams = new ColonizationParameters();
+        cm = new ColonizationMethod(cparams);
+        
+        
 	mw.init (argc, argv);
 	mw.run ();
 	return 0;

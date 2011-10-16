@@ -166,10 +166,11 @@ void computeSegment(Node *node) {
         }
        
 
-        void generateModel() {            
+        void generateModel() {  
+                computeRadius(root);
                 computeSegment(root);
                 computeConnectedPts(root);
-                computeRadius(root);
+                
         }
 };
 #endif
