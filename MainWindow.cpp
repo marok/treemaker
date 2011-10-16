@@ -18,6 +18,7 @@
 #include <vector>
 #include <cassert>
 #include "ColonizationMethod.h"
+#include "ColonizationParameters.h"
 #include "Bmp.h"
 #include "Model3d.h"
 
@@ -85,82 +86,82 @@ class MainWindow
 
 		}
 	}
-        
-        static void drawCircle(Node *root)
-        {
-                Segment *s = root->segment;
-                glPointSize(4);
-                glColor3f (1, 0, 0);
-                
-                glBegin(GL_POINTS);
-                        glVertex3f(root->point.x,
-                                root->point.y,
-                                root->point.z);
-                glEnd();
-                
-                glColor3f (1, 1, 0);
-                glBegin(GL_POINTS);
-                for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
 
-                        glVertex3f(s->circlePts[i]->x,
-                                s->circlePts[i]->y,
-                                s->circlePts[i]->z);
+	static void drawCircle(Node *root)
+	{
+		Segment *s = root->segment;
+		glPointSize(4);
+		glColor3f (1, 0, 0);
 
-                }
-                glEnd();
-                
-                int childLen = root->getChildLen();
-                
-                for(int i=0; i< childLen; i++)
-                {
-                        drawCircle(root->getChildAt(i));
-                }
-        }
-        
-        static void drawLines(Node *root)
-        {
-                int childLen = root->getChildLen();
-                for(int i=0; i<childLen; i++)
-                {
-                        Node *child = root->getChildAt(i);
-                        int index = child->segment->index;
-                        glBegin(GL_LINES);
-                        for(int i0=0; i0<CIRCLE_PTS_COUNT; i0++)
-                        {
-                                int j0 = (index + i0)%CIRCLE_PTS_COUNT;
-                                
-                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-                                glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-                                
+		glBegin(GL_POINTS);
+		glVertex3f(root->point.x,
+		           root->point.y,
+		           root->point.z);
+		glEnd();
+
+		glColor3f (1, 1, 0);
+		glBegin(GL_POINTS);
+		for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
+
+			glVertex3f(s->circlePts[i]->x,
+			           s->circlePts[i]->y,
+			           s->circlePts[i]->z);
+
+		}
+		glEnd();
+
+		int childLen = root->getChildLen();
+
+		for(int i=0; i< childLen; i++)
+		{
+			drawCircle(root->getChildAt(i));
+		}
+	}
+
+	static void drawLines(Node *root)
+	{
+		int childLen = root->getChildLen();
+		for(int i=0; i<childLen; i++)
+		{
+			Node *child = root->getChildAt(i);
+			int index = child->segment->index;
+			glBegin(GL_LINES);
+			for(int i0=0; i0<CIRCLE_PTS_COUNT; i0++)
+			{
+				int j0 = (index + i0)%CIRCLE_PTS_COUNT;
+
+				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+
 //                                int i1 = (i0+1)%CIRCLE_PTS_COUNT;
 //                                int j1 = (j0+1)%CIRCLE_PTS_COUNT;
-//                                
+//
 //                                Vector3d *v1 = new Vector3d(root->segment->circlePts[i0],root->segment->circlePts[i1]);
 //                                Vector3d *v2 = new Vector3d(root->segment->circlePts[i0], child->segment->circlePts[j1]);
 //                                Vector3d *normal1 = v1->crossProduct(v2);
 //                                normal1->mul(-1);
-//                                
+//
 //                                glNormal3f(normal1->d[0],normal1->d[1],normal1->d[2]);
 //                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 //                                glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
 //                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-//                                
+//
 //                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 //                                glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
 //                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-                        }
-                        
-                        glEnd();
-                        drawLines(child);
-                }
-        }
-        
+			}
+
+			glEnd();
+			drawLines(child);
+		}
+	}
+
 
 	static void drawTreeModel () {
 		glPushMatrix();
 		glRotatef (90, 1, 0, 0);
 		glRotatef (270, 0, 1, 0);
-                
+
 		static int generated = 0;
 
 		static ColonizationMethod cm;
@@ -194,10 +195,10 @@ class MainWindow
 
 		glEnd ();
 
-                Model3d *m = new Model3d(cm.nodes[0]);
-                m->generateModel();
-                drawLines(cm.nodes[0]);
-                
+		Model3d *m = new Model3d(cm.nodes[0]);
+		m->generateModel();
+		drawLines(cm.nodes[0]);
+
 		glPopMatrix();
 
 
@@ -488,40 +489,40 @@ class MainWindow
 	static void unrealize (GtkWidget * widget, gpointer data) {
 		/*** Fill in the details here ***/
 
-    }
-    static gboolean
-	scroll_event (GtkWidget * widget,
-		      GdkEventScroll * event, gpointer data)
-    {
-        gboolean redraw = FALSE;
-        
-	if (event->direction == GDK_SCROLL_UP)
-        {
-	    sdepth -= 2;
-            redraw = TRUE;
-        }
-	if (event->direction == GDK_SCROLL_DOWN)
-        {
-	    sdepth += 2;
-            redraw = TRUE;
-        }
-        
-        if(redraw)
-            gdk_window_invalidate_rect (widget->window,
-					&widget->allocation, FALSE);
-        
-	return TRUE;
-    }
-    static gboolean
-	button_press_event_popup_menu (GtkWidget * widget,
-				       GdkEventButton * event, gpointer data)
-    {
-	if (event->button == 3) {
-	    /* Popup menu. */
-	    gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL,
-			    NULL, event->button, event->time);
 	}
-	    return TRUE;
+	static gboolean
+	scroll_event (GtkWidget * widget,
+	              GdkEventScroll * event, gpointer data)
+	{
+		gboolean redraw = FALSE;
+
+		if (event->direction == GDK_SCROLL_UP)
+		{
+			sdepth -= 2;
+			redraw = TRUE;
+		}
+		if (event->direction == GDK_SCROLL_DOWN)
+		{
+			sdepth += 2;
+			redraw = TRUE;
+		}
+
+		if(redraw)
+			gdk_window_invalidate_rect (widget->window,
+			                            &widget->allocation, FALSE);
+
+		return TRUE;
+	}
+	static gboolean
+	button_press_event_popup_menu (GtkWidget * widget,
+	                               GdkEventButton * event, gpointer data)
+	{
+		if (event->button == 3) {
+			/* Popup menu. */
+			gtk_menu_popup (GTK_MENU (widget), NULL, NULL, NULL,
+			                NULL, event->button, event->time);
+		}
+		return TRUE;
 	}
 
 
@@ -570,13 +571,14 @@ class MainWindow
 	GtkWidget *createWindow (GdkGLConfig * glconfig) {
 		GtkWidget *window;
 
+		GtkWidget *hbox;
 		GtkWidget *vbox;
 
 		GtkWidget *drawing_area;
 
 		GtkWidget *menu;
 
-		GtkWidget *button;
+		//GtkWidget *button;
 
 		/*
 		 * Top-level window.
@@ -596,8 +598,11 @@ class MainWindow
 		 * VBox.
 		 */
 
-		vbox = gtk_vbox_new (FALSE, 0);
-		gtk_container_add (GTK_CONTAINER (window), vbox);
+		hbox = gtk_hbox_new (FALSE, 0);
+		vbox = gtk_vbox_new(FALSE,1);
+		gtk_container_add (GTK_CONTAINER (window), hbox);
+		//gtk_container_add(GTK_CONTAINER(window),vbox);
+		gtk_widget_show (hbox);
 		gtk_widget_show (vbox);
 
 		/*
@@ -645,7 +650,7 @@ class MainWindow
 		                          G_CALLBACK (key_press_event), drawing_area);
 
 
-		gtk_box_pack_start (GTK_BOX (vbox), drawing_area, TRUE, TRUE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), drawing_area, TRUE, TRUE, 0);
 
 		gtk_widget_show (drawing_area);
 
@@ -660,18 +665,35 @@ class MainWindow
 		                          G_CALLBACK (button_press_event_popup_menu),
 		                          menu);
 
+		/* Colonization algorithm parameters */
+		//	GtkWidget *colonizationParameters;
+		GtkWidget *otherParameters;
+
+		otherParameters=gtk_frame_new("Other Parameters");
+		//gtk_frame_set_shadow_type(GTK_FRAME(colonizationParameters),GTK_SHADOW_IN);
+
+		//
+		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
+
+		ColonizationParameters cparams(vbox);
+		//	gtk_box_pack_start(GTK_BOX(vbox),colonizationParameters,FALSE,FALSE,1);
+		gtk_box_pack_start(GTK_BOX(vbox),otherParameters,FALSE,FALSE,1);
+
+//		gtk_widget_show(colonizationParameters);
+		gtk_widget_show(otherParameters);
+
 		/*
 		 * Simple quit button.
 		 */
 
-		button = gtk_button_new_with_label ("Quit");
+		//button = gtk_button_new_with_label ("Quit");
 
-		g_signal_connect (G_OBJECT (button), "clicked",
-		                  G_CALLBACK (gtk_main_quit), NULL);
+		//g_signal_connect (G_OBJECT (button), "clicked",
+		//                 G_CALLBACK (gtk_main_quit), NULL);
 
-		gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+		//gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
 
-		gtk_widget_show (button);
+		//gtk_widget_show (button);
 
 		return window;
 

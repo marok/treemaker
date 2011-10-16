@@ -18,9 +18,21 @@ public:
 
 class ColonizationMethod:public GenerationMethod
 {
-	static const float di = 5.0;	//influence distance
-	static const float dk = 0.1;	//kill distance
-	static const float D = 0.2;	//node length
+  
+	int seed;
+	float di;	//influence distance
+	float dk;	//kill distance
+	float D;	//node length
+	int points;//attraction points
+	
+	void setDefaults(){
+	 seed=42;
+	 di=5.0;
+	 dk=0.1;
+	 D=0.2;
+	 points=60;
+	}
+	
 
 	void removeAPoint (int index)
 	{
@@ -162,7 +174,8 @@ public:
 	}
 	void init ()
 	{
-		srand (42);
+	  setDefaults();
+	  srand (seed);
 	}
 
 	void generate (int aPointsNum)
@@ -175,18 +188,31 @@ public:
 
 		int i;
 
-                Node *prvNode = NULL;
+		Node *prvNode = NULL;
 		for (i = 0; i < 6; i++) {
 			Node *newNode = new Node(0,i,0);
-                        newNode->prev = prvNode;
-                        
-                        if(prvNode)
-                                prvNode->addChildren(newNode);
-                        
+			newNode->prev = prvNode;
+
+			if(prvNode)
+				prvNode->addChildren(newNode);
+
 			nodes.push_back (newNode);
-                        prvNode = newNode;
+			prvNode = newNode;
 		}
 		colonize ();
+	}
+	
+	void setSeed(int newSeed){
+	 seed=newSeed; 
+	}
+	void setDi(float newDi){
+	 di=newDi; 
+	}
+	void setDk(float newDk){
+	 dk=newDk;
+	}
+	void setPoints(int newPoints){
+	 points=newPoints; 
 	}
 
 };
