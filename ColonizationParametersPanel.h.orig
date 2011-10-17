@@ -6,52 +6,52 @@
 #include "ColonizationMethod.h"
 #include "Model3d.h"
 
-class ColonizationParametersPanel {
+class ColonizationParametersPanel{
 
 	GtkWidget *vbox;
 	GtkWidget *hbox;
-	ColonizationMethod *cm;
-
-#define UNROLL_CALLBACK(callbackname,param)\
+        ColonizationMethod *cm;
+      
+	#define UNROLL_CALLBACK(callbackname,param)\
 	static void callbackname( GtkAdjustment *adj, gpointer data){\
              ColonizationParameters *params = (ColonizationParameters *)data;\
              params->param = adj->value;\
 	}
-
+	
 	UNROLL_CALLBACK(seedChanged,seed);
 	UNROLL_CALLBACK(diChanged,di);
 	UNROLL_CALLBACK(dkChanged,dk);
 	UNROLL_CALLBACK(DChanged,D);
 	UNROLL_CALLBACK(pointsChanged,points);
 	UNROLL_CALLBACK(crownRadiusChanged,crownRadius);
-
-#undef UNROLL_CALLBACK
-
-	static void showPointsClicked(GtkWidget *widget, gpointer data) {
-		ColonizationParameters *params = (ColonizationParameters *)data;
-		params->showEnvelope=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+	
+	#undef UNROLL_CALLBACK
+	
+	static void showPointsClicked(GtkWidget *widget, gpointer data){
+	    ColonizationParameters *params = (ColonizationParameters *)data;
+	    params->showEnvelope=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 	}
 	static void generateClicked( GtkWidget *widget ,gpointer data )
-	{
-		ColonizationMethod *cm = (ColonizationMethod*) data;
-		cm->init();
-		cm->generate();
-
-		Model3d *m = new  Model3d(cm->nodes[0]);
-		m->generateModel();
+	{                
+                ColonizationMethod *cm = (ColonizationMethod*) data;
+                cm->init();
+                cm->generate();
+                
+                Model3d *m = new  Model3d(cm->nodes[0]);
+                m->generateModel();    
 	}
 
 
 public:
-	ColonizationParametersPanel(ColonizationMethod *cm)
-	{
-		this->cm = cm;
-	}
-	GtkWidget *createPanel()
-	{
-		GtkWidget *paramsWidget;
-
-		paramsWidget=gtk_frame_new("Colonization Algorithm");
+        ColonizationParametersPanel(ColonizationMethod *cm)
+        {
+                this->cm = cm;
+        }
+        GtkWidget *createPanel()
+        {
+                GtkWidget *paramsWidget;
+                
+                paramsWidget=gtk_frame_new("Colonization Algorithm");
 
 		GtkWidget *label,*scale;
 		GtkObject *adj;
@@ -74,21 +74,21 @@ public:
     gtk_widget_show(scale);
 
 		PACK_LABEL_AND_SLIDER("Seed:",SEED_DEFAULT,0,100,1,seedChanged,0);
-		PACK_LABEL_AND_SLIDER("di:",DI_DEFAULT,1,10,0.5,diChanged,1);
-		PACK_LABEL_AND_SLIDER("dk:",DK_DEFAULT,0.1,1,0.1,dkChanged,1);
-		PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1);
-		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,100,1,pointsChanged,0);
-		PACK_LABEL_AND_SLIDER("Crown:",CROWNRADIUS_DEFAULT,2,8,1,crownRadiusChanged,1);
+                PACK_LABEL_AND_SLIDER("di:",DI_DEFAULT,1,10,0.5,diChanged,1);
+                PACK_LABEL_AND_SLIDER("dk:",DK_DEFAULT,0.1,1,0.1,dkChanged,1);
+                PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1);
+                PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,100,1,pointsChanged,0);
+                PACK_LABEL_AND_SLIDER("Crown:",CROWNRADIUS_DEFAULT,2,8,1,crownRadiusChanged,1);
 
 #undef PACK_LABEL_AND_SLIDER
 
 
-		GtkWidget *check = gtk_check_button_new_with_label("Show envelope");
+		GtkWidget *check = gtk_check_button_new_with_label("Show points");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),cm->params->showEnvelope);
 		g_signal_connect(check,"clicked",G_CALLBACK(this->showPointsClicked),cm->params);
 		gtk_box_pack_start(GTK_BOX(vbox),check,FALSE,FALSE,0);
-
-
+		
+		
 		GtkWidget *button = gtk_button_new_with_label ("Generate");
 		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->generateClicked), cm);
 		gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
@@ -97,9 +97,9 @@ public:
 		gtk_widget_show(button);
 		gtk_widget_show(check);
 		gtk_widget_show(vbox);
-
-		return paramsWidget;
-	}
+                
+                return paramsWidget;
+        }
 };
 
 

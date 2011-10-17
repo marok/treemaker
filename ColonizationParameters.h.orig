@@ -17,7 +17,7 @@ class ColonizationParameters {
 
 
 public:
-	static const int SEED_DEFAULT=42;
+  	static const int SEED_DEFAULT=42;
 	static const float DI_DEFAULT=5.0;
 	static const float DK_DEFAULT=0.1;
 	static const float D_DEFAULT=0.2;
@@ -25,7 +25,7 @@ public:
 	static const int MAXROUNDS_DEFAULT=1000;
 	static const float CROWNRADIUS_DEFAULT=5.0;
 	static const int SHOWENVELOPE_DEFAULT=0;
-
+	
 	int seed;	//seed for srand()
 	float di;	//influence distance
 	float dk;	//kill distance

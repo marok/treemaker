@@ -123,7 +123,7 @@ class MainWindow
 
 	static void drawLines(Node *root)
 	{
-		glColor3f(1,0.5,0);
+	  glColor3f(1,0.5,0);
 		int childLen = root->getChildLen();
 		for(int i=0; i<childLen; i++)
 		{
@@ -159,32 +159,31 @@ class MainWindow
 			drawLines(child);
 		}
 	}
-
-
-	static void drawEnvelope() {
-
-		glPushMatrix();
-		glColor3f (0, 0.2, 1);
-
-		float r=cm->params->crownRadius;
-		int n=20;//liczba punktow na okregu
-		int loops=6;//liczba petli
-
-		for(int j=0; j<loops; j++) {
-			glBegin(GL_LINE_STRIP);
-			for(int i=0; i<n+1; i++) {
-				float oldX=0;
-				float oldY=9;
-				float oldZ=0;
-				float newZ=oldZ;
-				float newX=oldX+r*cos(6.28318 * i / n);
-				float newY=oldY+r*sin(6.28318 * i / n);
-				glVertex3f(newX,newY,newZ);
-			}
-			glEnd();
-			glRotatef(180/loops,0,1,0);
-		}
-		glPopMatrix();
+ 
+  
+	static void drawEnvelope(){
+	
+         glPushMatrix();
+	 glColor3f (0, 0.2, 1);
+	 
+	 float r=cm->params->crownRadius;
+	 int n=20;//liczba punktow na okregu
+	 int loops=6;//liczba petli
+	 
+	 for(int j=0;j<loops;j++){
+	 glBegin(GL_LINE_STRIP);
+	 for(int i=0;i<n+1;i++){
+	  float oldX=0;
+	  float oldY=9;
+	  float oldZ=0;
+	  float newZ=oldZ;
+	  float newX=oldX+r*cos(6.28318 * i / n);
+	  float newY=oldY+r*sin(6.28318 * i / n);
+	  glVertex3f(newX,newY,newZ);
+	 }glEnd();
+	 glRotatef(180/loops,0,1,0);
+	 }
+	 glPopMatrix();
 	}
 
 	static void drawTreeModel () {
@@ -193,8 +192,8 @@ class MainWindow
 		glRotatef (270, 0, 1, 0);
 
 		if(cm->params->showEnvelope)
-			drawEnvelope();
-
+		  drawEnvelope();
+		
 		if(cm!=NULL && cm->nodes.size() > 0 && cm->nodes[0]!=NULL)
 			drawLines(cm->nodes[0]);
 
