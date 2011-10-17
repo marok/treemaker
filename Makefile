@@ -8,6 +8,7 @@ default:
 clean :
 	rm -rf $(EXECUTABLE)
 	rm -rf *~
+	rm -rf *.orig
 
 nice:
 	astyle -t $(SOURCES)
