@@ -33,7 +33,7 @@ class ColonizationMethod:public GenerationMethod
 
 		int runda = 0;
 
-		while (left && runda++ < 1000 && nodes.size () < 1000) {
+		while (left && runda++ < 2000 && nodes.size () < 2000) {
 			left = aPoints.size ();
 
 			bool added = 0;
@@ -61,9 +61,9 @@ class ColonizationMethod:public GenerationMethod
 				}
 			}
 
-			static vector < int >N[1000];
+			static vector < int >N[2000];
 
-			for (i = 0; i < 1000; i++)
+			for (i = 0; i < 2000; i++)
 				N[i].clear ();
 
 			for (i = 0; i < left; i++) {
@@ -118,15 +118,16 @@ class ColonizationMethod:public GenerationMethod
 
 						for (j = 0; j < aPoints.size (); j++) {
 							if (newNode->point.getDistance (&aPoints[j]) <= params->dk) {
-								//                      puts ("usuwam");
 								removeAPoint (j--);
 							}
 						}
-					}
+					} else
+						delete newNode;
+
 				}
 
 			if (added == 0) {
-				puts ("nie dodano nic nowego");
+				//puts ("nie dodano nic nowego");
 				break;
 			}
 		}
@@ -167,6 +168,8 @@ public:
 	}
 	void init ()
 	{
+		for(unsigned int i=0; i<nodes.size(); i++)
+			delete nodes[i];
 		nodes.clear();
 		aPoints.clear();
 		srand (params->seed);
