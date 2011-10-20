@@ -177,7 +177,7 @@ public:
 
 	void generate ()
 	{
-		Point3d crownCenter (0, 9.0, 0);
+		Point3d crownCenter (0, 0, 9.0);
 
 		createAttractionPoints (&crownCenter, params->crownRadius, params->points);
 
@@ -185,7 +185,7 @@ public:
 
 		Node *prvNode = NULL;
 		for (i = 0; i < 6; i++) {
-			Node *newNode = new Node(0,i,0);
+			Node *newNode = new Node(0,0,i);
 			newNode->prev = prvNode;
 
 			if(prvNode)

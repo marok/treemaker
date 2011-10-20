@@ -4,7 +4,7 @@
 #include <cmath>
 
 #define CHILD_RADIUS 0.02
-#define RADIUS_FACTOR 2.0
+#define RADIUS_FACTOR 1.8
 
 
 class Model3d {
