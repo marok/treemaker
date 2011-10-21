@@ -52,14 +52,16 @@ public:
 		GtkWidget *paramsWidget;
 
 		paramsWidget=gtk_frame_new("Colonization Algorithm");
+		GtkTooltips *tooltips=gtk_tooltips_new();
 
+		
 		GtkWidget *label,*scale;
 		GtkObject *adj;
 
 		vbox = gtk_vbox_new(FALSE,1);
 		gtk_container_add (GTK_CONTAINER (paramsWidget), vbox);
 
-#define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits)\
+#define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
     hbox = gtk_hbox_new(FALSE,1);\
     label = gtk_label_new(text);\
     adj=gtk_adjustment_new(cm->params->val,min,max,step,1,0);\
@@ -69,30 +71,35 @@ public:
     gtk_box_pack_start(GTK_BOX(vbox),hbox,FALSE,FALSE,1);\
     gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
     gtk_box_pack_start(GTK_BOX(hbox),scale,TRUE,TRUE,0);\
+    gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
     gtk_widget_show(label);\
     gtk_widget_show(hbox);\
     gtk_widget_show(scale);
 
-		PACK_LABEL_AND_SLIDER("Seed:",SEED_DEFAULT,0,100,1,seedChanged,0);
-		PACK_LABEL_AND_SLIDER("di:",DI_DEFAULT,1,10,0.5,diChanged,1);
-		PACK_LABEL_AND_SLIDER("dk:",DK_DEFAULT,0.1,1,0.1,dkChanged,1);
-		PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1);
-		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,100,1,pointsChanged,0);
-		PACK_LABEL_AND_SLIDER("Crown:",CROWNRADIUS_DEFAULT,2,8,1,crownRadiusChanged,1);
+		PACK_LABEL_AND_SLIDER("Seed:",SEED_DEFAULT,0,100,1,seedChanged,0,"Random number generator seed");
+		PACK_LABEL_AND_SLIDER("di:",DI_DEFAULT,1,10,0.5,diChanged,1,"Influence distance");
+		PACK_LABEL_AND_SLIDER("dk:",DK_DEFAULT,0.1,1,0.1,dkChanged,1,"Kill distance");
+		PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1,"Step size");
+		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,100,1,pointsChanged,0,"Number of attraction points in crown");
+		PACK_LABEL_AND_SLIDER("Crown:",CROWNRADIUS_DEFAULT,2,8,1,crownRadiusChanged,1,"Crown radius");
 
 #undef PACK_LABEL_AND_SLIDER
 
 
+		
 		GtkWidget *check = gtk_check_button_new_with_label("Show envelope");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),cm->params->showEnvelope);
 		g_signal_connect(check,"clicked",G_CALLBACK(this->showPointsClicked),cm->params);
 		gtk_box_pack_start(GTK_BOX(vbox),check,FALSE,FALSE,0);
-
-
+		gtk_tooltips_set_tip(tooltips,check,"Shows crown envelope",NULL);
+		
+		
+		
 		GtkWidget *button = gtk_button_new_with_label ("Generate");
 		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->generateClicked), cm);
 		gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
-
+		gtk_tooltips_set_tip(tooltips,button,"Generates new tree model",NULL);
+		
 		gtk_widget_show(paramsWidget);
 		gtk_widget_show(button);
 		gtk_widget_show(check);

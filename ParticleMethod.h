@@ -6,25 +6,25 @@
 
 class Particle: public Node
 {
-  void configure(){
-        energy=1.0;
-    isAlive=true;
-    distance=10000;
-  }
-  public:
-  float energy;
-  int nearest; //index of nearest particle
-  float distance;//distance to nearest particle
-  bool isAlive;//if false, particle will be deleted
-  int id;
-  
-   Particle():Node(){
-    configure();
-   }
-   Particle(Point3d *p):Node(p){
-    configure();
-   }
-  
+	void configure() {
+		energy=1.0;
+		isAlive=true;
+		distance=10000;
+	}
+public:
+	float energy;
+	int nearest; //index of nearest particle
+	float distance;//distance to nearest particle
+	bool isAlive;//if false, particle will be deleted
+	int id;
+
+	Particle():Node() {
+		configure();
+	}
+	Particle(Point3d *p):Node(p) {
+		configure();
+	}
+
 };
 
 class ParticleMethod:public GenerationMethod
@@ -71,7 +71,7 @@ class ParticleMethod:public GenerationMethod
 		}
 
 	}
-	void colonize() {		
+	void colonize() {
 		const float combine_dist=0.5;
 		const float target_dist=0.1;
 
@@ -83,7 +83,7 @@ class ParticleMethod:public GenerationMethod
 			for(unsigned int i=0; i<particles.size(); i++) {
 				Particle *a=&particles[i];
 				for(unsigned int j=0; j<particles.size(); j++) {
-				  if(i==j) continue;
+					if(i==j) continue;
 					Particle *b=&particles[j];
 					float newDistance=a->point.getDistance(&b->point);
 					if(newDistance<a->distance) {
@@ -118,42 +118,42 @@ class ParticleMethod:public GenerationMethod
 				if(s->point.getDistance(&target)<=target_dist) {
 					s->isAlive=false;
 				} else { //move S
-				  s->isAlive=false;
-				  Vector3d p(&s->point);
-				  Vector3d q(&s->point);
-				  Vector3d nb(&n->point); //neighbour
-				  Vector3d tv(&target);
-				  p.sub(&nb);
-				  q.sub(&tv);
-				  p.normalize();
-				  q.normalize();
-				  p.add(&q);
-				  p.mul(D);
-				  Point3d newPoint(p.d[0],p.d[1],p.d[2]);
-				  Particle newParticle(&newPoint);
-				  newParticle.id=nodes.size();
-				  
-				  Node *newNode=new Node(&newPoint);
-				  nodes.push_back(newNode);
-				  particles.push_back(newParticle);
+					s->isAlive=false;
+					Vector3d p(&s->point);
+					Vector3d q(&s->point);
+					Vector3d nb(&n->point); //neighbour
+					Vector3d tv(&target);
+					p.sub(&nb);
+					q.sub(&tv);
+					p.normalize();
+					q.normalize();
+					p.add(&q);
+					p.mul(D);
+					Point3d newPoint(p.d[0],p.d[1],p.d[2]);
+					Particle newParticle(&newPoint);
+					newParticle.id=nodes.size();
+
+					Node *newNode=new Node(&newPoint);
+					nodes.push_back(newNode);
+					particles.push_back(newParticle);
 				}
 			}
 			//usun czastki oznaczone jako ~isAlive
-			for(unsigned int i=0;i<particles.size();i++)
-			 if(particles[i].isAlive)
-			   particlesCopy.push_back(particles[i]);
+			for(unsigned int i=0; i<particles.size(); i++)
+				if(particles[i].isAlive)
+					particlesCopy.push_back(particles[i]);
 			particles.clear();
-			 for(unsigned int i=0;i<particles.size();i++)
-			  particles.push_back(particlesCopy[i]);
+			for(unsigned int i=0; i<particles.size(); i++)
+				particles.push_back(particlesCopy[i]);
 			particlesCopy.clear();
 		}
 	}
 	void createTrunk() {
-	  for(unsigned int i=0;i<nodes.size();i++){
-	    
-	    
-	  }
-  
+		for(unsigned int i=0; i<nodes.size(); i++) {
+
+
+		}
+
 	}
 
 public:
@@ -167,7 +167,7 @@ public:
 		createParticles(&crownCenter);
 		colonize ();
 	}
-	
+
 };
 
 #endif

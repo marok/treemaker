@@ -74,7 +74,7 @@ class MainWindow
 	GdkGLConfig *glconfig;
 
 
-	
+
 
 	static void realize (GtkWidget * widget, gpointer data) {
 		GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
@@ -171,9 +171,9 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel ();
-                
-                if(coordinates)
-                        DrawMethods::drawCoordinates ();
+
+		if(coordinates)
+			DrawMethods::drawCoordinates ();
 
 		/* Swap buffers */
 		if (gdk_gl_drawable_is_double_buffered (gldrawable))

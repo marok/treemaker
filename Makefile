@@ -9,7 +9,8 @@ Bmp.h \
 ColonizationMethod.h \
 ColonizationParameters.h \
 ColonizationParametersPanel.h \
-ParticleMethod.h
+ParticleMethod.h \
+Randomizer.h
 
 default:
 	g++ -g -Wall $(CONFIG) $(SOURCES) -o $(EXECUTABLE)
