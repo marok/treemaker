@@ -7,9 +7,9 @@ Vector3d.h \
 Node.h \
 Bmp.h \
 ColonizationMethod.h \
-ColonizationParameters.h \
-ColonizationParametersPanel.h \
 ParticleMethod.h \
+MethodParameters.h \
+MethodParametersPanel.h \
 Randomizer.h
 
 default:

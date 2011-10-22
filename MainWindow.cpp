@@ -17,10 +17,10 @@
 #include <algorithm>
 #include <vector>
 #include <cassert>
-#include "ColonizationParameters.h"
+#include "MethodParameters.h"
 #include "ColonizationMethod.h"
 #include "Model3d.h"
-#include "ColonizationParametersPanel.h"
+#include "MethodParametersPanel.h"
 
 #include "Spline.h"
 
@@ -443,13 +443,20 @@ class MainWindow
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
 
 
-		ColonizationParametersPanel *cpanel = new ColonizationParametersPanel(cm);
+		MethodParametersPanel *mpanel = new MethodParametersPanel(cm);
 
-		GtkWidget *cpanelWidget = cpanel->createPanel();
-		gtk_box_pack_start(GTK_BOX(vbox),cpanelWidget,FALSE,FALSE,1);
-		gtk_box_pack_start(GTK_BOX(vbox),otherParameters,FALSE,FALSE,1);
+		GtkWidget *notebook=gtk_notebook_new();
+		GtkWidget *label;
+		label=gtk_label_new("Algorithms");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),mpanel->createPanel(),label);
 
+
+		label=gtk_label_new("Others");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),otherParameters,label);
+
+		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
 		gtk_widget_show(otherParameters);
+		gtk_widget_show(notebook);
 
 		return window;
 
@@ -497,7 +504,7 @@ main (int argc, char *argv[])
 {
 	MainWindow mw;
 
-	ColonizationParameters *cparams = new ColonizationParameters();
+	MethodParameters *cparams = new MethodParameters();
 	cm = new ColonizationMethod(cparams);
 
 	mw.init (argc, argv);

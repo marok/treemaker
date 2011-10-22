@@ -6,7 +6,7 @@
 #include "Vector3d.h"
 #include <vector>
 #include <cassert>
-#include "ColonizationParameters.h"
+#include "MethodParameters.h"
 using namespace std;
 
 class GenerationMethod
@@ -137,9 +137,9 @@ public:
 	vector < Node *> nodes;	//tree nodes
 	vector < Point3d > aPoints;	//attraction points
 
-	ColonizationParameters *params;
+	MethodParameters *params;
 
-	ColonizationMethod(ColonizationParameters *params)
+	ColonizationMethod(MethodParameters *params)
 	{
 		this->params = params;
 	}
