@@ -50,9 +50,9 @@ public:
 	float ie;		//initial energy
 	float cd;		//combine distance
 	float attraction;	//particle attraction (1 - on, 0 -off)
-	
-	MethodParameters(){
-	 init(); 
+
+	MethodParameters() {
+		init();
 	}
 };
 

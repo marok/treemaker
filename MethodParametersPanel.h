@@ -5,6 +5,7 @@
 #include <vector>
 #include "MethodParameters.h"
 #include "ColonizationMethod.h"
+#include "ParticleMethod.h"
 #include "Model3d.h"
 
 using namespace std;
@@ -13,8 +14,9 @@ class MethodParametersPanel {
 	GtkWidget *vbox;
 	GtkWidget *hbox;
 	ColonizationMethod *cm;
+	ParticleMethod *pm;
 	vector <pair<int,GtkWidget *> > methodWidgets;
-	
+
 
 #define UNROLL_CALLBACK(callbackname,param)\
 	static void callbackname( GtkAdjustment *adj, gpointer data){\
@@ -39,35 +41,46 @@ class MethodParametersPanel {
 	}
 	static void generateClicked( GtkWidget *widget ,gpointer data )
 	{
-		ColonizationMethod *cm = (ColonizationMethod*) data;
-		cm->init();
-		cm->generate();
-
-		Model3d *m = new  Model3d(cm->nodes[0]);
-		m->generateModel();
+		MethodParametersPanel *mpp=(MethodParametersPanel*)data;
+		Model3d *model;
+		if(mpp->cm->params->activeMethod==0) {
+			mpp->cm->init();
+			mpp->cm->generate();
+			model = new  Model3d(mpp->cm->getRoot());
+		}
+		else {
+			mpp->pm->init();
+			mpp->pm->generate();
+			model =new Model3d(mpp->pm->getRoot());
+		}
+		model->generateModel();
 	}
 	static void algorithmSelected(GtkWidget *widget, gpointer data) {
 
 		MethodParametersPanel *cpp=(MethodParametersPanel*)data;
 		gint active=gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
 		cpp->hideWidgets(active);
+		cpp->cm->params->activeMethod=active;
+
 	}
-			
-	void hideWidgets(gint active){
-		    for(unsigned int i=0;i<methodWidgets.size();i++){
-		  GtkWidget *w=methodWidgets[i].second;
-		  if(methodWidgets[i].first!=active)
-		  gtk_widget_hide(w);
-		  else 
-		    gtk_widget_show(w);
+
+	void hideWidgets(gint active) {
+
+		for(unsigned int i=0; i<methodWidgets.size(); i++) {
+			GtkWidget *w=methodWidgets[i].second;
+			if(methodWidgets[i].first!=active)
+				gtk_widget_hide(w);
+			else
+				gtk_widget_show(w);
 		}
 	}
 
 
 public:
-	MethodParametersPanel(ColonizationMethod *cm)
+	MethodParametersPanel(ColonizationMethod *cm,ParticleMethod *pm)
 	{
 		this->cm = cm;
+		this->pm = pm;
 	}
 	GtkWidget *createPanel()
 	{
@@ -117,18 +130,18 @@ public:
 		PACK_LABEL_AND_SLIDER("Crown:",CROWNRADIUS_DEFAULT,2,8,1,crownRadiusChanged,1,"Crown radius",-1);
 
 
-		// Colonization Parameters	
+		// Colonization Parameters
 		PACK_LABEL_AND_SLIDER("di:",DI_DEFAULT,1,10,0.5,diChanged,1,"Influence distance",0);
 		PACK_LABEL_AND_SLIDER("dk:",DK_DEFAULT,0.1,1,0.1,dkChanged,1,"Kill distance",0);
-	
+
 		// Particle Parameters
 		PACK_LABEL_AND_SLIDER("cd:",DI_DEFAULT,0.1,1,0.1,cdChanged,1,"Combine distance",1);
 		PACK_LABEL_AND_SLIDER("attraction:",ATTRACTION_DEFAULT,0.1,1,0.1,attractionChanged,1,"Particles attraction",1);
 
 
-	#undef PACK_LABEL_AND_SLIDER
-	
-		
+#undef PACK_LABEL_AND_SLIDER
+
+
 		GtkWidget *check = gtk_check_button_new_with_label("Show envelope");
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),cm->params->showEnvelope);
 		g_signal_connect(check,"clicked",G_CALLBACK(this->showEnvelopeClicked),cm->params);
@@ -138,7 +151,7 @@ public:
 
 
 		GtkWidget *button = gtk_button_new_with_label ("Generate");
-		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->generateClicked), cm);
+		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->generateClicked), this);
 		gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
 		gtk_tooltips_set_tip(tooltips,button,"Generates new tree model",NULL);
 

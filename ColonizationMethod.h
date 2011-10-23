@@ -14,7 +14,7 @@ class GenerationMethod
 public:
 	void init ();
 	void generate ();
-	Node *getNodes ();
+	Node *getRoot ();
 };
 
 class ColonizationMethod:public GenerationMethod
@@ -196,6 +196,10 @@ public:
 		}
 		colonize ();
 	}
+	Node *getRoot() {
+		return (nodes.size()==0)?NULL:nodes[0];
+	}
+
 
 };
 #endif

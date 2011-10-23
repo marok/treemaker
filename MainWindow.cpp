@@ -19,6 +19,7 @@
 #include <cassert>
 #include "MethodParameters.h"
 #include "ColonizationMethod.h"
+#include "ParticleMethod.h"
 #include "Model3d.h"
 #include "MethodParametersPanel.h"
 
@@ -67,6 +68,7 @@ static float lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
 
 
 ColonizationMethod *cm = NULL;
+ParticleMethod *pm = NULL;
 
 class MainWindow
 {
@@ -443,7 +445,7 @@ class MainWindow
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
 
 
-		MethodParametersPanel *mpanel = new MethodParametersPanel(cm);
+		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm);
 
 		GtkWidget *notebook=gtk_notebook_new();
 		GtkWidget *label;
@@ -504,8 +506,9 @@ main (int argc, char *argv[])
 {
 	MainWindow mw;
 
-	MethodParameters *cparams = new MethodParameters();
-	cm = new ColonizationMethod(cparams);
+	MethodParameters *methodParams = new MethodParameters();
+	cm = new ColonizationMethod(methodParams);
+	pm = new ParticleMethod(methodParams);
 
 	mw.init (argc, argv);
 	mw.run ();

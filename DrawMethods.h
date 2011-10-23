@@ -57,6 +57,7 @@ public:
 
 	static void drawLines(Node *root)
 	{
+		if(root==NULL) return;
 		glColor3f(1,0.5,0);
 		int childLen = root->getChildLen();
 		for(int i=0; i<childLen; i++)
@@ -181,10 +182,12 @@ public:
 			drawEnvelope();
 
                 drawEnvelope2();
-                
-		if(cm!=NULL && cm->nodes.size() > 0 && cm->nodes[0]!=NULL)
-			drawLines(cm->nodes[0]);
-
+		if(cm->params->activeMethod==0){
+			drawLines(cm->getRoot());
+		}
+		if(cm->params->activeMethod==1){
+			drawLines(pm->getRoot());
+		}
 		glPopMatrix();
 
 

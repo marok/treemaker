@@ -39,7 +39,7 @@ class ParticleMethod:public GenerationMethod
 	float crownRadius;
 
 	void setDefault() {
-		points=60;
+		points=10;
 		seed=42;
 		D=0.3;
 		e=1;
@@ -76,9 +76,10 @@ class ParticleMethod:public GenerationMethod
 		const float target_dist=0.1;
 
 		Point3d target(0,0,0);
+		int round=0;
 
 		while(particles.size()>1) {
-
+			fprintf(stderr,"round=%d\n",round++);
 			//find nearest neighbour
 			for(unsigned int i=0; i<particles.size(); i++) {
 				Particle *a=&particles[i];
@@ -92,6 +93,12 @@ class ParticleMethod:public GenerationMethod
 					}
 				}
 			}
+			fprintf(stderr,"particle.size()=%d\n",particles.size());
+			for(unsigned int i=0; i<particles.size(); i++)
+			{
+				fprintf(stderr,"%d - %d %f\n",i,particles[i].nearest,particles[i].distance);
+			}
+			return;
 			//dla kazdej czastki s
 			for(unsigned int i=0; i<particles.size(); i++) {
 				Particle *s=&particles[i];
@@ -148,26 +155,30 @@ class ParticleMethod:public GenerationMethod
 			particlesCopy.clear();
 		}
 	}
-	void createTrunk() {
-		for(unsigned int i=0; i<nodes.size(); i++) {
 
-
-		}
-
-	}
 
 public:
+	MethodParameters *params;
 
+	ParticleMethod( MethodParameters *params) {
+		this->params=params;
+	}
 	void init() {
 		setDefault();
 		srand(seed);
 	}
 	void generate() {
+		fprintf(stderr,"particle generate\n");
 		Point3d crownCenter(0,9,0);
 		createParticles(&crownCenter);
 		colonize ();
 	}
-
+	Node *getRoot() {
+		if(nodes.size()==0)
+			return NULL;
+		int last=nodes.size()-1;
+		return nodes[last];
+	}
 };
 
 #endif
