@@ -95,49 +95,19 @@ public:
 		}
 	}
 
-
-	static void drawEnvelope() {
-
-		glPushMatrix();
-		glColor3f (0, 0.2, 1);
-
-		float r=cm->params->crownRadius;
-		int n=20;//liczba punktow na okregu
-		int loops=6;//liczba petli
-
-		for(int j=0; j<loops; j++) {
-			glBegin(GL_LINE_STRIP);
-			for(int i=0; i<n+1; i++) {
-				float oldX=0;
-				float oldY=0;
-				float oldZ=9;
-				float newY=oldY;
-				float newX=oldX+r*cos(6.28318 * i / n);
-				float newZ=oldZ+r*sin(6.28318 * i / n);
-				glVertex3f(newX,newY,newZ);
-			}
-			glEnd();
-			glRotatef(180/loops,0,0,1);
-		}
-		glPopMatrix();
-	}
         
-        static void drawEnvelope2() {
+        static void drawEnvelope() {
 
 		glPushMatrix();
 		
-                
-		int n=20;//liczba punktow na okregu
+		int n=20;//liczba punktow na krzywej
 		int loops=12;//liczba petli
 
-                int N = 5;
-                float x[] = {0,1,2,3,4};
-                float y[] = {0,2,1,3,0};
-                Spline *s = new Spline(x,y,N);
-        
-                
-                float startX = x[0];
-                float step = (x[N-1] - x[0]) / (float)n;
+		Crown *c = cm->crown;
+		
+		int N = cm->params->crownMainPoints.size();
+                float startX = cm->params->crownMainPoints[0]->x;
+                float step = (cm->params->crownMainPoints[N - 1]->x - startX) / (float)n;
                 
                 
 		for(int j=0; j<loops; j++) {
@@ -151,7 +121,7 @@ public:
                                 else
                                         x += step;
                                 
-                                y = s->getS(x);
+                                y = c->s->getS(x);
                                 
 				glVertex3f(y,0,x);
 			}
@@ -163,12 +133,12 @@ public:
                         glBegin(GL_POINTS);
                         for(int i=0; i<N; i++)
                         {
-                                glVertex3f(y[i],0,x[i]);
+                                glVertex3f(cm->params->crownMainPoints[i]->y,0,cm->params->crownMainPoints[i]->x);
                         }
                         glEnd();
                         
                         float x_max, y_max;
-                        s->globalMax(&x_max, &y_max);
+                        c->s->globalMax(&x_max, &y_max);
                         glColor3f (1, 1, 1);
                         glBegin(GL_POINTS);
                         glVertex3f(y_max,0,x_max);
@@ -176,7 +146,6 @@ public:
                         
 			glRotatef(360/loops,0,0,1);
 		}
-                delete s;
 		glPopMatrix();
 	}
 
@@ -188,7 +157,6 @@ public:
 		if(cm->params->showEnvelope)
 			drawEnvelope();
 
-                drawEnvelope2();
 		if(cm->params->activeMethod==0){
 			drawLines(cm->getRoot());
 		}

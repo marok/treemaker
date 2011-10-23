@@ -7,6 +7,7 @@
 #include <vector>
 #include <cassert>
 #include "MethodParameters.h"
+#include "Crown.h"
 using namespace std;
 
 class GenerationMethod
@@ -25,6 +26,8 @@ class ColonizationMethod:public GenerationMethod
 
 	void removeAPoint (int index)
 	{
+		Point3d *p = aPoints[index];
+		delete p;
 		aPoints.erase (aPoints.begin () + index);
 	}
 	void colonize ()
@@ -49,7 +52,7 @@ class ColonizationMethod:public GenerationMethod
 			//znajdz nablizszego noda dla kazdego apointa
 			// O(n*m)
 			for (i = 0; i < left; i++) {
-				Point3d *ap = &aPoints[i];
+				Point3d *ap = aPoints[i];
 
 				for (j = 0; j < nodes.size (); j++) {
 					float newDistance = ap->getDistance (&nodes[j]->point);
@@ -81,7 +84,7 @@ class ColonizationMethod:public GenerationMethod
 
 						int index = N[i][j];
 
-						Point3d *s = &aPoints[index];
+						Point3d *s = aPoints[index];
 
 						Vector3d p (&nodes[i]->point);
 
@@ -117,7 +120,7 @@ class ColonizationMethod:public GenerationMethod
 						nodes[i]->addChildren(nodes.at(nodes.size()-1));
 
 						for (j = 0; j < aPoints.size (); j++) {
-							if (newNode->point.getDistance (&aPoints[j]) <= params->dk) {
+							if (newNode->point.getDistance (aPoints[j]) <= params->dk) {
 								removeAPoint (j--);
 							}
 						}
@@ -135,37 +138,17 @@ class ColonizationMethod:public GenerationMethod
 
 public:
 	vector < Node *> nodes;	//tree nodes
-	vector < Point3d > aPoints;	//attraction points
+	vector < Point3d *> aPoints;	//attraction points
 
 	MethodParameters *params;
+	Crown *crown;
 
 	ColonizationMethod(MethodParameters *params)
 	{
 		this->params = params;
+		crown = new Crown(params);
 	}
-
-	void createAttractionPoints (Point3d * crownCenter, float crownRadius,
-	                             int points)
-	{
-		aPoints.clear ();
-		while (points) {
-#define MRAND (((random() % 2000) - 1000) / (float) 1000) * crownRadius
-			float rx = MRAND + crownCenter->x;
-
-			float ry = MRAND + crownCenter->y;
-
-			float rz = MRAND + crownCenter->z;
-
-#undef MRAND
-			Point3d a (rx, ry, rz);
-
-			if (a.getDistance (crownCenter) <= crownRadius) {
-				aPoints.push_back (a);
-				points--;
-			}
-		}
-
-	}
+	
 	void init ()
 	{
 		for(unsigned int i=0; i<nodes.size(); i++)
@@ -177,9 +160,10 @@ public:
 
 	void generate ()
 	{
-		Point3d crownCenter (0, 0, 9.0);
-
-		createAttractionPoints (&crownCenter, params->crownRadius, params->points);
+		delete crown;
+		crown = new Crown(params);
+		
+		aPoints = crown->generatePoints();
 
 		int i;
 

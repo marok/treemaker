@@ -29,7 +29,6 @@ class MethodParametersPanel {
 	UNROLL_CALLBACK(dkChanged,dk);
 	UNROLL_CALLBACK(DChanged,D);
 	UNROLL_CALLBACK(pointsChanged,points);
-	UNROLL_CALLBACK(crownRadiusChanged,crownRadius);
 	UNROLL_CALLBACK(cdChanged,cd);
 	UNROLL_CALLBACK(attractionChanged,attraction);
 
@@ -126,8 +125,7 @@ public:
 		// Common Parameters
 		PACK_LABEL_AND_SLIDER("Seed:",SEED_DEFAULT,0,100,1,seedChanged,0,"Random number generator seed",-1);
 		PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1,"Step size",-1);
-		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,100,1,pointsChanged,0,"Number of attraction points in crown",-1);
-		PACK_LABEL_AND_SLIDER("Crown:",CROWNRADIUS_DEFAULT,2,8,1,crownRadiusChanged,1,"Crown radius",-1);
+		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,150,1,pointsChanged,0,"Number of attraction points in crown",-1);
 
 
 		// Colonization Parameters
