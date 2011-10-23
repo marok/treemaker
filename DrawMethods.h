@@ -130,9 +130,9 @@ public:
 		int n=20;//liczba punktow na okregu
 		int loops=12;//liczba petli
 
-                int N = 4;
-                float x[] = {6,7,10,12};
-                float y[] = {0,2,5,0};
+                int N = 5;
+                float x[] = {0,1,2,3,4};
+                float y[] = {0,2,1,3,0};
                 Spline *s = new Spline(x,y,N);
         
                 
@@ -165,6 +165,13 @@ public:
                         {
                                 glVertex3f(y[i],0,x[i]);
                         }
+                        glEnd();
+                        
+                        float x_max, y_max;
+                        s->globalMax(&x_max, &y_max);
+                        glColor3f (1, 1, 1);
+                        glBegin(GL_POINTS);
+                        glVertex3f(y_max,0,x_max);
                         glEnd();
                         
 			glRotatef(360/loops,0,0,1);
