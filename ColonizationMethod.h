@@ -148,7 +148,7 @@ public:
 		this->params = params;
 		crown = new Crown(params);
 	}
-	
+
 	void init ()
 	{
 		for(unsigned int i=0; i<nodes.size(); i++)
@@ -162,7 +162,7 @@ public:
 	{
 		delete crown;
 		crown = new Crown(params);
-		
+
 		aPoints = crown->generatePoints();
 
 		int i;

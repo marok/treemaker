@@ -18,7 +18,7 @@ protected:
 		cd=CD_DEFAULT;
 		attraction=ATTRACTION_DEFAULT;
 		activeMethod=ACTIVEMETHOD_DEFAULT;
-		
+
 		Point2d *p = new Point2d(5, 0);
 		crownMainPoints.push_back(p);
 		p = new Point2d(6, 4);
@@ -29,7 +29,7 @@ protected:
 		crownMainPoints.push_back(p);
 		p = new Point2d(20, 0);
 		crownMainPoints.push_back(p);
-		
+
 	}
 public:
 	static const int SEED_DEFAULT=42;
@@ -44,6 +44,9 @@ public:
 	static const float ATTRACTION_DEFAULT=0.0;
 	static const int ACTIVEMETHOD_DEFAULT=0;
 
+	//crown params
+	std::vector<Point2d *> crownMainPoints;
+
 	//common parameters
 	int seed;		//seed for srand()
 	int points;     	//attraction points
@@ -52,9 +55,6 @@ public:
 	float D;		//node length
 	Distribution distribution;//random generator distribution (uniform by default)
 	int activeMethod;	//active generation method 0-colonization, 1-particle
-	
-	//crown params
-	std::vector<Point2d *> crownMainPoints;
 
 	//colonization parameters
 	float di;		//influence distance

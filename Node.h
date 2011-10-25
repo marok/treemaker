@@ -49,6 +49,8 @@ public:
 
 	void print () {
 		point.print ();
+		fprintf(stderr,"children size= %d\n",children.size());
+
 	}
 
 	void addChildren(Node *child)

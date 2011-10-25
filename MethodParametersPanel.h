@@ -133,8 +133,8 @@ public:
 		PACK_LABEL_AND_SLIDER("dk:",DK_DEFAULT,0.1,1,0.1,dkChanged,1,"Kill distance",0);
 
 		// Particle Parameters
-		PACK_LABEL_AND_SLIDER("cd:",DI_DEFAULT,0.1,1,0.1,cdChanged,1,"Combine distance",1);
-		PACK_LABEL_AND_SLIDER("attraction:",ATTRACTION_DEFAULT,0.1,1,0.1,attractionChanged,1,"Particles attraction",1);
+		PACK_LABEL_AND_SLIDER("cd:",CD_DEFAULT,0.1,1,0.1,cdChanged,1,"Combine distance",1);
+		PACK_LABEL_AND_SLIDER("attraction:",ATTRACTION_DEFAULT,0.0,1,0.1,attractionChanged,1,"Particles attraction",1);
 
 
 #undef PACK_LABEL_AND_SLIDER
