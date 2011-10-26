@@ -2,12 +2,26 @@
 #define	DRAWMETHODS_H
 
 #include "GlobalVar.h"
+#include <gtk/gtk.h>
+#include <gtk/gtkgl.h>
+#include <gdk/gdkglglext.h>
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+
+GtkWidget *windowWidget;
+Model3d *model = NULL;
 
 class DrawMethods {
+
+  
 public:
         
-    
+	static void render(){
+	   gtk_widget_queue_draw(windowWidget);
+
+	}
         static void drawCoordinates() {
                 glTranslatef((float) grid / 2.0 + 0.5, (float) grid / 2 + 0.5, 0);
 

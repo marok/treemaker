@@ -4,8 +4,6 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "TrunkParameters.h"
-
-
 class TrunkParametersPanel {
 	TrunkParameters *tp;
 
@@ -13,17 +11,13 @@ class TrunkParametersPanel {
 	static void callbackname( GtkAdjustment *adj, gpointer data){\
              TrunkParameters *params = (TrunkParameters *)data;\
              params->param = adj->value;\
-	}
-
+		}
 	UNROLL_CALLBACK(radiusFactorChanged,radiusFactor);
 	UNROLL_CALLBACK(circlePointsChanged,circlePoints);
 	UNROLL_CALLBACK(aValueChanged,aValue);
 	UNROLL_CALLBACK(mValueChanged,mValue);
 
-
 #undef UNROLL_CALLBACK
-
-
 
 public:
 	TrunkParametersPanel(TrunkParameters *tp) {

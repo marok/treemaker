@@ -7,8 +7,10 @@
 #include "ColonizationMethod.h"
 #include "ParticleMethod.h"
 #include "Model3d.h"
+#include "DrawMethods.h"
 
 using namespace std;
+
 class MethodParametersPanel {
 
 	GtkWidget *vbox;
@@ -42,18 +44,22 @@ class MethodParametersPanel {
 	static void generateClicked( GtkWidget *widget ,gpointer data )
 	{
 		MethodParametersPanel *mpp=(MethodParametersPanel*)data;
-		Model3d *model;
 		if(mpp->cm->params->activeMethod==0) {
 			mpp->cm->init();
 			mpp->cm->generate();
+			if(model!=NULL)
+				delete model;
 			model = new  Model3d(mpp->cm->getRoot(),mpp->tp);
 		}
 		else {
 			mpp->pm->init();
 			mpp->pm->generate();
+			if(model!=NULL)
+				delete model;
 			model =new Model3d(mpp->pm->getRoot(),mpp->tp);
 		}
 		model->generateModel();
+		DrawMethods::render();
 	}
 	static void algorithmSelected(GtkWidget *widget, gpointer data) {
 

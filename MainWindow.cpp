@@ -71,6 +71,7 @@ static float lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
 ColonizationMethod *cm = NULL;
 ParticleMethod *pm = NULL;
 TrunkParameters *tp =NULL;
+DrawMethods *dm = NULL;
 
 class MainWindow
 {
@@ -466,8 +467,27 @@ class MainWindow
 		gtk_widget_show(trunkParameters);
 		gtk_widget_show(notebook);
 
+		//g_timeout_add (1000,
+		//                 (GSourceFunc) timeout,
+		//                  window);
+
+		windowWidget=window;
 		return window;
 
+	}
+
+	static gboolean
+	timeout (GtkWidget *widget)
+	{
+		//g_print("timeout");
+		gtk_widget_queue_draw(widget);
+		/* Invalidate the whole window. */
+		gdk_window_invalidate_rect (widget->window, &widget->allocation, FALSE);
+
+		/* Update synchronously (fast). */
+		gdk_window_process_updates (widget->window, FALSE);
+
+		return TRUE;
 	}
 	GdkGLConfig *configureGL () {
 		GdkGLConfig *glconfig;
