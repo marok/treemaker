@@ -22,6 +22,7 @@
 #include "ParticleMethod.h"
 #include "Model3d.h"
 #include "MethodParametersPanel.h"
+#include "TrunkParametersPanel.h"
 
 #include "Spline.h"
 
@@ -69,6 +70,7 @@ static float lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
 
 ColonizationMethod *cm = NULL;
 ParticleMethod *pm = NULL;
+TrunkParameters *tp =NULL;
 
 class MainWindow
 {
@@ -172,7 +174,7 @@ class MainWindow
 		glRotatef (sphi, 0.0, 0.0, 1.0);
 
 		DrawMethods::drawWireframe ();
-		DrawMethods::drawTreeModel ();
+		DrawMethods::drawTreeModel (tp);
 
 		if(coordinates)
 			DrawMethods::drawCoordinates ();
@@ -439,13 +441,15 @@ class MainWindow
 		                          "button_press_event",
 		                          G_CALLBACK (button_press_event_popup_menu),
 		                          menu);
-		GtkWidget *otherParameters;
+		//GtkWidget *otherParameters;
+		//otherParameters=gtk_frame_new("Other Parameters");
 
-		otherParameters=gtk_frame_new("Other Parameters");
+		TrunkParametersPanel *tpp=new TrunkParametersPanel(tp);
+		GtkWidget *trunkParameters=tpp->createPanel();
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
 
 
-		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm);
+		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm,tp);
 
 		GtkWidget *notebook=gtk_notebook_new();
 		GtkWidget *label;
@@ -454,10 +458,12 @@ class MainWindow
 
 
 		label=gtk_label_new("Others");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),otherParameters,label);
+		//gtk_notebook_append_page(GTK_NOTEBOOK(notebook),otherParameters,label);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trunkParameters,label);
+
 
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
-		gtk_widget_show(otherParameters);
+		gtk_widget_show(trunkParameters);
 		gtk_widget_show(notebook);
 
 		return window;
@@ -509,6 +515,7 @@ main (int argc, char *argv[])
 	MethodParameters *methodParams = new MethodParameters();
 	cm = new ColonizationMethod(methodParams);
 	pm = new ParticleMethod(methodParams);
+	tp = new TrunkParameters();
 
 	mw.init (argc, argv);
 	mw.run ();

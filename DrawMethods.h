@@ -3,9 +3,11 @@
 
 #include "GlobalVar.h"
 
+
 class DrawMethods {
 public:
         
+    
         static void drawCoordinates() {
                 glTranslatef((float) grid / 2.0 + 0.5, (float) grid / 2 + 0.5, 0);
 
@@ -24,7 +26,7 @@ public:
 
         }
 
-	static void drawCircle(Node *root)
+	static void drawCircle(Node *root,TrunkParameters *tp)
 	{
 		Segment *s = root->segment;
 		glPointSize(4);
@@ -38,7 +40,7 @@ public:
 
 		glColor3f (1, 1, 0);
 		glBegin(GL_POINTS);
-		for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
+		for (int i = 0; i < tp->circlePoints; i++) {
 
 			glVertex3f(s->circlePts[i]->x,
 			           s->circlePts[i]->y,
@@ -51,11 +53,11 @@ public:
 
 		for(int i=0; i< childLen; i++)
 		{
-			drawCircle(root->getChildAt(i));
+			drawCircle(root->getChildAt(i),tp);
 		}
 	}
 
-	static void drawLines(Node *root)
+	static void drawLines(Node *root,TrunkParameters *tp)
 	{
 		if(root==NULL) return;
 		glColor3f(1,0.5,0);
@@ -65,9 +67,9 @@ public:
 			Node *child = root->getChildAt(i);
 			int index = child->segment->index;
 			glBegin(GL_LINES);
-			for(int i0=0; i0<CIRCLE_PTS_COUNT; i0++)
+			for(int i0=0; i0<tp->circlePoints; i0++)
 			{
-				int j0 = (index + i0)%CIRCLE_PTS_COUNT;
+				int j0 = (index + i0)%tp->circlePoints;
 
 				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
@@ -91,7 +93,7 @@ public:
 			}
 
 			glEnd();
-			drawLines(child);
+			drawLines(child,tp);
 		}
 	}
 
@@ -149,7 +151,7 @@ public:
 		glPopMatrix();
 	}
 
-	static void drawTreeModel () {
+	static void drawTreeModel (TrunkParameters *tp) {
 		glPushMatrix();
 		//glRotatef (90, 1, 0, 0);
 		//glRotatef (270, 0, 1, 0);
@@ -158,10 +160,10 @@ public:
 			drawEnvelope();
 
 		if(cm->params->activeMethod==0){
-			drawLines(cm->getRoot());
+			drawLines(cm->getRoot(),tp);
 		}
 		if(cm->params->activeMethod==1){
-			drawLines(pm->getRoot());
+			drawLines(pm->getRoot(),tp);
 		}
 		glPopMatrix();
 

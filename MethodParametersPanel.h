@@ -15,6 +15,7 @@ class MethodParametersPanel {
 	GtkWidget *hbox;
 	ColonizationMethod *cm;
 	ParticleMethod *pm;
+	TrunkParameters *tp;
 	vector <pair<int,GtkWidget *> > methodWidgets;
 
 
@@ -45,12 +46,12 @@ class MethodParametersPanel {
 		if(mpp->cm->params->activeMethod==0) {
 			mpp->cm->init();
 			mpp->cm->generate();
-			model = new  Model3d(mpp->cm->getRoot());
+			model = new  Model3d(mpp->cm->getRoot(),mpp->tp);
 		}
 		else {
 			mpp->pm->init();
 			mpp->pm->generate();
-			model =new Model3d(mpp->pm->getRoot());
+			model =new Model3d(mpp->pm->getRoot(),mpp->tp);
 		}
 		model->generateModel();
 	}
@@ -76,10 +77,11 @@ class MethodParametersPanel {
 
 
 public:
-	MethodParametersPanel(ColonizationMethod *cm,ParticleMethod *pm)
+	MethodParametersPanel(ColonizationMethod *cm,ParticleMethod *pm,TrunkParameters *tp)
 	{
 		this->cm = cm;
 		this->pm = pm;
+		this->tp = tp;
 	}
 	GtkWidget *createPanel()
 	{

@@ -10,7 +10,9 @@ ColonizationMethod.h \
 ParticleMethod.h \
 MethodParameters.h \
 MethodParametersPanel.h \
-Randomizer.h
+Randomizer.h\
+TrunkParameters.h\
+TrunkParametersPanel.h\
 
 default:
 	g++ -g -Wall $(CONFIG) $(SOURCES) -o $(EXECUTABLE)

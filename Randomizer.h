@@ -9,10 +9,10 @@ class Randomizer {
 	int seed;
 	unsigned int ceil;
 public:
-	void init(int _seed, unsigned int _ceil, Distribution d) {
+	void init(int seed, unsigned int ceil, Distribution d) {
 		distribution=d;
-		seed=_seed;
-		ceil=_ceil;
+		this->seed=seed;
+		this->ceil=ceil;
 		srand(seed);
 		assert(ceil%2==0);
 	}
@@ -30,6 +30,4 @@ public:
 	}
 
 };
-
-
 #endif

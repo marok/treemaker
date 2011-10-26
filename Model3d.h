@@ -2,13 +2,13 @@
 #define	_MODEL3D_H
 
 #include <cmath>
+#include "TrunkParameters.h"
 
 #define CHILD_RADIUS 0.02
-#define RADIUS_FACTOR 1.8
-
 
 class Model3d {
         Node *root;
+	TrunkParameters *tp;
   
 void computeSegment(Node *node) {
                 Vector3d *norm;
@@ -64,13 +64,13 @@ void computeSegment(Node *node) {
                 V = norm->crossProduct(U);
 
 
-                float angle = 2 * M_PI / CIRCLE_PTS_COUNT;
+                float angle = 2 * M_PI / tp->circlePoints;
 
                 Segment *segment = new Segment();
                 node->segment = segment;
               
                 
-                for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
+                for (int i = 0; i < tp->circlePoints; i++) {
                         Vector3d *u, *v;
                         u = new Vector3d();
                         v = new Vector3d();
@@ -123,7 +123,7 @@ void computeSegment(Node *node) {
                                 
                                 int index;
                                 float minDistance;
-                                for (int i = 0; i < CIRCLE_PTS_COUNT; i++) {
+                                for (int i = 0; i < tp->circlePoints; i++) {
                                         if (i == 0) {
                                                 index = i;
                                                 minDistance = p->getDistance(childSegment->circlePts[i]);
@@ -150,19 +150,22 @@ void computeSegment(Node *node) {
                 {
                         for(int i=0; i< childLen; i++)
                         {
-                                root->r +=  powf(computeRadius(root->getChildAt(i)), RADIUS_FACTOR);
+                                root->r +=  powf(computeRadius(root->getChildAt(i)), tp->radiusFactor);
                         }
-                        root->r = powf(root->r, 1.0/RADIUS_FACTOR);
-                } else
+                        
+                        root->r = powf(root->r*tp->mValue+tp->aValue, 1.0/tp->radiusFactor);
+		
+		} else
                 {
-                        root->r = CHILD_RADIUS;
-                }
+                        root->r = CHILD_RADIUS;              
+		}
                 
                 return root->r;
         }
         public:
-        Model3d(Node *root) {
+        Model3d(Node *root,TrunkParameters *tp) {
                 this->root = root;
+		this->tp=tp;
         }
        
 

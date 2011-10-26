@@ -211,7 +211,7 @@ public:
 		colonize ();
 		fprintf(stderr,"generate()");
 		fprintf(stderr,"nodes =%d \n",nodes.size());
-		for(int i=0; i<nodes.size(); i++)
+		for(unsigned int i=0; i<nodes.size(); i++)
 			nodes[i]->print();
 	}
 	Node *getRoot() {
