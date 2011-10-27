@@ -200,37 +200,42 @@ public:
 		WRITE (header.biClrUsed);
 		WRITE (header.biClrImportant);
 #undef WRITE
+
+		int bytesPerLine = (3 * (header.biWidth + 1) / 4) * 4;
+		char buffer[bytesPerLine];
+		
 		for (int i = header.biHeight - 1; i >= 0; i--) {
-
-			for (int j = 0; j < header.biWidth; j++) {
+			 for (int j = 0; j < header.biWidth; j++) {
 				int ipos = 3*(header.biWidth * i + j);
-				fwrite (&data[ipos+2], 1, 1, file);
-				fwrite (&data[ipos+1], 1, 1, file);
-				fwrite (&data[ipos], 1, 1, file);
-
+				buffer[j*3+0]=data[ipos+2];
+				buffer[j*3+1]=data[ipos+1];
+				buffer[j*3+2]=data[ipos+0];
 			}
+	  fwrite(buffer,1,bytesPerLine,file);
 		}
+		return true;
 	}
-	/** returns 64x64 icon from bitmap **/
+	/** returns SIZExSIZE icon from bitmap **/
 	Bmp* getIcon() {
+#define SIZE 128
 		ERROR_CHECK(data == NULL,"bitmap is emtpy");
-		ERROR_CHECK(header.biWidth<64,"image width is too small");
-		ERROR_CHECK(header.biHeight<64,"image height is too small");
+		ERROR_CHECK(header.biWidth<SIZE,"image width is too small");
+		ERROR_CHECK(header.biHeight<SIZE,"image height is too small");
 		Bmp *ret=new Bmp();
+		int bytesPerLine = (3 * (header.biWidth + 1) / 4) * 4;
 		memcpy(&ret->header,&header,sizeof(header));
-		ret->header.biWidth=64;
-		ret->header.biHeight=64;
-		ret->header.biSizeImage=64*64*3;
-		ret->header.bfSize=64*64*4+54;
-		float ratiox=header.biWidth/64;
-		float ratioy=header.biHeight/64;
-		ret->data=(unsigned char*)malloc(64*64*3);
+		ret->header.biWidth=SIZE;
+		ret->header.biHeight=SIZE;
+		ret->header.bfSize=SIZE*bytesPerLine+54;
+		float ratiox=header.biWidth/SIZE;
+		float ratioy=header.biHeight/SIZE;
+		ret->data=(unsigned char*)malloc(SIZE*SIZE*3);
 		ret->dataAlocated=true;
-		for(int i=0; i<64; i++)
-			for(int j=0; j<64; j++) {
+		for(int i=0; i<SIZE; i++)
+			for(int j=0; j<SIZE; j++) {
 				int x=round(ratiox*i);
 				int y=round(ratioy*j);
-				int outpos=3*(64*i+j);
+				int outpos=3*(SIZE*i+j);
 				int inpos=3*(header.biWidth*x+y);
 				for(int k=0; k<3; k++)
 					ret->data[outpos+k]=data[inpos+k];

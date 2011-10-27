@@ -4,9 +4,12 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "TrunkParameters.h"
+#include "Bmp.h"
 class TrunkParametersPanel {
 	TrunkParameters *tp;
+	GtkWidget *vbox;
 	GtkWidget *mainWindow;
+	GtkWidget *image;
 
 #define UNROLL_CALLBACK(callbackname,param)\
 	static void callbackname( GtkAdjustment *adj, gpointer data){\
@@ -25,9 +28,20 @@ class TrunkParametersPanel {
 		dialog = gtk_file_chooser_dialog_new("Select bmp file with bark texture",GTK_WINDOW(tpp->mainWindow),GTK_FILE_CHOOSER_ACTION_OPEN,GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,GTK_STOCK_OPEN,GTK_RESPONSE_ACCEPT,NULL);
 		if(gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_ACCEPT) {
 			char *filename=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-			g_print("file choosed %s\n",filename);
+
+			char *tmpname=tpp->generateIcon(filename);
+			gtk_image_set_from_file(GTK_IMAGE(tpp->image),tmpname);
+			strcpy(tpp->tp->barkPath,filename);
 		}
 		gtk_widget_destroy(dialog);
+	}
+	char* generateIcon(char *filename) {
+		Bmp bmp;
+		bmp.load(filename);
+		Bmp *icon=bmp.getIcon();
+		static char tmpname[]="/tmp/treemaker_tmpfile";
+		icon->save(tmpname);
+		return tmpname;
 	}
 
 public:
@@ -40,8 +54,9 @@ public:
 		GtkWidget *trunkWidget=gtk_frame_new("Trunk Parameters");
 
 		GtkTooltips *tooltips=gtk_tooltips_new();
-		GtkWidget *button,*scale,*label,*hbox,*vbox=gtk_vbox_new(FALSE,1);
+		GtkWidget *button,*scale,*label,*hbox;
 		GtkObject *adj;
+		vbox=gtk_vbox_new(FALSE,1);
 
 		gtk_container_add (GTK_CONTAINER (trunkWidget), vbox);
 
@@ -75,18 +90,12 @@ public:
 		gtk_tooltips_set_tip(tooltips,button,"Opens file chooser dialog",NULL);
 		gtk_widget_show(button);
 
-		/*  Bmp bmp;
-		    char path[]="textures/bark_256.bmp";
-		    char path2[]="textures/bark_2_256.bmp";
-		    bool result=bmp.load(path);
-		    bmp.print();
-		    if(result!=1){
-		      puts("blad podczas wczytywania tekstury");
-		      exit(1);
-		    }
-		    //bmp.save(path2);
-		    Bmp *icon=bmp.getIcon();
-		    icon->save(path2);*/
+
+		image=gtk_image_new_from_file(generateIcon(tp->barkPath));
+		gtk_box_pack_start(GTK_BOX(vbox),image,FALSE,FALSE,1);
+		gtk_widget_show(image);
+
+
 
 
 #undef PACK_LABEL_AND_SLIDER
