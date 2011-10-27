@@ -2,6 +2,8 @@
 #define _BMP_H
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <cmath>
 using namespace std;
 
 class Bmp
@@ -50,7 +52,7 @@ public:
 	void print ()
 	{
 		printf ("%c%c\n", header.bfType[0], header.bfType[1]);
-		printf ("bfSize %x\n", header.bfSize);
+		printf ("bfSize %d\n", header.bfSize);
 		printf ("bfReserved %d\n", header.bfReserved);
 		printf ("bfOffBits %d\n", header.bfOffBits);
 		printf ("biSize %d\n", header.biSize);
@@ -110,6 +112,8 @@ public:
 		ERROR_CHECK (file == NULL, "cannot open file");
 
 		fread (header.bfType, 1, 2, file);
+		ERROR_CHECK(header.bfType[0]!='B'||header.bfType[1]!='M',"invalid file type");
+
 #define READ(what) fread(&what,1,sizeof(what),file);
 		READ (header.bfSize);
 		READ (header.bfReserved);
@@ -162,8 +166,79 @@ public:
 
 		fclose (file);
 		free (line);
-		//print();     //prints header
 		return 1;
 	}
+	bool save(char * filename) {
+
+#define ERROR_CHECK(condition,message) \
+ if(condition){\
+  fprintf(stderr,"Error (%s) in file (%s) at line (%d)\n",message,__FILE__,__LINE__);\
+  exit(1);\
+  return false;\
+ }
+		ERROR_CHECK(data == NULL,"bitmap is emtpy");
+		ERROR_CHECK (filename == NULL, "filename is null");
+
+		FILE *file = fopen (filename, "w+");
+
+		ERROR_CHECK (file == NULL, "cannot open file");
+		fwrite (header.bfType, 1, 2, file);
+
+#define WRITE(what) fwrite(&what,1,sizeof(what),file);
+		WRITE(header.bfSize);
+		WRITE (header.bfReserved);
+		WRITE (header.bfOffBits);
+		WRITE (header.biSize);
+		WRITE (header.biWidth);
+		WRITE (header.biHeight);
+		WRITE (header.biPlanes);
+		WRITE (header.biBitCount);
+		WRITE (header.biCompression);
+		WRITE (header.biSizeImage);
+		WRITE (header.biXPelsPerMeter);
+		WRITE (header.biYPelsPerMeter);
+		WRITE (header.biClrUsed);
+		WRITE (header.biClrImportant);
+#undef WRITE
+		for (int i = header.biHeight - 1; i >= 0; i--) {
+
+			for (int j = 0; j < header.biWidth; j++) {
+				int ipos = 3*(header.biWidth * i + j);
+				fwrite (&data[ipos+2], 1, 1, file);
+				fwrite (&data[ipos+1], 1, 1, file);
+				fwrite (&data[ipos], 1, 1, file);
+
+			}
+		}
+	}
+	/** returns 64x64 icon from bitmap **/
+	Bmp* getIcon() {
+		ERROR_CHECK(data == NULL,"bitmap is emtpy");
+		ERROR_CHECK(header.biWidth<64,"image width is too small");
+		ERROR_CHECK(header.biHeight<64,"image height is too small");
+		Bmp *ret=new Bmp();
+		memcpy(&ret->header,&header,sizeof(header));
+		ret->header.biWidth=64;
+		ret->header.biHeight=64;
+		ret->header.biSizeImage=64*64*3;
+		ret->header.bfSize=64*64*4+54;
+		float ratiox=header.biWidth/64;
+		float ratioy=header.biHeight/64;
+		ret->data=(unsigned char*)malloc(64*64*3);
+		ret->dataAlocated=true;
+		for(int i=0; i<64; i++)
+			for(int j=0; j<64; j++) {
+				int x=round(ratiox*i);
+				int y=round(ratioy*j);
+				int outpos=3*(64*i+j);
+				int inpos=3*(header.biWidth*x+y);
+				for(int k=0; k<3; k++)
+					ret->data[outpos+k]=data[inpos+k];
+
+			}
+		//ret->print();
+		return ret;
+	}
 };
+#undef ERROR_CHECK
 #endif

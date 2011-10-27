@@ -6,6 +6,7 @@
 #include "TrunkParameters.h"
 class TrunkParametersPanel {
 	TrunkParameters *tp;
+	GtkWidget *mainWindow;
 
 #define UNROLL_CALLBACK(callbackname,param)\
 	static void callbackname( GtkAdjustment *adj, gpointer data){\
@@ -18,17 +19,28 @@ class TrunkParametersPanel {
 	UNROLL_CALLBACK(mValueChanged,mValue);
 
 #undef UNROLL_CALLBACK
+	static void chooseBarkClicked(GtkWidget *w,gpointer data) {
+		GtkWidget *dialog;
+		TrunkParametersPanel *tpp=(TrunkParametersPanel*)data;
+		dialog = gtk_file_chooser_dialog_new("Select bmp file with bark texture",GTK_WINDOW(tpp->mainWindow),GTK_FILE_CHOOSER_ACTION_OPEN,GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,GTK_STOCK_OPEN,GTK_RESPONSE_ACCEPT,NULL);
+		if(gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_ACCEPT) {
+			char *filename=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+			g_print("file choosed %s\n",filename);
+		}
+		gtk_widget_destroy(dialog);
+	}
 
 public:
-	TrunkParametersPanel(TrunkParameters *tp) {
+	TrunkParametersPanel(GtkWidget *window,TrunkParameters *tp) {
 		this->tp=tp;
+		this->mainWindow=window;
 	}
 
 	GtkWidget* createPanel() {
 		GtkWidget *trunkWidget=gtk_frame_new("Trunk Parameters");
 
 		GtkTooltips *tooltips=gtk_tooltips_new();
-		GtkWidget *scale,*label,*hbox,*vbox=gtk_vbox_new(FALSE,1);
+		GtkWidget *button,*scale,*label,*hbox,*vbox=gtk_vbox_new(FALSE,1);
 		GtkObject *adj;
 
 		gtk_container_add (GTK_CONTAINER (trunkWidget), vbox);
@@ -55,6 +67,27 @@ public:
 		PACK_LABEL_AND_SLIDER("circle",CIRCLEPOINTS_DEFAULT,3,20,1,circlePointsChanged,0,"Points aproximating branch circle");
 
 		//auto refresh checkbox
+		//bark texture select
+		button=gtk_button_new_with_label("Choose bark texture");
+		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->chooseBarkClicked), this);
+		label=gtk_label_new("Choose bark texture:");
+		gtk_box_pack_start(GTK_BOX(vbox),button,FALSE,FALSE,1);
+		gtk_tooltips_set_tip(tooltips,button,"Opens file chooser dialog",NULL);
+		gtk_widget_show(button);
+
+		/*  Bmp bmp;
+		    char path[]="textures/bark_256.bmp";
+		    char path2[]="textures/bark_2_256.bmp";
+		    bool result=bmp.load(path);
+		    bmp.print();
+		    if(result!=1){
+		      puts("blad podczas wczytywania tekstury");
+		      exit(1);
+		    }
+		    //bmp.save(path2);
+		    Bmp *icon=bmp.getIcon();
+		    icon->save(path2);*/
+
 
 #undef PACK_LABEL_AND_SLIDER
 

@@ -13,6 +13,7 @@ MethodParametersPanel.h \
 Randomizer.h\
 TrunkParameters.h\
 TrunkParametersPanel.h\
+Texture.h
 
 default:
 	g++ -g -Wall $(CONFIG) $(SOURCES) -o $(EXECUTABLE)

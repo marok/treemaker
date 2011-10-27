@@ -445,7 +445,7 @@ class MainWindow
 		//GtkWidget *otherParameters;
 		//otherParameters=gtk_frame_new("Other Parameters");
 
-		TrunkParametersPanel *tpp=new TrunkParametersPanel(tp);
+		TrunkParametersPanel *tpp=new TrunkParametersPanel(window,tp);
 		GtkWidget *trunkParameters=tpp->createPanel();
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
 
