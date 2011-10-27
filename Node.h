@@ -13,13 +13,10 @@ private:
 public:
 	Node *prev;			// null for root
 	Point3d point;
-	Segment *segment;
-
 	float r; //radius
 
 	Node ():point (0, 0, 0) {
 		prev = NULL;
-		segment = NULL;
 		children.clear();
 	}
 
@@ -29,7 +26,6 @@ public:
 		point.y = p->y;
 		point.z = p->z;
 
-		segment = NULL;
 		children.clear();
 	}
 
@@ -39,7 +35,6 @@ public:
 		point.y = y;
 		point.z = z;
 
-		segment = NULL;
 		children.clear();
 	}
 

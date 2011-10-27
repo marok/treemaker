@@ -11,6 +11,7 @@
 
 
 GtkWidget *windowWidget;
+
 Model3d *model = NULL;
 
 class DrawMethods {
@@ -23,9 +24,6 @@ public:
 
 	}
         static void drawCoordinates() {
-                glTranslatef((float) grid / 2.0 + 0.5, (float) grid / 2 + 0.5, 0);
-
-
                 glBegin(GL_LINES);
 
                 //os y
@@ -40,63 +38,57 @@ public:
 
         }
 
-	static void drawCircle(Node *root,TrunkParameters *tp)
+//	static void drawCircle(Node *root,TrunkParameters *tp)
+//	{
+//		Segment *s = root->segment;
+//		glPointSize(4);
+//		glColor3f (1, 0, 0);
+//
+//		glBegin(GL_POINTS);
+//		glVertex3f(root->point.x,
+//		           root->point.y,
+//		           root->point.z);
+//		glEnd();
+//
+//		glColor3f (1, 1, 0);
+//		glBegin(GL_POINTS);
+//		for (int i = 0; i < tp->circlePoints; i++) {
+//
+//			glVertex3f(s->circlePts[i]->x,
+//			           s->circlePts[i]->y,
+//			           s->circlePts[i]->z);
+//
+//		}
+//		glEnd();
+//
+//		int childLen = root->getChildLen();
+//
+//		for(int i=0; i< childLen; i++)
+//		{
+//			drawCircle(root->getChildAt(i),tp);
+//		}
+//	}
+	
+	static void drawLines(BranchModel *bm, TrunkParameters *tp)
 	{
-		Segment *s = root->segment;
-		glPointSize(4);
-		glColor3f (1, 0, 0);
-
-		glBegin(GL_POINTS);
-		glVertex3f(root->point.x,
-		           root->point.y,
-		           root->point.z);
-		glEnd();
-
-		glColor3f (1, 1, 0);
-		glBegin(GL_POINTS);
-		for (int i = 0; i < tp->circlePoints; i++) {
-
-			glVertex3f(s->circlePts[i]->x,
-			           s->circlePts[i]->y,
-			           s->circlePts[i]->z);
-
-		}
-		glEnd();
-
-		int childLen = root->getChildLen();
-
-		for(int i=0; i< childLen; i++)
-		{
-			drawCircle(root->getChildAt(i),tp);
-		}
-	}
-
-	static void drawLines(Node *root,TrunkParameters *tp)
-	{
-		if(root==NULL) return;
+		if(bm==NULL) return;
 		glColor3f(1,0.5,0);
-		int childLen = root->getChildLen();
-		for(int i=0; i<childLen; i++)
+		int nodeModelListLen = bm->nodeModelList.size();
+		for(int i=0; i<nodeModelListLen-1; i++)
 		{
-			Node *child = root->getChildAt(i);
+			NodeModel *root= bm->nodeModelList.at(i);
+			NodeModel *child = bm->nodeModelList.at(i+1);
 			int index = child->segment->index;
+			
 			glBegin(GL_LINES);
-			for(int i0=0; i0<tp->circlePoints; i0++)
-			{
-				int j0 = (index + i0)%tp->circlePoints;
+			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
+				int j0 = (index + i0) % tp->circlePoints;
 
 				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-
-//                                int i1 = (i0+1)%CIRCLE_PTS_COUNT;
-//                                int j1 = (j0+1)%CIRCLE_PTS_COUNT;
+//				int i1 = (i0+1)%tp->circlePoints;
+//                                int j1 = (j0+1)%tp->circlePoints;
 //
-//                                Vector3d *v1 = new Vector3d(root->segment->circlePts[i0],root->segment->circlePts[i1]);
-//                                Vector3d *v2 = new Vector3d(root->segment->circlePts[i0], child->segment->circlePts[j1]);
-//                                Vector3d *normal1 = v1->crossProduct(v2);
-//                                normal1->mul(-1);
-//
-//                                glNormal3f(normal1->d[0],normal1->d[1],normal1->d[2]);
 //                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 //                                glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
 //                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
@@ -104,10 +96,15 @@ public:
 //                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 //                                glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
 //                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-			}
 
+				
+			}
 			glEnd();
-			drawLines(child,tp);
+		}
+		
+		int len = bm->childBranches.size();
+		for (int i = 0; i < len; i++) {
+			drawLines(bm->childBranches.at(i), tp);
 		}
 	}
 
@@ -174,10 +171,10 @@ public:
 			drawEnvelope();
 
 		if(cm->params->activeMethod==0){
-			drawLines(cm->getRoot(),tp);
+			drawLines(bm,tp);
 		}
 		if(cm->params->activeMethod==1){
-			drawLines(pm->getRoot(),tp);
+			drawLines(bm,tp);
 		}
 		glPopMatrix();
 

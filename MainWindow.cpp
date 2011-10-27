@@ -72,6 +72,7 @@ ColonizationMethod *cm = NULL;
 ParticleMethod *pm = NULL;
 TrunkParameters *tp =NULL;
 DrawMethods *dm = NULL;
+BranchModel *bm = NULL;
 
 class MainWindow
 {
@@ -152,6 +153,44 @@ class MainWindow
 		return TRUE;
 	}
 
+	static void printBranch(BranchModel *bm)
+{
+	printf("BRANCH\n");
+	int len = bm->nodeModelList.size();
+	for(int i=0; i<len; i++)
+	{
+		Point3d p = bm->nodeModelList.at(i)->node->point;
+		printf("%f %f %f\n",p.x, p.y, p.z);
+		glPointSize(4);
+		glColor3f (1, 0, 0);
+
+		glBegin(GL_POINTS);
+		glVertex3f(p.x,
+		           p.y,
+		           p.z);
+		glEnd();
+		
+		Segment *s = bm->nodeModelList.at(i)->segment;
+		
+		glColor3f (1, 1, 0);
+		glBegin(GL_POINTS);
+		for (int j = 0; j < tp->circlePoints; j++) {
+
+			glVertex3f(s->circlePts[j]->x,
+			           s->circlePts[j]->y,
+			           s->circlePts[j]->z);
+
+		}
+		glEnd();
+	}
+	
+	len = bm->childBranches.size();
+	for(int i=0; i<len; i++)
+	{
+		printBranch(bm->childBranches.at(i));
+	}
+	
+}
 	static gboolean
 	expose_event (GtkWidget * widget,
 	              GdkEventExpose * event, gpointer data) {
@@ -177,6 +216,30 @@ class MainWindow
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (tp);
 
+//		Node *a, *b, *c, *d;
+//		a = new Node(0, 0, 0);
+//		b = new Node(0, 2, 0);
+//		c = new Node(1, 4, 0);
+//		d = new Node(-1, 4, 0);
+//
+//		a->addChildren(b);
+//		b->addChildren(c);
+//		b->addChildren(d);
+//
+//		a->r = 1;
+//		b->r = 0.75;
+//		c->r = 0.5;
+//		d->r = 0.4;
+//
+//		BranchModel* bm = Model3d::node2BranchModel(a);
+//
+//		Model3d::computeSegment(bm);
+//		Model3d::computeConnectedPts(bm);
+//		
+//		DrawMethods::drawLines(bm);
+//
+//		printBranch(bm);
+		
 		if(coordinates)
 			DrawMethods::drawCoordinates ();
 
@@ -527,6 +590,9 @@ public:
 	}
 };
 
+
+
+
 int
 main (int argc, char *argv[])
 {
@@ -537,6 +603,8 @@ main (int argc, char *argv[])
 	pm = new ParticleMethod(methodParams);
 	tp = new TrunkParameters();
 
+	
+	
 	mw.init (argc, argv);
 	mw.run ();
 	return 0;

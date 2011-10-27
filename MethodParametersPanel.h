@@ -8,6 +8,7 @@
 #include "ParticleMethod.h"
 #include "Model3d.h"
 #include "DrawMethods.h"
+#include "GlobalVar.h"
 
 using namespace std;
 
@@ -58,7 +59,7 @@ class MethodParametersPanel {
 				delete model;
 			model =new Model3d(mpp->pm->getRoot(),mpp->tp);
 		}
-		model->generateModel();
+		bm = model->generateModel();
 		DrawMethods::render();
 	}
 	static void algorithmSelected(GtkWidget *widget, gpointer data) {
