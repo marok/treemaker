@@ -154,43 +154,43 @@ class MainWindow
 	}
 
 	static void printBranch(BranchModel *bm)
-{
-	printf("BRANCH\n");
-	int len = bm->nodeModelList.size();
-	for(int i=0; i<len; i++)
 	{
-		Point3d p = bm->nodeModelList.at(i)->node->point;
-		printf("%f %f %f\n",p.x, p.y, p.z);
-		glPointSize(4);
-		glColor3f (1, 0, 0);
+		printf("BRANCH\n");
+		int len = bm->nodeModelList.size();
+		for(int i=0; i<len; i++)
+		{
+			Point3d p = bm->nodeModelList.at(i)->node->point;
+			printf("%f %f %f\n",p.x, p.y, p.z);
+			glPointSize(4);
+			glColor3f (1, 0, 0);
 
-		glBegin(GL_POINTS);
-		glVertex3f(p.x,
-		           p.y,
-		           p.z);
-		glEnd();
-		
-		Segment *s = bm->nodeModelList.at(i)->segment;
-		
-		glColor3f (1, 1, 0);
-		glBegin(GL_POINTS);
-		for (int j = 0; j < tp->circlePoints; j++) {
+			glBegin(GL_POINTS);
+			glVertex3f(p.x,
+			           p.y,
+			           p.z);
+			glEnd();
 
-			glVertex3f(s->circlePts[j]->x,
-			           s->circlePts[j]->y,
-			           s->circlePts[j]->z);
+			Segment *s = bm->nodeModelList.at(i)->segment;
 
+			glColor3f (1, 1, 0);
+			glBegin(GL_POINTS);
+			for (int j = 0; j < tp->circlePoints; j++) {
+
+				glVertex3f(s->circlePts[j]->x,
+				           s->circlePts[j]->y,
+				           s->circlePts[j]->z);
+
+			}
+			glEnd();
 		}
-		glEnd();
+
+		len = bm->childBranches.size();
+		for(int i=0; i<len; i++)
+		{
+			printBranch(bm->childBranches.at(i));
+		}
+
 	}
-	
-	len = bm->childBranches.size();
-	for(int i=0; i<len; i++)
-	{
-		printBranch(bm->childBranches.at(i));
-	}
-	
-}
 	static gboolean
 	expose_event (GtkWidget * widget,
 	              GdkEventExpose * event, gpointer data) {
@@ -215,6 +215,8 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (tp);
+		DrawMethods::drawGrass();
+		DrawMethods::drawLeaf();
 
 //		Node *a, *b, *c, *d;
 //		a = new Node(0, 0, 0);
@@ -235,13 +237,13 @@ class MainWindow
 //
 //		Model3d::computeSegment(bm);
 //		Model3d::computeConnectedPts(bm);
-//		
+//
 //		DrawMethods::drawLines(bm);
 //
 //		printBranch(bm);
-		
-		if(coordinates)
-			DrawMethods::drawCoordinates ();
+
+		//if(coordinates)
+		//	DrawMethods::drawCoordinates ();
 
 		/* Swap buffers */
 		if (gdk_gl_drawable_is_double_buffered (gldrawable))
@@ -603,8 +605,8 @@ main (int argc, char *argv[])
 	pm = new ParticleMethod(methodParams);
 	tp = new TrunkParameters();
 
-	
-	
+
+
 	mw.init (argc, argv);
 	mw.run ();
 	return 0;

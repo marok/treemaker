@@ -9,12 +9,12 @@
 #define CHILD_RADIUS 0.02
 
 class Model3d {
-        Node *root;
+	Node *root;
 	TrunkParameters *tp;
 
 	void computeSegment(BranchModel *bm) {
 		Vector3d *norm;
-		
+
 		int nodeModelListLen = bm->nodeModelList.size();
 		for(int i=0; i<nodeModelListLen; i++)
 		{
@@ -29,21 +29,21 @@ class Model3d {
 			{
 				Vector3d *fromParent = new Vector3d(&bm->nodeModelList.at(i-1)->node->point, &nm->node->point);
 				Vector3d *toChild = new Vector3d(&nm->node->point, &bm->nodeModelList.at(i+1)->node->point);
-				
+
 				norm = new Vector3d();
 				norm->add(fromParent);
 				norm->add(toChild);
-				
+
 				delete(fromParent);
 				delete(toChild);
 			}
 			norm->normalize();
-			
+
 			//jezeli segment jest pierwszy w gałęzi to ma promień drugiego segmentu
 			float R = i==0?bm->nodeModelList.at(i+1)->node->r:nm->node->r;
-			
+
 			computeOneSegment(norm, nm, R);
-		
+
 			delete(norm);
 		}
 
@@ -51,15 +51,15 @@ class Model3d {
 		for (int i = 0; i < len; i++) {
 			computeSegment(bm->childBranches.at(i));
 		}
-		
+
 	}
-	
+
 	//liczy pojedynczy segment dla NodeModel
 	//norm - wektor normalny do powierzchni wyznaczonej przez segment
 	void computeOneSegment(Vector3d *norm, NodeModel *nodeModel, float R)
 	{
 		Node *node = nodeModel->node;
-		
+
 		Vector3d *U, *V;
 		float factor;
 
@@ -104,17 +104,17 @@ class Model3d {
 		delete(U);
 		delete(V);
 	}
-	
+
 	void computeConnectedPts(BranchModel *bm)
-        {
-                
+	{
+
 		int nodeModelListLen = bm->nodeModelList.size();
-		
+
 		for(int i=0; i<nodeModelListLen - 1; i++)
 		{
 			NodeModel *root = bm->nodeModelList.at(i);
 			NodeModel *child = bm->nodeModelList.at(i+1);
-			
+
 			Vector3d *r = new Vector3d(&root->node->point, root->segment->circlePts[0]);
 			Point3d *p = new Point3d(&child->node->point);
 			p->x += r->d[0];
@@ -137,36 +137,36 @@ class Model3d {
 			}
 			child->segment->index = index;
 		}
-		
+
 		int len = bm->childBranches.size();
 		for (int i = 0; i < len; i++) {
 			computeConnectedPts(bm->childBranches.at(i));
 		}
 
-        }
-       
-        
-        float computeRadius(Node *root)
-        {
-                int childLen = root->getChildLen();
-                root->r = 0.0;
-                if(childLen > 0)
-                {
-                        for(int i=0; i< childLen; i++)
-                        {
-                                root->r +=  pow(computeRadius(root->getChildAt(i)), tp->radiusFactor);
-                        }
-                        
-                        root->r = pow(root->r*tp->mValue+tp->aValue, 1.0/tp->radiusFactor);
-		
+	}
+
+
+	float computeRadius(Node *root)
+	{
+		int childLen = root->getChildLen();
+		root->r = 0.0;
+		if(childLen > 0)
+		{
+			for(int i=0; i< childLen; i++)
+			{
+				root->r +=  pow(computeRadius(root->getChildAt(i)), tp->radiusFactor);
+			}
+
+			root->r = pow(root->r*tp->mValue+tp->aValue, 1.0/tp->radiusFactor);
+
 		} else
-                {
-                        root->r = CHILD_RADIUS;              
+		{
+			root->r = CHILD_RADIUS;
 		}
-                
-                return root->r;
-        }
-	
+
+		return root->r;
+	}
+
 	//zwraca dziecko o największym promieniu
 	static Node* findMaxChild(Node *parent)
 	{
@@ -186,22 +186,22 @@ class Model3d {
 		}
 		return result;
 	}
-	
+
 	BranchModel* node2BranchModel(Node *root)
 	{
 		Node *node = root;
-		
+
 		BranchModel *branch = new BranchModel();
 		if(node->prev)
 		{
 			branch->addNodeModel(new NodeModel(node->prev));
 		}
-		
+
 		while(node)
 		{
 			NodeModel *nodeModel = new NodeModel(node);
 			int nodeChildrenLen = node->getChildLen();
-			
+
 			if(nodeChildrenLen > 1)
 			{
 				Node *maxNode = findMaxChild(node);
@@ -212,37 +212,37 @@ class Model3d {
 						branch->addChildBranch(node2BranchModel(childNode));
 				}
 				node = maxNode;
-				
+
 			} else if(nodeChildrenLen == 1)
 			{
 				node = node->getChildAt(0);
 			}
 			else
 				node = NULL;
-			
+
 			branch->addNodeModel(nodeModel);
 		}
-		
-		
+
+
 		return branch;
 	}
-	
-        public:
-        Model3d(Node *root,TrunkParameters *tp) {
-                this->root = root;
-		this->tp=tp;
-        }
-       
 
-        BranchModel* generateModel() {
+public:
+	Model3d(Node *root,TrunkParameters *tp) {
+		this->root = root;
+		this->tp=tp;
+	}
+
+
+	BranchModel* generateModel() {
 		BranchModel *result;
-		
-                computeRadius(root);
+
+		computeRadius(root);
 		result = node2BranchModel(root);
-                computeSegment(result);
-                computeConnectedPts(result);
-		
+		computeSegment(result);
+		computeConnectedPts(result);
+
 		return result;
-        }
+	}
 };
 #endif

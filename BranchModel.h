@@ -13,12 +13,12 @@ class BranchModel
 public:
 	std::vector<BranchModel*> childBranches;
 	std::vector<NodeModel*> nodeModelList;
-	
+
 	void addNodeModel(NodeModel *nodeModel)
 	{
 		nodeModelList.push_back(nodeModel);
 	}
-	
+
 	void addChildBranch(BranchModel *branch)
 	{
 		childBranches.push_back(branch);

@@ -80,15 +80,15 @@ public:
 
 		for (int i = 0; i < height * width; i++) {
 			//is white
-			unsigned char alpha = 0;
+			unsigned char alpha = 1;
 
-			if (*p == 0 && *p + 1 == 0 && *p + 2 == 0) {
-				alpha = 1;
+			if (*p == 0 && *(p + 1) == 0 && *(p + 2) == 0) {
+				alpha = 0;
 			}
 			q[0] = p[0];
 			q[1] = p[1];
 			q[2] = p[2];
-			q[3] = 0;
+			q[3] = alpha;
 			p += 3;
 			q += 4;
 		}
@@ -203,15 +203,15 @@ public:
 
 		int bytesPerLine = (3 * (header.biWidth + 1) / 4) * 4;
 		char buffer[bytesPerLine];
-		
+
 		for (int i = header.biHeight - 1; i >= 0; i--) {
-			 for (int j = 0; j < header.biWidth; j++) {
+			for (int j = 0; j < header.biWidth; j++) {
 				int ipos = 3*(header.biWidth * i + j);
 				buffer[j*3+0]=data[ipos+2];
 				buffer[j*3+1]=data[ipos+1];
 				buffer[j*3+2]=data[ipos+0];
 			}
-	  fwrite(buffer,1,bytesPerLine,file);
+			fwrite(buffer,1,bytesPerLine,file);
 		}
 		return true;
 	}

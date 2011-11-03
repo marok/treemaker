@@ -11,7 +11,7 @@ public:
 	{
 		this->node = node;
 	}
-	
+
 	Node *node;
 	Segment *segment;
 };

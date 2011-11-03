@@ -147,16 +147,28 @@ class ParticleMethod:public GenerationMethod
 
 					s->isAlive=false;
 					Vector3d p(&s->point);
-					Vector3d q(&s->point);
-					Vector3d nb(&n->point); //neighbour
-					Vector3d tv(&target);
-					p.sub(&nb);
-					q.sub(&tv);
-					p.normalize();
-					q.normalize();
-					p.add(&q);
-					p.mul(params->D);
+					Vector3d sp(&s->point);
+					Vector3d sq(&n->point);
+					sp.mul(-1);
+					sq.mul(-1);
+					sp.normalize();
+					sq.normalize();
+					sq.mul(2);
+					sp.add(&sq);
+					sp.normalize();
+					sp.mul(params->D);
+					//Vector3d nb(&n->point); //neighbour
+					//Vector3d tv(&target);
+					//p.sub(&nb);
+					//q.sub(&tv);
+					//p.normalize();
+					//q.normalize();
+					//p.add(&q);
+					//p.mul(params->D);
+					//Point3d newPoint(sp.d[0],sp.d[1],sp.d[2]);
+					p.mul(0.6);
 					Point3d newPoint(p.d[0],p.d[1],p.d[2]);
+
 					//	printf("z: \n");
 					//	s->point.print();
 					//	n->point.print();
@@ -183,6 +195,8 @@ class ParticleMethod:public GenerationMethod
 		}
 		//podlacz wszystkie nody ktore osiagnely cen do jednego zrodla
 		Node *root=new Node(0,0,0);
+		printf("nodes.size=  %d\n",nodes.size());
+		printf("reached.size=%d\n",reached.size());
 		for(unsigned int i=0; i<reached.size(); i++) {
 			int id=reached[i];
 			root->addChildren(nodes[id]);

@@ -24,4 +24,4 @@ clean :
 	rm -rf *.orig
 
 nice:
-	astyle -t $(SOURCES)
+	astyle -t *.h
