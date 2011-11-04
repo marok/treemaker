@@ -10,6 +10,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include <cmath>
 
 GtkWidget *windowWidget;
 
@@ -207,7 +208,7 @@ static void drawGrass(){
 
 	/* Do poprawienia - usunac przezroczystosc lisci - NEHE art 20 */
 	
-static void drawLeaf() {
+static void drawLeaf(Point3d *p, Vector3d *dir) {
 
   
 		static GLuint texId;
@@ -230,27 +231,33 @@ static void drawLeaf() {
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
 		glColor4f(1.0, 0, 0, 0); // reset gl color
-
-		float W=0.5;
-		float H=0;
+		
+		Vector3d a, b;
+		a.d[2] = b.d[2] = dir->d[2]/2;
+		a.d[0] = dir->length()*sin(asin(dir->d[1]/dir->length()-M_PI_4));
+		b.d[0] = dir->d[0] - a.d[0];
+		
+		a.d[1] = dir->length()*cos(asin(dir->d[1]/dir->length()-M_PI_4));
+		b.d[1] = dir->d[1] - a.d[1];
+		
 		glEnable(GL_BLEND);     // Turn Blending On
 		glEnable (GL_TEXTURE_2D);
 		glPushMatrix();
-		glTranslatef(5,5,5);
+		glTranslatef(p->x,p->y,p->z);
 		glBlendFunc(GL_DST_COLOR,GL_ZERO);
 		glBegin(GL_QUADS);
 		{
 			glTexCoord2f (0.0f, 0.0f);
-			glVertex3f(-W,-W,H);
+			glVertex3f(0,0,0);
 
 			glTexCoord2f (1.0f, 0.0f);
-			glVertex3f(W,-W,H);
+			glVertex3f(a.d[0],a.d[1],a.d[2]);
 
 			glTexCoord2f (1.0f, 1.0f);
-			glVertex3f(W,W,H);
+			glVertex3f(dir->d[0],dir->d[1],dir->d[2]);
 
 			glTexCoord2f (0.0f, 1.0f);
-			glVertex3f(-W,W,H);
+			glVertex3f(b.d[0],b.d[1],b.d[2]);
 		}
 		glEnd();
 		glPopMatrix();
@@ -260,6 +267,29 @@ static void drawLeaf() {
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	}
+
+static void drawLeaves(BranchModel *bm)
+{
+	if(!bm) return;
+	
+	Point3d *leaf = &bm->nodeModelList.at(bm->nodeModelList.size()-1)->node->point;
+	Point3d *befLeaf = &bm->nodeModelList.at(bm->nodeModelList.size()-2)->node->point;
+	
+	Vector3d *leafVect = new Vector3d(befLeaf, leaf);
+	leafVect->normalize();
+	leafVect->mul(0.5);
+	
+	
+	drawLeaf(leaf, leafVect);
+	delete leafVect;
+	
+	for(int i = 0; i< bm->childBranches.size(); i++)
+	{
+		drawLeaves(bm->childBranches.at(i));
+	}
+	
+}
+
 	static void drawTreeModel (TrunkParameters *tp) {
 		glPushMatrix();
 
@@ -268,6 +298,7 @@ static void drawLeaf() {
 
 		if(cm->params->activeMethod==0) {
 			drawLines(bm,tp);
+			drawLeaves(bm);
 		}
 		if(cm->params->activeMethod==1) {
 			drawLines(bm,tp);
