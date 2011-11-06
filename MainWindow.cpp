@@ -176,6 +176,7 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (tp);
+
 		//DrawMethods::drawGrass();
 
 //		Node *a, *b, *c, *d;

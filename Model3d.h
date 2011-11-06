@@ -146,7 +146,7 @@ class Model3d {
 	}
 
 
-	float computeRadius(Node *root)
+	float computeRadius(Node *root,int rec)
 	{
 		int childLen = root->getChildLen();
 		root->r = 0.0;
@@ -154,7 +154,7 @@ class Model3d {
 		{
 			for(int i=0; i< childLen; i++)
 			{
-				root->r +=  pow(computeRadius(root->getChildAt(i)), tp->radiusFactor);
+				root->r +=  pow(computeRadius(root->getChildAt(i),rec+1), tp->radiusFactor);
 			}
 
 			root->r = pow(root->r*tp->mValue+tp->aValue, 1.0/tp->radiusFactor);
@@ -163,9 +163,15 @@ class Model3d {
 		{
 			root->r = CHILD_RADIUS;
 		}
-
+		if(rec==0)
+			root->r*=1.6;
+		if(rec==1)
+			root->r*=1.4;
+		if(rec==2)
+			root->r*=1.2;
 		return root->r;
 	}
+
 
 	//zwraca dziecko o największym promieniu
 	static Node* findMaxChild(Node *parent)
@@ -237,7 +243,7 @@ public:
 	BranchModel* generateModel() {
 		BranchModel *result;
 
-		computeRadius(root);
+		computeRadius(root,0);
 		result = node2BranchModel(root);
 		computeSegment(result);
 		computeConnectedPts(result);

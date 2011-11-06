@@ -40,36 +40,6 @@ public:
 
 	}
 
-//	static void drawCircle(Node *root,TrunkParameters *tp)
-//	{
-//		Segment *s = root->segment;
-//		glPointSize(4);
-//		glColor3f (1, 0, 0);
-//
-//		glBegin(GL_POINTS);
-//		glVertex3f(root->point.x,
-//		           root->point.y,
-//		           root->point.z);
-//		glEnd();
-//
-//		glColor3f (1, 1, 0);
-//		glBegin(GL_POINTS);
-//		for (int i = 0; i < tp->circlePoints; i++) {
-//
-//			glVertex3f(s->circlePts[i]->x,
-//			           s->circlePts[i]->y,
-//			           s->circlePts[i]->z);
-//
-//		}
-//		glEnd();
-//
-//		int childLen = root->getChildLen();
-//
-//		for(int i=0; i< childLen; i++)
-//		{
-//			drawCircle(root->getChildAt(i),tp);
-//		}
-//	}
 
 	static void drawLines(BranchModel *bm, TrunkParameters *tp)
 	{
@@ -100,6 +70,17 @@ public:
 //                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
 
 
+			}
+			glEnd();
+
+			glPointSize(3);
+			glColor3f(1,0,0);
+			glBegin(GL_POINTS);
+			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
+				int j0 = (index + i0) % tp->circlePoints;
+
+				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
 			}
 			glEnd();
 		}
@@ -163,13 +144,13 @@ public:
 		}
 		glPopMatrix();
 	}
-static void drawGrass(){
-  //
+	static void drawGrass() {
+		//
 		static GLuint texId;
 		static Bmp bmp;
 		static int initialized=0;
 		static char tex_path[] = "textures/grass_512.bmp";
-		
+
 		if(!initialized) {
 			initialized=1;
 			bmp.load (tex_path);
@@ -207,10 +188,10 @@ static void drawGrass(){
 	}
 
 	/* Do poprawienia - usunac przezroczystosc lisci - NEHE art 20 */
-	
-static void drawLeaf(Point3d *p, Vector3d *dir) {
 
-  
+	static void drawLeaf(Point3d *p, Vector3d *dir) {
+
+
 		static GLuint texId;
 		static Bmp bmp;
 		static int initialized=0;
@@ -231,15 +212,15 @@ static void drawLeaf(Point3d *p, Vector3d *dir) {
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
 		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
 		glColor4f(1.0, 0, 0, 0); // reset gl color
-		
+
 		Vector3d a, b;
 		a.d[2] = b.d[2] = dir->d[2]/2;
 		a.d[0] = dir->length()*sin(asin(dir->d[1]/dir->length()-M_PI_4));
 		b.d[0] = dir->d[0] - a.d[0];
-		
+
 		a.d[1] = dir->length()*cos(asin(dir->d[1]/dir->length()-M_PI_4));
 		b.d[1] = dir->d[1] - a.d[1];
-		
+
 		glEnable(GL_BLEND);     // Turn Blending On
 		glEnable (GL_TEXTURE_2D);
 		glPushMatrix();
@@ -268,27 +249,27 @@ static void drawLeaf(Point3d *p, Vector3d *dir) {
 
 	}
 
-static void drawLeaves(BranchModel *bm)
-{
-	if(!bm) return;
-	
-	Point3d *leaf = &bm->nodeModelList.at(bm->nodeModelList.size()-1)->node->point;
-	Point3d *befLeaf = &bm->nodeModelList.at(bm->nodeModelList.size()-2)->node->point;
-	
-	Vector3d *leafVect = new Vector3d(befLeaf, leaf);
-	leafVect->normalize();
-	leafVect->mul(0.5);
-	
-	
-	drawLeaf(leaf, leafVect);
-	delete leafVect;
-	
-	for(int i = 0; i< bm->childBranches.size(); i++)
+	static void drawLeaves(BranchModel *bm)
 	{
-		drawLeaves(bm->childBranches.at(i));
+		if(!bm) return;
+
+		Point3d *leaf = &bm->nodeModelList.at(bm->nodeModelList.size()-1)->node->point;
+		Point3d *befLeaf = &bm->nodeModelList.at(bm->nodeModelList.size()-2)->node->point;
+
+		Vector3d *leafVect = new Vector3d(befLeaf, leaf);
+		leafVect->normalize();
+		leafVect->mul(1);
+
+
+		drawLeaf(leaf, leafVect);
+		delete leafVect;
+
+		for(unsigned int i = 0; i< bm->childBranches.size(); i++)
+		{
+			drawLeaves(bm->childBranches.at(i));
+		}
+
 	}
-	
-}
 
 	static void drawTreeModel (TrunkParameters *tp) {
 		glPushMatrix();

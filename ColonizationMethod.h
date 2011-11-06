@@ -168,8 +168,8 @@ public:
 		int i;
 
 		Node *prvNode = NULL;
-		for (i = 0; i < 6; i++) {
-			Node *newNode = new Node(0,0,i);
+		for (i = 0; i < 10; i++) {
+			Node *newNode = new Node(0,0,i*0.1);
 			newNode->prev = prvNode;
 
 			if(prvNode)
