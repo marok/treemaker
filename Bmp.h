@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cassert>
 #include <cmath>
 using namespace std;
 
@@ -16,6 +17,7 @@ public:
 	Bmp ()
 	{
 		dataAlocated = false;
+		isRGBA=false;
 	}
 	~Bmp ()
 	{
@@ -45,7 +47,10 @@ public:
 	};
 
 	BMPHeader header;
-
+	void cleanup() {
+		delete data;
+		dataAlocated=false;
+	}
 	/**
 	*	Prints BMP header to stdout
 	**/
@@ -94,6 +99,7 @@ public:
 		}
 		free (data);
 		data = newData;
+		isRGBA=true;
 	}
 
 	bool load (char *filename)
@@ -147,7 +153,7 @@ public:
 		ERROR_CHECK (line == NULL, "cannot allocate memory for line");
 		ERROR_CHECK (data == NULL, "cannot allocate memory for data");
 		dataAlocated = true;
-		isRGBA = true;
+		isRGBA = false;
 
 		for (int i = header.biHeight - 1; i >= 0; i--) {
 			int readed = fread (line, 1, bytesPerLine, file);
@@ -217,6 +223,8 @@ public:
 	}
 	/** returns SIZExSIZE icon from bitmap **/
 	Bmp* getIcon() {
+		assert(isRGBA==false);
+
 #define SIZE 128
 		ERROR_CHECK(data == NULL,"bitmap is emtpy");
 		ERROR_CHECK(header.biWidth<SIZE,"image width is too small");
@@ -242,6 +250,33 @@ public:
 
 			}
 		//ret->print();
+		return ret;
+#undef SIZE
+	}
+	/** Returns monochromatic mask of an image **/
+	Bmp* getMask() {
+		assert(isRGBA==false);
+		Bmp*ret=new Bmp();
+		int bytesPerLine = (3 * (header.biWidth + 1) / 4) * 4;
+		memcpy(&ret->header,&header,sizeof(header));
+		ret->header.biWidth=header.biWidth;
+		ret->header.biHeight=header.biHeight;
+		ret->header.bfSize=header.biHeight*bytesPerLine+54;
+		ret->data=(unsigned char*)malloc(header.biWidth*header.biHeight*3);
+		assert(ret->data!=NULL);
+		ret->dataAlocated=true;
+
+		for(int i=0; i<header.biHeight; i++)
+			for(int j=0; j<header.biWidth; j++) {
+				int pos=3*(header.biWidth*i+j);
+				//if is black
+				if(data[pos]==0&&data[pos+1]==0&&data[pos+2]==0)
+					for(int k=0; k<3; k++)
+						ret->data[pos+k]=255;
+				else
+					for(int k=0; k<3; k++)
+						ret->data[pos+k]=0;
+			}
 		return ret;
 	}
 };

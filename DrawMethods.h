@@ -72,7 +72,7 @@ public:
 
 			}
 			glEnd();
-
+			/* Rysowanie pkt nodow
 			glPointSize(3);
 			glColor3f(1,0,0);
 			glBegin(GL_POINTS);
@@ -82,7 +82,7 @@ public:
 				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
 			}
-			glEnd();
+			glEnd();*/
 		}
 
 		int len = bm->childBranches.size();
@@ -122,7 +122,6 @@ public:
 				glVertex3f(y,0,x);
 			}
 			glEnd();
-
 
 			glPointSize(4);
 			glColor3f (1, 0, 1);
@@ -187,31 +186,40 @@ public:
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 	}
 
-	/* Do poprawienia - usunac przezroczystosc lisci - NEHE art 20 */
 
 	static void drawLeaf(Point3d *p, Vector3d *dir) {
 
 
-		static GLuint texId;
-		static Bmp bmp;
+		static GLuint texId,maskId;
 		static int initialized=0;
 		static char tex_path[] = "textures/leaf_wiki256.bmp";
 
 		if(!initialized) {
 			initialized=1;
+			Bmp bmp,*mask;
 			bmp.load (tex_path);
-			bmp.addAlpha();
-			glGenTextures (1, &texId);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			mask=bmp.getMask();
 
-			glBindTexture (GL_TEXTURE_2D, texId);
+			glGenTextures (1, &texId);
+			glGenTextures(1,&maskId);
+			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+			int height = bmp.header.biHeight;
+			int width = bmp.header.biWidth;
+			glBindTexture(GL_TEXTURE_2D,maskId);
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+
+			glBindTexture(GL_TEXTURE_2D,texId);
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, mask->data);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+			bmp.cleanup();
+			mask->cleanup();
+			delete mask;
+
 		}
-		int height = bmp.header.biHeight;
-		int width = bmp.header.biWidth;
-		glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,GL_UNSIGNED_BYTE, bmp.data);
-		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
-		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
-		glColor4f(1.0, 0, 0, 0); // reset gl color
+		glColor4f(0.0, 0, 0, 0); // reset gl color
 
 		Vector3d a, b;
 		a.d[2] = b.d[2] = dir->d[2]/2;
@@ -221,28 +229,41 @@ public:
 		a.d[1] = dir->length()*cos(asin(dir->d[1]/dir->length()-M_PI_4));
 		b.d[1] = dir->d[1] - a.d[1];
 
-		glEnable(GL_BLEND);     // Turn Blending On
+		glEnable(GL_BLEND);// Turn Blending On
+		glDisable(GL_DEPTH_TEST);
 		glEnable (GL_TEXTURE_2D);
 		glPushMatrix();
 		glTranslatef(p->x,p->y,p->z);
-		glBlendFunc(GL_DST_COLOR,GL_ZERO);
-		glBegin(GL_QUADS);
-		{
-			glTexCoord2f (0.0f, 0.0f);
-			glVertex3f(0,0,0);
 
-			glTexCoord2f (1.0f, 0.0f);
-			glVertex3f(a.d[0],a.d[1],a.d[2]);
-
-			glTexCoord2f (1.0f, 1.0f);
-			glVertex3f(dir->d[0],dir->d[1],dir->d[2]);
-
-			glTexCoord2f (0.0f, 1.0f);
-			glVertex3f(b.d[0],b.d[1],b.d[2]);
-		}
+#define TEXTURIZE\
+		glBegin(GL_QUADS);\
+		{\
+			glTexCoord2f (0.0f, 0.0f);\
+			glVertex3f(0,0,0);\
+			glTexCoord2f (1.0f, 0.0f);\
+			glVertex3f(a.d[0],a.d[1],a.d[2]);\
+			glTexCoord2f (1.0f, 1.0f);\
+			glVertex3f(dir->d[0],dir->d[1],dir->d[2]);\
+			glTexCoord2f (0.0f, 1.0f);\
+			glVertex3f(b.d[0],b.d[1],b.d[2]);\
+		}\
 		glEnd();
+		//texture mask
+		glBlendFunc(GL_DST_COLOR,GL_ZERO);
+		glBindTexture(GL_TEXTURE_2D,texId);
+		TEXTURIZE;
+
+		//texture image
+		glBlendFunc(GL_ONE,GL_ONE);
+		glBindTexture(GL_TEXTURE_2D,maskId);
+
+		TEXTURIZE;
+
+#undef TEXTURIZE
+
 		glPopMatrix();
 		glDisable (GL_TEXTURE_2D);
+		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 
 		glColor4f(1.0, 1.0, 1.0, 1.0);

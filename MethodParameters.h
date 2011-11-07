@@ -36,7 +36,7 @@ public:
 	static const int POINTS_DEFAULT=60;
 	static const int SHOWENVELOPE_DEFAULT=0;
 	static const float D_DEFAULT=0.2;
-	static const float DI_DEFAULT=5.0;
+	static const float DI_DEFAULT=6.0;
 	static const float DK_DEFAULT=0.1;
 	static const int MAXROUNDS_DEFAULT=1000;
 	static const float IE_DEFAULT=1.0;
