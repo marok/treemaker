@@ -10,6 +10,8 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
+
 
 #include <cstdio>
 #include <cstdlib>
@@ -65,7 +67,7 @@ static float zFar = (MAXGRID / 2) * 3.0;
 
 static float aspect = 5.0 / 4.0;
 
-static float lightPosition[4] = { 0.0, 0.0, 1.0, 1.0 };
+static float lightPosition[4] = { 100.0, -100.0, 100.0, 100.0 };
 
 
 ColonizationMethod *cm = NULL;
@@ -111,13 +113,13 @@ class MainWindow
 		glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
 		glHint (GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 		glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-		//glEnable (GL_COLOR_MATERIAL);
-		//glColorMaterial (GL_FRONT, GL_DIFFUSE);
+		glEnable (GL_COLOR_MATERIAL);
+		glColorMaterial (GL_FRONT, GL_DIFFUSE);
 		glLightfv (GL_LIGHT0, GL_POSITION, lightPosition);
 		glEnable (GL_LIGHT0);
-		glShadeModel (GL_FLAT);
+		glShadeModel (GL_SMOOTH);
 
-		//glDisable (GL_LIGHTING);
+		//glEnable (GL_LIGHTING);
 
 		gdk_gl_drawable_gl_end (gldrawable);
 		/*** OpenGL END ***/
@@ -151,7 +153,6 @@ class MainWindow
 		return TRUE;
 	}
 
-	
 	static gboolean
 	expose_event (GtkWidget * widget,
 	              GdkEventExpose * event, gpointer data) {
@@ -203,9 +204,10 @@ class MainWindow
 //
 //		printBranch(bm);
 
-		//if(coordinates)
-		//	DrawMethods::drawCoordinates ();
-
+		if(coordinates){
+			DrawMethods::drawCoordinates (GL_RENDER);
+			
+		}
 		/* Swap buffers */
 		if (gdk_gl_drawable_is_double_buffered (gldrawable))
 			gdk_gl_drawable_swap_buffers (gldrawable);

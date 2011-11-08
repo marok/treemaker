@@ -16,7 +16,7 @@ TrunkParametersPanel.h\
 Texture.h
 
 default:
-	g++ -g -Wall $(CONFIG) $(SOURCES) -o $(EXECUTABLE)
+	g++ -g -Wall $(CONFIG) $(SOURCES) -lglut -o $(EXECUTABLE)
 
 clean :
 	rm -rf $(EXECUTABLE)

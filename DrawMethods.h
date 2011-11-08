@@ -9,13 +9,14 @@
 
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
 
 #include <cmath>
 
 GtkWidget *windowWidget;
 
 Model3d *model = NULL;
-
+static int triangles=0;
 class DrawMethods {
 
 
@@ -25,19 +26,113 @@ public:
 		gtk_widget_queue_draw(windowWidget);
 
 	}
-	static void drawCoordinates() {
-		glBegin(GL_LINES);
 
-		//os y
-		glColor3f(1, 0, 0);
-		glVertex3f(0, 0, 0);
-		glVertex3f(0, 0, 10);
-		//os x
-		glColor3f(0, 0, 1);
-		glVertex3f(0, 0, 0);
-		glVertex3f(10, 0, 0);
-		glEnd();
 
+	static void drawCoordinates(GLenum mode) {
+
+
+		GLUquadric *quadric;
+
+#define SOLID_CLOSED_CYLINDER(QUAD, BASE, TOP, HEIGHT, SLICES, STACKS) \
+gluCylinder(QUAD, BASE, TOP, HEIGHT, SLICES, STACKS); \
+glRotatef(180, 1,0,0); \
+gluDisk(QUAD, 0.0f, BASE, SLICES, 1); \
+glRotatef(180, 1,0,0); \
+glTranslatef(0.0f, 0.0f, HEIGHT); \
+gluDisk(QUAD, 0.0f, TOP, SLICES,1);
+
+#define DRAW_AXIS(i) \
+quadric= gluNewQuadric();\
+  if (mode == GL_SELECT)\
+         glPushName (i);\
+gluQuadricDrawStyle(quadric, GLU_FILL);\
+gluQuadricOrientation(quadric, GLU_INSIDE);\
+SOLID_CLOSED_CYLINDER(quadric, 0.1f, 0.1f, 3.0f, 8, 8)\
+SOLID_CLOSED_CYLINDER(quadric, 0.2f, 0.01f, 0.5f, 8, 8)\
+glTranslatef(0.0,0.0,-3.5);\
+gluDeleteQuadric(quadric);\
+if(mode==GL_SELECT)\
+  glPopName();
+		glPushMatrix();
+		glColor3f(1,0,0);
+		DRAW_AXIS(0);
+		glPopMatrix();
+
+		glPushMatrix();
+		glColor3f(0,1,0);
+		glRotatef(90,0,1,0);
+		DRAW_AXIS(1);
+		glPopMatrix();
+
+		glPushMatrix();
+		glColor3f(0,0,1);
+		glRotatef(90,1,0,0);
+		DRAW_AXIS(2);
+		glPopMatrix();
+#undef DRAW_AXIS
+#undef SOLID_CLOSED_CYLINDER
+
+
+	}
+
+
+	static void drawTrunk(BranchModel *bm, TrunkParameters *tp)
+	{
+		static GLuint texId;
+		static int initialized=0;
+		if(initialized==0) {
+			initialized=1;
+			Bmp bmp;
+			bmp.load((char*)"textures/bark1_256.bmp");
+			glGenTextures(1,&texId);
+			glBindTexture(GL_TEXTURE_2D,texId);
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, bmp.header.biWidth, bmp.header.biHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+			bmp.cleanup();
+		}
+		glBindTexture(GL_TEXTURE_2D,texId);
+		if(bm==NULL) return;
+		int nodeModelListLen = bm->nodeModelList.size();
+		for(int i=0; i<nodeModelListLen-1; i++)
+		{
+			NodeModel *root= bm->nodeModelList.at(i);
+			NodeModel *child = bm->nodeModelList.at(i+1);
+			int index = child->segment->index;
+
+			glEnable (GL_TEXTURE_2D);
+			glBegin(GL_TRIANGLES);
+
+			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
+				int j0 = (index + i0) % tp->circlePoints;
+
+				int i1 = (i0+1)%tp->circlePoints;
+				int j1 = (j0+1)%tp->circlePoints;
+
+				glTexCoord2f (0.0f, 0.0f);
+				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				glTexCoord2f (1.0f, 0.0f);
+				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+				glTexCoord2f (1.0f, 1.0f);
+				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+
+				glTexCoord2f (0.0f, 0.0f);
+				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				glTexCoord2f (0.0f, 1.0f);
+				glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
+				glTexCoord2f (1.0f, 1.0f);
+				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+				triangles+=2;
+			}
+
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+		}
+
+		int len = bm->childBranches.size();
+		for (int i = 0; i < len; i++) {
+			drawTrunk(bm->childBranches.at(i), tp);
+		}
 	}
 
 
@@ -56,20 +151,19 @@ public:
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				int j0 = (index + i0) % tp->circlePoints;
 
+				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+				int i1 = (i0+1)%tp->circlePoints;
+				int j1 = (j0+1)%tp->circlePoints;
+
 				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-//				int i1 = (i0+1)%tp->circlePoints;
-//                                int j1 = (j0+1)%tp->circlePoints;
-//
-//                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-//                                glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-//                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-//
-//                                glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-//                                glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
-//                                glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
 
-
+				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
+				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+				triangles+=2;
 			}
 			glEnd();
 			/* Rysowanie pkt nodow
@@ -265,7 +359,6 @@ public:
 		glDisable (GL_TEXTURE_2D);
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	}
@@ -297,14 +390,16 @@ public:
 
 		if(cm->params->showEnvelope)
 			drawEnvelope();
-
+		triangles=0;
 		if(cm->params->activeMethod==0) {
-			drawLines(bm,tp);
+			drawTrunk(bm,tp);
+			//drawLines(bm,tp);
 			drawLeaves(bm);
 		}
 		if(cm->params->activeMethod==1) {
 			drawLines(bm,tp);
 		}
+		g_print("triangles: %d\n",triangles);
 		glPopMatrix();
 	}
 
