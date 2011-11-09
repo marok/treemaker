@@ -44,7 +44,7 @@ public:
 
 	void print () {
 		point.print ();
-		fprintf(stderr,"children size= %d\n",children.size());
+		fprintf(stderr,"children size= %u\n",(unsigned int)children.size());
 
 	}
 

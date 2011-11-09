@@ -31,7 +31,7 @@
 #include "Bmp.h"
 
 #include "DrawMethods.h"
-
+#include "Crown.h"
 
 
 #define DEFAULT_WIDTH  800
@@ -177,7 +177,7 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (tp);
-
+		
 		//DrawMethods::drawGrass();
 
 //		Node *a, *b, *c, *d;
@@ -567,8 +567,6 @@ main (int argc, char *argv[])
 	cm = new ColonizationMethod(methodParams);
 	pm = new ParticleMethod(methodParams);
 	tp = new TrunkParameters();
-
-
 
 	mw.init (argc, argv);
 	mw.run ();

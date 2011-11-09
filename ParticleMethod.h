@@ -195,8 +195,8 @@ class ParticleMethod:public GenerationMethod
 		}
 		//podlacz wszystkie nody ktore osiagnely cen do jednego zrodla
 		Node *root=new Node(0,0,0);
-		printf("nodes.size=  %d\n",nodes.size());
-		printf("reached.size=%d\n",reached.size());
+		printf("nodes.size=  %u\n",(unsigned int)nodes.size());
+		printf("reached.size=%u\n",(unsigned int)reached.size());
 		for(unsigned int i=0; i<reached.size(); i++) {
 			int id=reached[i];
 			root->addChildren(nodes[id]);
@@ -224,7 +224,7 @@ public:
 		createParticles(&crownCenter);
 		colonize ();
 		fprintf(stderr,"generate()");
-		fprintf(stderr,"nodes =%d \n",nodes.size());
+		fprintf(stderr,"nodes =%u \n",(unsigned int)nodes.size());
 		for(unsigned int i=0; i<nodes.size(); i++)
 			nodes[i]->print();
 	}

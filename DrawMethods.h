@@ -187,19 +187,32 @@ if(mode==GL_SELECT)\
 
 
 	static void drawEnvelope() {
-
+		Crown *c = cm->crown;
+		for(unsigned int i=0; i<c->subcrowns.size(); i++)
+		{
+			Subcrown *sub = c->subcrowns.at(i);
+			if(sub->shape == SPLINE)
+			{
+				drawEnvelopeSpline((SplineCrown*)sub);
+			} else if(sub->shape == CYLINDER)
+			{
+				drawEnvelopeCylinder((CylinderCrown*)sub);
+			}
+		}
+	}
+	
+	static void drawEnvelopeSpline(SplineCrown *splineCrown)
+	{
 		glPushMatrix();
 
 		int n=20;//liczba punktow na krzywej
 		int loops=12;//liczba petli
 
-		Crown *c = cm->crown;
+		int N = splineCrown->crownMainPoints.size();
+		float startX = splineCrown->crownMainPoints[0]->x;
+		float step = (splineCrown->crownMainPoints[N - 1]->x - startX) / (float)n;
 
-		int N = cm->params->crownMainPoints.size();
-		float startX = cm->params->crownMainPoints[0]->x;
-		float step = (cm->params->crownMainPoints[N - 1]->x - startX) / (float)n;
-
-
+		glTranslatef(splineCrown->x, splineCrown->y, 0);
 		for(int j=0; j<loops; j++) {
 			glColor3f (0, 0.5, 1);
 			glBegin(GL_LINE_STRIP);
@@ -211,7 +224,7 @@ if(mode==GL_SELECT)\
 				else
 					x += step;
 
-				y = c->s->getS(x);
+				y = splineCrown->s->getS(x);
 
 				glVertex3f(y,0,x);
 			}
@@ -222,12 +235,12 @@ if(mode==GL_SELECT)\
 			glBegin(GL_POINTS);
 			for(int i=0; i<N; i++)
 			{
-				glVertex3f(cm->params->crownMainPoints[i]->y,0,cm->params->crownMainPoints[i]->x);
+				glVertex3f(splineCrown->crownMainPoints[i]->y,0,splineCrown->crownMainPoints[i]->x);
 			}
 			glEnd();
 
 			float x_max, y_max;
-			c->s->globalMax(&x_max, &y_max);
+			splineCrown->s->globalMax(&x_max, &y_max);
 			glColor3f (1, 1, 1);
 			glBegin(GL_POINTS);
 			glVertex3f(y_max,0,x_max);
@@ -237,6 +250,38 @@ if(mode==GL_SELECT)\
 		}
 		glPopMatrix();
 	}
+	
+	static void drawEnvelopeCylinder(CylinderCrown *cylinderCrown)
+	{
+		glPushMatrix();
+
+		int loops=12;//liczba petli
+		glTranslatef(cylinderCrown->x, cylinderCrown->y, 0);
+		for(int j=0; j<loops; j++) {
+			glColor3f (0, 0.5, 1);
+			glBegin(GL_LINE_STRIP);
+			glVertex3f(0, 0, cylinderCrown->downZ);
+			glVertex3f(cylinderCrown->r, 0, cylinderCrown->downZ);
+			glVertex3f(cylinderCrown->r, 0, cylinderCrown->upZ);
+			glVertex3f(0, 0, cylinderCrown->upZ);
+			glEnd();
+			glRotatef(360/loops,0,0,1);
+		}
+		glPopMatrix();
+	}
+	
+	static void drawPoints(std::vector<Point3d *> points)
+	{
+		glPointSize(3);
+		glColor3f (1, 0, 0);
+		glBegin(GL_POINTS);
+		for(unsigned int i=0; i<points.size(); i++)
+		{
+			glVertex3f(points.at(i)->x,points.at(i)->y,points.at(i)->z);
+		}
+		glEnd();
+	}
+	
 	static void drawGrass() {
 		//
 		static GLuint texId;

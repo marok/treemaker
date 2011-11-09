@@ -18,18 +18,6 @@ protected:
 		cd=CD_DEFAULT;
 		attraction=ATTRACTION_DEFAULT;
 		activeMethod=ACTIVEMETHOD_DEFAULT;
-
-		Point2d *p = new Point2d(5, 0);
-		crownMainPoints.push_back(p);
-		p = new Point2d(6, 4);
-		crownMainPoints.push_back(p);
-		p = new Point2d(9, 3);
-		crownMainPoints.push_back(p);
-		p = new Point2d(13, 8);
-		crownMainPoints.push_back(p);
-		p = new Point2d(20, 0);
-		crownMainPoints.push_back(p);
-
 	}
 public:
 	static const int SEED_DEFAULT=42;
@@ -43,9 +31,6 @@ public:
 	static const float CD_DEFAULT=0.2;
 	static const float ATTRACTION_DEFAULT=0.0;
 	static const int ACTIVEMETHOD_DEFAULT=0;
-
-	//crown params
-	std::vector<Point2d *> crownMainPoints;
 
 	//common parameters
 	int seed;		//seed for srand()
