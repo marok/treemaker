@@ -6,13 +6,16 @@ public:
 #define MAXPATHLEN 256
 	char leavesPath[MAXPATHLEN];		//path to leaves texture
 	bool leavesTexInitialized;
+	float leavesSize;
 
 	static const bool LEAVESTEXINITIALIZED_DEFAULT=FALSE;
+	static const float LEAVESSIZE_DEFAULT=1.0f;
 
 	LeavesParameters() {
 		char defaultPath[]="textures/leaf0_256.bmp";
 		strcpy(leavesPath,defaultPath);
 		leavesTexInitialized=LEAVESTEXINITIALIZED_DEFAULT;
+		leavesSize=LEAVESSIZE_DEFAULT;
 	}
 	void setLeavesPath(char *path) {
 		assert(strlen(path)<MAXPATHLEN);

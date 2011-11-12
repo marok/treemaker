@@ -10,6 +10,13 @@ class LeavesParametersPanel {
 	GtkWidget *vbox;
 	GtkWidget *image;
 	GtkWidget *mainWindow;
+#define UNROLL_CALLBACK(param)\
+	static void param##Changed( GtkAdjustment *adj, gpointer data){\
+             Parameters *params = (Parameters *)data;\
+             params->lp->param = adj->value;\
+	}
+	UNROLL_CALLBACK(leavesSize);
+#undef UNROLL_CALLBACK
 
 
 	static void chooseLeavesClicked(GtkWidget *w,gpointer data) {
@@ -35,10 +42,31 @@ public:
 		GtkWidget *trunkWidget=gtk_frame_new("Leaves Parameters");
 
 		GtkTooltips *tooltips=gtk_tooltips_new();
-		GtkWidget *button;
+		GtkWidget *button,*hbox;
 		vbox=gtk_vbox_new(FALSE,1);
-
+		GtkWidget *label,*scale;
+		GtkObject *adj;
 		gtk_container_add (GTK_CONTAINER (trunkWidget), vbox);
+
+#define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
+    hbox = gtk_hbox_new(FALSE,1);\
+    label = gtk_label_new(text);\
+    adj=gtk_adjustment_new(params->lp->val,min,max,step,1,0);\
+    g_signal_connect(adj,"value_changed",G_CALLBACK(func),params);\
+    scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
+    gtk_scale_set_digits (GTK_SCALE (scale), digits);\
+    gtk_box_pack_start(GTK_BOX(vbox),hbox,FALSE,FALSE,1);\
+    gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
+    gtk_box_pack_start(GTK_BOX(hbox),scale,TRUE,TRUE,0);\
+    gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
+    gtk_widget_show(label);\
+    gtk_widget_show(hbox);\
+    gtk_widget_show(scale);
+
+		// Common Parameters
+		PACK_LABEL_AND_SLIDER("Leaves size:",LEAVESSIZE_DEFAULT,0.5,1.5,0.1,leavesSizeChanged,1,"Size of a leaves on a tree");
+
+#undef PACK_LABEL_AND_SLIDER
 
 		//leaves texture select
 		button=gtk_button_new_with_label("Choose leaves texture");
