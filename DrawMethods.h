@@ -81,7 +81,6 @@ if(mode==GL_SELECT)\
 	{
 		TrunkParameters *tp=params->tp;
 		static GLuint texId;
-		//static int initialized=0;
 		if(params->tp->barkTexInitialized==FALSE) {
 			params->tp->barkTexInitialized=TRUE;
 			Bmp bmp;
@@ -376,6 +375,7 @@ if(mode==GL_SELECT)\
 		glEnable (GL_TEXTURE_2D);
 		glPushMatrix();
 		glTranslatef(p->x,p->y,p->z);
+		float size=params->lp->leavesSize;
 
 #define TEXTURIZE\
 		glBegin(GL_QUADS);\
@@ -383,11 +383,11 @@ if(mode==GL_SELECT)\
 			glTexCoord2f (0.0f, 0.0f);\
 			glVertex3f(0,0,0);\
 			glTexCoord2f (1.0f, 0.0f);\
-			glVertex3f(a.d[0],a.d[1],a.d[2]);\
+			glVertex3f(a.d[0]*size,a.d[1]*size,a.d[2]*size);\
 			glTexCoord2f (1.0f, 1.0f);\
-			glVertex3f(dir->d[0],dir->d[1],dir->d[2]);\
+			glVertex3f(dir->d[0]*size,dir->d[1]*size,dir->d[2]*size);\
 			glTexCoord2f (0.0f, 1.0f);\
-			glVertex3f(b.d[0],b.d[1],b.d[2]);\
+			glVertex3f(b.d[0]*size,b.d[1]*size,b.d[2]*size);\
 		}\
 		glEnd();
 		//texture mask
