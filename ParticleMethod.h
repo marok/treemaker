@@ -208,8 +208,8 @@ class ParticleMethod:public GenerationMethod
 public:
 	MethodParameters *params;
 
-	ParticleMethod( MethodParameters *params) {
-		this->params=params;
+	ParticleMethod(Parameters *params) {
+		this->params=params->methodParams;
 	}
 	void init() {
 		setDefault();

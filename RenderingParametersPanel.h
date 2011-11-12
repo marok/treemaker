@@ -13,6 +13,7 @@ class RenderingParametersPanel
 	static void paramname##Clicked( GtkWidget *widget, gpointer data){\
              Parameters *params = (Parameters *)data;\
              params->rp->paramname = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));\
+             DrawMethods::render();\
 	}
 
 	UNROLL_CALLBACK(showEnvelopes);

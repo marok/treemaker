@@ -131,7 +131,7 @@ public:
 		// Common Parameters
 		PACK_LABEL_AND_SLIDER("Seed:",SEED_DEFAULT,0,100,1,seedChanged,0,"Random number generator seed",-1);
 		PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1,"Step size",-1);
-		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,250,1,pointsChanged,0,"Number of attraction points in crown",-1);
+		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,1000,1,pointsChanged,0,"Number of attraction points in crown",-1);
 
 
 		// Colonization Parameters

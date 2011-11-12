@@ -190,8 +190,8 @@ if(mode==GL_SELECT)\
 	}
 
 
-	static void drawEnvelopes() {
-		Crown *c = cm->crown;
+	static void drawEnvelopes(Crown *crown) {
+		Crown *c = crown;
 		for(unsigned int i=0; i<c->subcrowns.size(); i++)
 		{
 			Subcrown *sub = c->subcrowns.at(i);
@@ -216,7 +216,7 @@ if(mode==GL_SELECT)\
 		float startX = splineCrown->crownMainPoints[0]->x;
 		float step = (splineCrown->crownMainPoints[N - 1]->x - startX) / (float)n;
 
-		glTranslatef(splineCrown->x, splineCrown->y, 0);
+		glTranslatef(splineCrown->x, splineCrown->y, splineCrown->z);
 		for(int j=0; j<loops; j++) {
 			glColor3f (0, 0.5, 1);
 			glBegin(GL_LINE_STRIP);
@@ -264,10 +264,10 @@ if(mode==GL_SELECT)\
 		for(int j=0; j<loops; j++) {
 			glColor3f (0, 0.5, 1);
 			glBegin(GL_LINE_STRIP);
-			glVertex3f(0, 0, cylinderCrown->downZ);
-			glVertex3f(cylinderCrown->r, 0, cylinderCrown->downZ);
-			glVertex3f(cylinderCrown->r, 0, cylinderCrown->upZ);
-			glVertex3f(0, 0, cylinderCrown->upZ);
+			glVertex3f(0, 0, cylinderCrown->z);
+			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z);
+			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z+cylinderCrown->h);
+			glVertex3f(0, 0, cylinderCrown->z+cylinderCrown->h);
 			glEnd();
 			glRotatef(360/loops,0,0,1);
 		}
@@ -441,7 +441,7 @@ if(mode==GL_SELECT)\
 		if(params->rp->showGrass)
 			drawGrass();
 		if(params->rp->showEnvelopes)
-			drawEnvelopes();
+			drawEnvelopes(params->crown);
 		if(cm->params->activeMethod==0) {
 			if(params->rp->showBark)
 				drawTrunk(bm,params);

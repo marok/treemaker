@@ -7,26 +7,23 @@
 class CylinderCrown: public Subcrown
 {
 public:
-	float x,y;
-	float r, downZ, upZ;
+	float r, h;
 
-	CylinderCrown(float x, float y, float r, float downZ, float upZ)
+	CylinderCrown(float x, float y, float z, float r, float h)
 	{
 		this->shape = CYLINDER;
 		this->x = x;
 		this->y = y;
+                this->z = z;
 		this->r = r;
-		this->downZ = downZ;
-		this->upZ = upZ;
+                this->h = h;
+                
 	}
 
 	std::vector<Point3d *> generatePoints(int n) {
 		int points_num = n;
 		std::vector<Point3d *> result;
 		result.clear();
-
-
-		float h = upZ - downZ;
 
 #define RANDF() (float)random()/(float)RAND_MAX
 
@@ -36,7 +33,7 @@ public:
 
 
 			float alfa = RANDF()*2.0 * M_PI;
-			Point3d *point = new Point3d(r_rand * sin(alfa)+x, r_rand * cos(alfa)+y, downZ + h_rand);
+			Point3d *point = new Point3d(r_rand * sin(alfa)+x, r_rand * cos(alfa)+y, z + h_rand);
 			result.push_back(point);
 
 			points_num--;

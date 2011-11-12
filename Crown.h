@@ -16,7 +16,7 @@ public:
 	}
 
 	std::vector<Point3d *> generatePoints()
-	{
+	{            
 		std::vector<Point3d *> result;
 		for(unsigned int i=0; i<subcrowns.size(); i++)
 		{

@@ -27,6 +27,7 @@
 #include "TrunkParametersPanel.h"
 #include "RenderingParametersPanel.h"
 #include "LeavesParametersPanel.h"
+#include "CrownParametersPanel.h"
 
 #include "Spline.h"
 
@@ -500,6 +501,10 @@ class MainWindow
 		LeavesParametersPanel *lpp=new LeavesParametersPanel(window,parameters);
 		label=gtk_label_new("L");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),lpp->createPanel(),label);
+                
+                CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
+		label=gtk_label_new("C");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
 		
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
 //		gtk_widget_show(trunkParameters);
@@ -558,6 +563,8 @@ public:
 		gtk_gl_init (&argc, &argv);
 		glconfig = configureGL ();
 		parameters=new Parameters();
+                cm = new ColonizationMethod(parameters);
+                pm = new ParticleMethod(parameters);
 		window = createWindow (glconfig);
 	}
 	void run () {
@@ -574,10 +581,8 @@ main (int argc, char *argv[])
 {
 	MainWindow mw;
 
-	MethodParameters *methodParams = new MethodParameters();
-	cm = new ColonizationMethod(methodParams);
-	pm = new ParticleMethod(methodParams);
-	//tp = new TrunkParameters();
+	
+	
 
 	mw.init (argc, argv);
 	mw.run ();

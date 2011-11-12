@@ -14,6 +14,7 @@ class Subcrown
 {
 public:
 	enum CrownShape shape;
+	float x,y,z;
 	virtual std::vector<Point3d *> generatePoints(int n) = 0;
 };
 

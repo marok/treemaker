@@ -13,15 +13,23 @@ class SplineCrown: public Subcrown {
 	int points;
 
 public:
-	float x, y;
 	Spline *s;
 	std::vector<Point2d *> crownMainPoints;
 
 
-	SplineCrown(float x, float y, std::vector<Point2d *> crownMainPoints, MethodParameters *params) {
+	SplineCrown(float x, float y, float z, MethodParameters *params) {
+                std::vector<Point2d *> crownMainPoints;
+		Point2d *p = new Point2d(0, 0);
+		crownMainPoints.push_back(p);
+		p = new Point2d(2, 5);
+		crownMainPoints.push_back(p);
+		p = new Point2d(4, 0);
+		crownMainPoints.push_back(p);
+            
 		this->shape = SPLINE;
 		this->x = x;
 		this->y = y;
+                this->z = z;
 		this->crownMainPoints = crownMainPoints;
 		this->n = crownMainPoints.size();
 		splineX = new float[n];
@@ -74,7 +82,7 @@ public:
 			if(r_max >= r_rand)
 			{
 				float alfa = RANDF()*2.0*M_PI;
-				Point3d *point = new Point3d(r_rand*sin(alfa) + x,r_rand*cos(alfa) + y,splineX[0]+h_rand);
+				Point3d *point = new Point3d(r_rand*sin(alfa) + x,r_rand*cos(alfa) + y,splineX[0] + h_rand + this->z);
 				result.push_back(point);
 
 				points_num--;
