@@ -9,7 +9,6 @@ protected:
 	void init() {
 		seed=SEED_DEFAULT;
 		points=POINTS_DEFAULT;
-		showEnvelope=SHOWENVELOPE_DEFAULT;
 		D=D_DEFAULT;
 		di=DI_DEFAULT;
 		dk=DK_DEFAULT;
@@ -22,7 +21,6 @@ protected:
 public:
 	static const int SEED_DEFAULT=42;
 	static const int POINTS_DEFAULT=60;
-	static const int SHOWENVELOPE_DEFAULT=0;
 	static const float D_DEFAULT=0.2;
 	static const float DI_DEFAULT=6.0;
 	static const float DK_DEFAULT=0.1;
@@ -36,7 +34,6 @@ public:
 	int seed;		//seed for srand()
 	int points;     	//attraction points
 	float crownRadius;	//radius of crown envelope
-	int showEnvelope;	//show points on GUI
 	float D;		//node length
 	Distribution distribution;//random generator distribution (uniform by default)
 	int activeMethod;	//active generation method 0-colonization, 1-particle

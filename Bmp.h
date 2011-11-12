@@ -221,6 +221,16 @@ public:
 		}
 		return true;
 	}
+	/** Returns path to icon Bmp image **/
+	static char* generateIcon(char *filename) {
+		Bmp bmp;
+		bmp.load(filename);
+		Bmp *icon=bmp.getIcon();
+		static char tmpname[]="/tmp/treemaker_tmpfile";
+		icon->save(tmpname);
+		bmp.cleanup();
+		return tmpname;
+	}
 	/** returns SIZExSIZE icon from bitmap **/
 	Bmp* getIcon() {
 		assert(isRGBA==false);

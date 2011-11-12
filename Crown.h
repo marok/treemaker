@@ -14,7 +14,7 @@ public:
 	{
 		this->params = params;
 	}
-	
+
 	std::vector<Point3d *> generatePoints()
 	{
 		std::vector<Point3d *> result;
@@ -25,7 +25,7 @@ public:
 			for(unsigned int j=0; j<pts.size(); j++)
 				result.push_back(pts.at(j));
 		}
-		
+
 		return result;
 	}
 };

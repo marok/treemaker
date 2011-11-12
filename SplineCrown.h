@@ -7,7 +7,7 @@
 #include <cmath>
 
 class SplineCrown: public Subcrown {
-	
+
 	float *splineX, *splineY;
 	int n;
 	int points;
@@ -16,8 +16,8 @@ public:
 	float x, y;
 	Spline *s;
 	std::vector<Point2d *> crownMainPoints;
-	
-	
+
+
 	SplineCrown(float x, float y, std::vector<Point2d *> crownMainPoints, MethodParameters *params) {
 		this->shape = SPLINE;
 		this->x = x;

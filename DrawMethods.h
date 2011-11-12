@@ -6,6 +6,7 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkgl.h>
 #include <gdk/gdkglglext.h>
+#include "Parameters.h"
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -76,14 +77,15 @@ if(mode==GL_SELECT)\
 	}
 
 
-	static void drawTrunk(BranchModel *bm, TrunkParameters *tp)
+	static void drawTrunk(BranchModel *bm, Parameters *params)
 	{
+		TrunkParameters *tp=params->tp;
 		static GLuint texId;
-		static int initialized=0;
-		if(initialized==0) {
-			initialized=1;
+		//static int initialized=0;
+		if(params->tp->barkTexInitialized==FALSE) {
+			params->tp->barkTexInitialized=TRUE;
 			Bmp bmp;
-			bmp.load((char*)"textures/bark1_256.bmp");
+			bmp.load(params->tp->barkPath);
 			glGenTextures(1,&texId);
 			glBindTexture(GL_TEXTURE_2D,texId);
 			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, bmp.header.biWidth, bmp.header.biHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
@@ -91,6 +93,8 @@ if(mode==GL_SELECT)\
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
 			bmp.cleanup();
 		}
+		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
+
 		glBindTexture(GL_TEXTURE_2D,texId);
 		if(bm==NULL) return;
 		int nodeModelListLen = bm->nodeModelList.size();
@@ -131,7 +135,7 @@ if(mode==GL_SELECT)\
 
 		int len = bm->childBranches.size();
 		for (int i = 0; i < len; i++) {
-			drawTrunk(bm->childBranches.at(i), tp);
+			drawTrunk(bm->childBranches.at(i), params);
 		}
 	}
 
@@ -186,7 +190,7 @@ if(mode==GL_SELECT)\
 	}
 
 
-	static void drawEnvelope() {
+	static void drawEnvelopes() {
 		Crown *c = cm->crown;
 		for(unsigned int i=0; i<c->subcrowns.size(); i++)
 		{
@@ -200,7 +204,7 @@ if(mode==GL_SELECT)\
 			}
 		}
 	}
-	
+
 	static void drawEnvelopeSpline(SplineCrown *splineCrown)
 	{
 		glPushMatrix();
@@ -250,7 +254,7 @@ if(mode==GL_SELECT)\
 		}
 		glPopMatrix();
 	}
-	
+
 	static void drawEnvelopeCylinder(CylinderCrown *cylinderCrown)
 	{
 		glPushMatrix();
@@ -269,7 +273,7 @@ if(mode==GL_SELECT)\
 		}
 		glPopMatrix();
 	}
-	
+
 	static void drawPoints(std::vector<Point3d *> points)
 	{
 		glPointSize(3);
@@ -281,7 +285,7 @@ if(mode==GL_SELECT)\
 		}
 		glEnd();
 	}
-	
+
 	static void drawGrass() {
 		//
 		static GLuint texId;
@@ -294,13 +298,14 @@ if(mode==GL_SELECT)\
 			bmp.load (tex_path);
 			glGenTextures (1, &texId);
 			glBindTexture (GL_TEXTURE_2D, texId);
+			int height = bmp.header.biHeight;
+			int width = bmp.header.biWidth;
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
 		}
-		int height = bmp.header.biHeight;
-		int width = bmp.header.biWidth;
-		glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
-		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
-		glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
 		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
+		glBindTexture (GL_TEXTURE_2D, texId);
 
 		float W=14;
 		float H=0.1;
@@ -326,17 +331,15 @@ if(mode==GL_SELECT)\
 	}
 
 
-	static void drawLeaf(Point3d *p, Vector3d *dir) {
+	static void drawLeaf(Point3d *p, Vector3d *dir,Parameters *params) {
 
 
 		static GLuint texId,maskId;
-		static int initialized=0;
-		static char tex_path[] = "textures/leaf_wiki256.bmp";
 
-		if(!initialized) {
-			initialized=1;
+		if(!params->lp->leavesTexInitialized) {
+			params->lp->leavesTexInitialized=1;
 			Bmp bmp,*mask;
-			bmp.load (tex_path);
+			bmp.load (params->lp->leavesPath);
 			mask=bmp.getMask();
 
 			glGenTextures (1, &texId);
@@ -408,7 +411,7 @@ if(mode==GL_SELECT)\
 
 	}
 
-	static void drawLeaves(BranchModel *bm)
+	static void drawLeaves(BranchModel *bm,Parameters *params)
 	{
 		if(!bm) return;
 
@@ -420,31 +423,37 @@ if(mode==GL_SELECT)\
 		leafVect->mul(1);
 
 
-		drawLeaf(leaf, leafVect);
+		drawLeaf(leaf, leafVect,params);
 		delete leafVect;
 
 		for(unsigned int i = 0; i< bm->childBranches.size(); i++)
 		{
-			drawLeaves(bm->childBranches.at(i));
+			drawLeaves(bm->childBranches.at(i),params);
 		}
 
 	}
 
-	static void drawTreeModel (TrunkParameters *tp) {
+	static void drawTreeModel (Parameters *params) {
 		glPushMatrix();
+		TrunkParameters *tp=params->tp;
+		//triangles=0;
 
-		if(cm->params->showEnvelope)
-			drawEnvelope();
-		triangles=0;
+		if(params->rp->showGrass)
+			drawGrass();
+		if(params->rp->showEnvelopes)
+			drawEnvelopes();
 		if(cm->params->activeMethod==0) {
-			drawTrunk(bm,tp);
+			if(params->rp->showBark)
+				drawTrunk(bm,params);
+			else drawLines(bm,tp);
 			//drawLines(bm,tp);
-			drawLeaves(bm);
+			if(params->rp->showLeaves)
+				drawLeaves(bm,params);
 		}
 		if(cm->params->activeMethod==1) {
 			drawLines(bm,tp);
 		}
-		g_print("triangles: %d\n",triangles);
+		//g_print("triangles: %d\n",triangles);
 		glPopMatrix();
 	}
 

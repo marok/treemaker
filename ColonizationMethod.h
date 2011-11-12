@@ -163,7 +163,7 @@ public:
 	void generate ()
 	{
 		crown = new Crown(params);
-		
+
 		std::vector<Point2d *> crownMainPoints;
 		Point2d *p = new Point2d(6, 0);
 		crownMainPoints.push_back(p);
@@ -171,10 +171,10 @@ public:
 		crownMainPoints.push_back(p);
 		p = new Point2d(10, 0);
 		crownMainPoints.push_back(p);
-		
+
 		SplineCrown *sCrown = new SplineCrown(-3,-3,crownMainPoints, params);
 		SplineCrown *sCrown2 = new SplineCrown(3, 3,crownMainPoints, params);
-		
+
 		std::vector<Point2d *> crownMainPoints2;
 		p = new Point2d(3, 0);
 		crownMainPoints2.push_back(p);
@@ -182,24 +182,24 @@ public:
 		crownMainPoints2.push_back(p);
 		p = new Point2d(7, 0);
 		crownMainPoints2.push_back(p);
-		
+
 		SplineCrown *sCrown3 = new SplineCrown(0, 0,crownMainPoints2, params);
-		
-		
-		CylinderCrown *cylinder = new CylinderCrown(2,2,4,3,10);
+
+
+		//CylinderCrown *cylinder = new CylinderCrown(2,2,4,3,10);
 		//crown->subcrowns.push_back(cylinder);
 		crown->subcrowns.push_back(sCrown);
 		crown->subcrowns.push_back(sCrown2);
 		crown->subcrowns.push_back(sCrown3);
-		
-		
-		
+
+
+
 		aPoints = crown->generatePoints();
 
 		int i;
 
 		Node *prvNode = NULL;
-		for (i = 0; i < 10; i++) {
+		for (i = 0; i < 5; i++) {
 			Node *newNode = new Node(0,0,i*0.1);
 			newNode->prev = prvNode;
 

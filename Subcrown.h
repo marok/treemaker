@@ -13,8 +13,8 @@ enum CrownShape
 class Subcrown
 {
 public:
-    enum CrownShape shape;
-    virtual std::vector<Point3d *> generatePoints(int n) = 0;
+	enum CrownShape shape;
+	virtual std::vector<Point3d *> generatePoints(int n) = 0;
 };
 
 

@@ -22,26 +22,23 @@ class MethodParametersPanel {
 	vector <pair<int,GtkWidget *> > methodWidgets;
 
 
-#define UNROLL_CALLBACK(callbackname,param)\
-	static void callbackname( GtkAdjustment *adj, gpointer data){\
+#define UNROLL_CALLBACK(param)\
+	static void param##Changed( GtkAdjustment *adj, gpointer data){\
              MethodParameters *params = (MethodParameters *)data;\
              params->param = adj->value;\
 	}
 
-	UNROLL_CALLBACK(seedChanged,seed);
-	UNROLL_CALLBACK(diChanged,di);
-	UNROLL_CALLBACK(dkChanged,dk);
-	UNROLL_CALLBACK(DChanged,D);
-	UNROLL_CALLBACK(pointsChanged,points);
-	UNROLL_CALLBACK(cdChanged,cd);
-	UNROLL_CALLBACK(attractionChanged,attraction);
+	UNROLL_CALLBACK(seed);
+	UNROLL_CALLBACK(di);
+	UNROLL_CALLBACK(dk);
+	UNROLL_CALLBACK(D);
+	UNROLL_CALLBACK(points);
+	UNROLL_CALLBACK(cd);
+	UNROLL_CALLBACK(attraction);
 
 #undef UNROLL_CALLBACK
 
-	static void showEnvelopeClicked(GtkWidget *widget, gpointer data) {
-		MethodParameters *params = (MethodParameters *)data;
-		params->showEnvelope=gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
-	}
+
 	static void generateClicked( GtkWidget *widget ,gpointer data )
 	{
 		MethodParametersPanel *mpp=(MethodParametersPanel*)data;
@@ -134,7 +131,7 @@ public:
 		// Common Parameters
 		PACK_LABEL_AND_SLIDER("Seed:",SEED_DEFAULT,0,100,1,seedChanged,0,"Random number generator seed",-1);
 		PACK_LABEL_AND_SLIDER("D:",D_DEFAULT,0.1,1,0.1,DChanged,1,"Step size",-1);
-		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,150,1,pointsChanged,0,"Number of attraction points in crown",-1);
+		PACK_LABEL_AND_SLIDER("Points:",POINTS_DEFAULT,10,250,1,pointsChanged,0,"Number of attraction points in crown",-1);
 
 
 		// Colonization Parameters
@@ -149,14 +146,6 @@ public:
 #undef PACK_LABEL_AND_SLIDER
 
 
-		GtkWidget *check = gtk_check_button_new_with_label("Show envelope");
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),cm->params->showEnvelope);
-		g_signal_connect(check,"clicked",G_CALLBACK(this->showEnvelopeClicked),cm->params);
-		gtk_box_pack_start(GTK_BOX(vbox),check,FALSE,FALSE,0);
-		gtk_tooltips_set_tip(tooltips,check,"Shows crown envelope",NULL);
-
-
-
 		GtkWidget *button = gtk_button_new_with_label ("Generate");
 		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->generateClicked), this);
 		gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
@@ -165,7 +154,6 @@ public:
 
 		gtk_widget_show(paramsWidget);
 		gtk_widget_show(button);
-		gtk_widget_show(check);
 		gtk_widget_show(vbox);
 
 		hideWidgets(cm->params->ACTIVEMETHOD_DEFAULT);

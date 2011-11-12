@@ -9,7 +9,7 @@ class CylinderCrown: public Subcrown
 public:
 	float x,y;
 	float r, downZ, upZ;
-	
+
 	CylinderCrown(float x, float y, float r, float downZ, float upZ)
 	{
 		this->shape = CYLINDER;

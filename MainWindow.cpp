@@ -25,6 +25,8 @@
 #include "Model3d.h"
 #include "MethodParametersPanel.h"
 #include "TrunkParametersPanel.h"
+#include "RenderingParametersPanel.h"
+#include "LeavesParametersPanel.h"
 
 #include "Spline.h"
 
@@ -72,15 +74,16 @@ static float lightPosition[4] = { 100.0, -100.0, 100.0, 100.0 };
 
 ColonizationMethod *cm = NULL;
 ParticleMethod *pm = NULL;
-TrunkParameters *tp =NULL;
+//TrunkParameters *tp =NULL;
 DrawMethods *dm = NULL;
 BranchModel *bm = NULL;
+	Parameters *parameters;
+
 
 class MainWindow
 {
 	GtkWidget *window;
 	GdkGLConfig *glconfig;
-
 
 	static void realize (GtkWidget * widget, gpointer data) {
 		GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
@@ -176,7 +179,7 @@ class MainWindow
 		glRotatef (sphi, 0.0, 0.0, 1.0);
 
 		DrawMethods::drawWireframe ();
-		DrawMethods::drawTreeModel (tp);
+		DrawMethods::drawTreeModel (parameters);
 		
 		//DrawMethods::drawGrass();
 
@@ -473,26 +476,33 @@ class MainWindow
 		//GtkWidget *otherParameters;
 		//otherParameters=gtk_frame_new("Other Parameters");
 
-		TrunkParametersPanel *tpp=new TrunkParametersPanel(window,tp);
+		TrunkParametersPanel *tpp=new TrunkParametersPanel(window,parameters);
 		GtkWidget *trunkParameters=tpp->createPanel();
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
 
 
-		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm,tp);
+		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm,parameters->tp);
 
 		GtkWidget *notebook=gtk_notebook_new();
 		GtkWidget *label;
 		label=gtk_label_new("Algorithms");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),mpanel->createPanel(),label);
 
+		RenderingParametersPanel *renderingPanel=new RenderingParametersPanel(parameters);
+		label=gtk_label_new("R");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),renderingPanel->createPanel(),label);
 
-		label=gtk_label_new("Others");
+
+		label=gtk_label_new("T");
 		//gtk_notebook_append_page(GTK_NOTEBOOK(notebook),otherParameters,label);
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trunkParameters,label);
 
-
+		LeavesParametersPanel *lpp=new LeavesParametersPanel(window,parameters);
+		label=gtk_label_new("L");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),lpp->createPanel(),label);
+		
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
-		gtk_widget_show(trunkParameters);
+//		gtk_widget_show(trunkParameters);
 		gtk_widget_show(notebook);
 
 		//g_timeout_add (1000,
@@ -547,6 +557,7 @@ public:
 		gtk_init (&argc, &argv);
 		gtk_gl_init (&argc, &argv);
 		glconfig = configureGL ();
+		parameters=new Parameters();
 		window = createWindow (glconfig);
 	}
 	void run () {
@@ -566,7 +577,7 @@ main (int argc, char *argv[])
 	MethodParameters *methodParams = new MethodParameters();
 	cm = new ColonizationMethod(methodParams);
 	pm = new ParticleMethod(methodParams);
-	tp = new TrunkParameters();
+	//tp = new TrunkParameters();
 
 	mw.init (argc, argv);
 	mw.run ();
