@@ -13,17 +13,17 @@ public:
 	RenderingParameters	*rp;
 	TrunkParameters		*tp;
 	LeavesParameters	*lp;
-        Crown                   *crown;
-        MethodParameters *methodParams;
+	Crown                   *crown;
+	MethodParameters *methodParams;
 
 	Parameters() {
 		rp=new RenderingParameters();
 		tp=new TrunkParameters();
 		lp=new LeavesParameters();
-                methodParams = new MethodParameters();
-                crown = new Crown(methodParams);
-                
-                //tmp
+		methodParams = new MethodParameters();
+		crown = new Crown(methodParams);
+
+		//tmp
 
 		SplineCrown *sCrown = new SplineCrown(-3,-3, 4, methodParams);
 		SplineCrown *sCrown2 = new SplineCrown(3, 3, 2, methodParams);
@@ -33,8 +33,8 @@ public:
 
 		//CylinderCrown *cylinder = new CylinderCrown(0,0,0,6,15);
 		//crown->subcrowns.push_back(cylinder);
-               
-                
+
+
 		crown->subcrowns.push_back(sCrown);
 		crown->subcrowns.push_back(sCrown2);
 		crown->subcrowns.push_back(sCrown3);

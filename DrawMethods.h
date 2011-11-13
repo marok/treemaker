@@ -333,7 +333,7 @@ if(mode==GL_SELECT)\
 	static void drawLeaf(Point3d *p, Vector3d *dir,Parameters *params) {
 
 
-		static GLuint texId,maskId;
+		/*static GLuint texId,maskId;
 
 		if(!params->lp->leavesTexInitialized) {
 			params->lp->leavesTexInitialized=1;
@@ -377,7 +377,7 @@ if(mode==GL_SELECT)\
 		glTranslatef(p->x,p->y,p->z);
 		float size=params->lp->leavesSize;
 
-#define TEXTURIZE\
+		#define TEXTURIZE\
 		glBegin(GL_QUADS);\
 		{\
 			glTexCoord2f (0.0f, 0.0f);\
@@ -401,13 +401,13 @@ if(mode==GL_SELECT)\
 
 		TEXTURIZE;
 
-#undef TEXTURIZE
+		#undef TEXTURIZE
 
 		glPopMatrix();
 		glDisable (GL_TEXTURE_2D);
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glColor4f(1.0, 1.0, 1.0, 1.0);
+		glColor4f(1.0, 1.0, 1.0, 1.0);*/
 
 	}
 

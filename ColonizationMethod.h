@@ -149,7 +149,7 @@ public:
 	ColonizationMethod(Parameters *params)
 	{
 		this->params = params->methodParams;
-                crown = params->crown;
+		crown = params->crown;
 	}
 
 	void init ()

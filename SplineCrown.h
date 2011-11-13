@@ -18,18 +18,18 @@ public:
 
 
 	SplineCrown(float x, float y, float z, MethodParameters *params) {
-                std::vector<Point2d *> crownMainPoints;
+		std::vector<Point2d *> crownMainPoints;
 		Point2d *p = new Point2d(0, 0);
 		crownMainPoints.push_back(p);
 		p = new Point2d(2, 5);
 		crownMainPoints.push_back(p);
 		p = new Point2d(4, 0);
 		crownMainPoints.push_back(p);
-            
+
 		this->shape = SPLINE;
 		this->x = x;
 		this->y = y;
-                this->z = z;
+		this->z = z;
 		this->crownMainPoints = crownMainPoints;
 		this->n = crownMainPoints.size();
 		splineX = new float[n];

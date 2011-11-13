@@ -14,10 +14,10 @@ public:
 		this->shape = CYLINDER;
 		this->x = x;
 		this->y = y;
-                this->z = z;
+		this->z = z;
 		this->r = r;
-                this->h = h;
-                
+		this->h = h;
+
 	}
 
 	std::vector<Point3d *> generatePoints(int n) {
