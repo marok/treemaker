@@ -77,8 +77,8 @@ public:
 	}
 	GtkWidget* createPanel() {
 		GtkWidget *leavesWidget=gtk_frame_new("Leaves Parameters");
-
-		GtkTooltips *tooltips=gtk_tooltips_new();
+		gtk_widget_show(leavesWidget);
+		/*GtkTooltips *tooltips=gtk_tooltips_new();
 		GtkWidget *button,*hbox;
 		vbox=gtk_vbox_new(FALSE,1);
 		GtkWidget *label,*scale;
@@ -98,25 +98,25 @@ public:
 		GtkTreeSelection *selection=gtk_tree_view_get_selection(GTK_TREE_VIEW(list));
 		g_signal_connect(selection,"changed",G_CALLBACK(on_changed),this);
 
-#define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
-    hbox = gtk_hbox_new(FALSE,1);\
-    label = gtk_label_new(text);\
-    adj=gtk_adjustment_new(params->lp->val,min,max,step,1,0);\
-    g_signal_connect(adj,"value_changed",G_CALLBACK(func),params);\
-    scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
-    gtk_scale_set_digits (GTK_SCALE (scale), digits);\
-    gtk_box_pack_start(GTK_BOX(vbox),hbox,FALSE,FALSE,1);\
-    gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
-    gtk_box_pack_start(GTK_BOX(hbox),scale,TRUE,TRUE,0);\
-    gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
-    gtk_widget_show(label);\
-    gtk_widget_show(hbox);\
-    gtk_widget_show(scale);
+		#define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
+		    hbox = gtk_hbox_new(FALSE,1);\
+		    label = gtk_label_new(text);\
+		    adj=gtk_adjustment_new(params->lp->val,min,max,step,1,0);\
+		    g_signal_connect(adj,"value_changed",G_CALLBACK(func),params);\
+		    scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
+		    gtk_scale_set_digits (GTK_SCALE (scale), digits);\
+		    gtk_box_pack_start(GTK_BOX(vbox),hbox,FALSE,FALSE,1);\
+		    gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
+		    gtk_box_pack_start(GTK_BOX(hbox),scale,TRUE,TRUE,0);\
+		    gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
+		    gtk_widget_show(label);\
+		    gtk_widget_show(hbox);\
+		    gtk_widget_show(scale);
 
 		// Common Parameters
 		//PACK_LABEL_AND_SLIDER("Leaves size:",LEAVESSIZE_DEFAULT,0.5,1.5,0.1,leavesSizeChanged,1,"Size of a leaves on a tree");
 
-#undef PACK_LABEL_AND_SLIDER
+		#undef PACK_LABEL_AND_SLIDER
 
 		//leaves texture select
 		//button=gtk_button_new_with_label("Choose leaves texture");
@@ -132,7 +132,7 @@ public:
 		gtk_widget_show(leavesWidget);
 		gtk_widget_show(vbox);
 		gtk_widget_show(list);
-
+		*/
 		return leavesWidget;
 	}
 

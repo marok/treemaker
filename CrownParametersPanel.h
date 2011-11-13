@@ -5,6 +5,7 @@
 #include <gtk/gtk.h>
 
 class CrownParametersPanel {
+	GtkWidget *mainWindow;
 	GtkWidget *xEntry, *yEntry, *zEntry;
 	GtkWidget *hEntry, *rEntry;
 	GtkWidget *crownTypeCombo;
@@ -80,8 +81,9 @@ public:
 
 
 
-	CrownParametersPanel(Parameters *params) {
+	CrownParametersPanel(GtkWidget *window,Parameters *params) {
 		this->params = params;
+		this->mainWindow=window;
 	}
 
 	GtkWidget* createPanel() {

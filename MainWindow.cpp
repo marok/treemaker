@@ -502,7 +502,7 @@ class MainWindow
 		label=gtk_label_new("L");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),lpp->createPanel(),label);
                 
-                CrownParametersPanel *cpp=new CrownParametersPanel(parameters);
+                CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
 		label=gtk_label_new("C");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
 		
