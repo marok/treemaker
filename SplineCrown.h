@@ -8,7 +8,7 @@
 #include <cmath>
 
 class SplineCrown: public Subcrown {
-	
+
 	static bool cmpCrownMainPoints(Point2d* a, Point2d *b)
 	{
 		return a->x < b->x;
@@ -27,10 +27,10 @@ public:
 		crownMainPoints.push_back(p);
 		p = new Point2d(4, 0);
 		crownMainPoints.push_back(p);
-		
+
 
 		std::sort(crownMainPoints.begin(), crownMainPoints.end(), cmpCrownMainPoints);
-		
+
 		this->shape = SPLINE;
 		this->x = x;
 		this->y = y;
@@ -46,7 +46,7 @@ public:
 	{
 		delete s;
 	}
-	
+
 	void addCrownMainPoint(Point2d *p)
 	{
 		crownMainPoints.push_back(p);
@@ -54,14 +54,14 @@ public:
 		delete s;
 		s = new Spline(crownMainPoints);
 	}
-	
+
 	void deleteCrownMainPoint(std::vector< Point2d* >::iterator i)
 	{
 		crownMainPoints.erase(i);
 		delete s;
 		s = new Spline(crownMainPoints);
 	}
-	
+
 	void changeCrownMainPoint(int id, float x, float y)
 	{
 		crownMainPoints[id]->x = x;

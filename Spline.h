@@ -43,7 +43,7 @@ public:
 		this->n = points.size();
 		this->x = new float[n];
 		this->y = new float[n];
-		
+
 		for(int i=0; i<n; i++)
 		{
 			x[i] = points[i]->x;
@@ -61,7 +61,7 @@ public:
 	{
 		delete []x;
 		delete []y;
-		
+
 		delete []u;
 		delete []q;
 		delete []M;
