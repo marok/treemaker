@@ -4,13 +4,15 @@
 #include "Point3d.h"
 #include "Spline.h"
 #include <vector>
+#include <algorithm>
 #include <cmath>
 
 class SplineCrown: public Subcrown {
-
-	float *splineX, *splineY;
-	int n;
-	int points;
+	
+	static bool cmpCrownMainPoints(Point2d* a, Point2d *b)
+	{
+		return a->x < b->x;
+	}
 
 public:
 	Spline *s;
@@ -25,33 +27,47 @@ public:
 		crownMainPoints.push_back(p);
 		p = new Point2d(4, 0);
 		crownMainPoints.push_back(p);
+		
 
+		std::sort(crownMainPoints.begin(), crownMainPoints.end(), cmpCrownMainPoints);
+		
 		this->shape = SPLINE;
 		this->x = x;
 		this->y = y;
 		this->z = z;
 		this->crownMainPoints = crownMainPoints;
-		this->n = crownMainPoints.size();
-		splineX = new float[n];
-		splineY = new float[n];
-
-		for(int i=0; i<n; i++)
-		{
-			splineX[i] = crownMainPoints.at(i)->x;
-			splineY[i] = crownMainPoints.at(i)->y;
-		}
 
 		srand(params->seed);
 
-		s = new Spline(splineX,splineY,n);
-		points = params->points;
+		s = new Spline(crownMainPoints);
 	}
 
 	~SplineCrown()
 	{
 		delete s;
-		delete splineX;
-		delete splineY;
+	}
+	
+	void addCrownMainPoint(Point2d *p)
+	{
+		crownMainPoints.push_back(p);
+		std::sort(crownMainPoints.begin(), crownMainPoints.end(), cmpCrownMainPoints);
+		delete s;
+		s = new Spline(crownMainPoints);
+	}
+	
+	void deleteCrownMainPoint(std::vector< Point2d* >::iterator i)
+	{
+		crownMainPoints.erase(i);
+		delete s;
+		s = new Spline(crownMainPoints);
+	}
+	
+	void changeCrownMainPoint(int id, float x, float y)
+	{
+		crownMainPoints[id]->x = x;
+		crownMainPoints[id]->y = y;
+		delete s;
+		s = new Spline(crownMainPoints);
 	}
 
 	//punkty losujemy w walcu opisanym na bryle obrotowej o wysokości h i promieniu r
@@ -63,7 +79,7 @@ public:
 		result.clear();
 
 
-		float h = splineX[this->n - 1] - splineX[0];
+		float h = crownMainPoints[crownMainPoints.size() - 1]->x - crownMainPoints[0]->x;
 		float x_max, y_max;
 
 		s->globalMax(&x_max, &y_max);
@@ -77,12 +93,12 @@ public:
 			float r_rand = sqrt(RANDF())*r;
 			float h_rand = RANDF()*h;
 
-			float r_max = s->getS(splineX[0]+h_rand);
+			float r_max = s->getS(crownMainPoints[0]->x+h_rand);
 
 			if(r_max >= r_rand)
 			{
 				float alfa = RANDF()*2.0*M_PI;
-				Point3d *point = new Point3d(r_rand*sin(alfa) + x,r_rand*cos(alfa) + y,splineX[0] + h_rand + this->z);
+				Point3d *point = new Point3d(r_rand*sin(alfa) + x,r_rand*cos(alfa) + y,crownMainPoints[0]->x + h_rand + this->z);
 				result.push_back(point);
 
 				points_num--;

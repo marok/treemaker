@@ -2,12 +2,15 @@
 #define	ISUBCROWN_H
 
 #include<vector>
+#define CYLINDER_CROWN(sub) ((CylinderCrown*)sub)
+#define SPLINE_CROWN(sub) ((SplineCrown*)sub)
 
 enum CrownShape
 {
 	SPLINE,
 	CYLINDER,
-	SPHERE
+	SPHERE,
+	CROWNSHAPE_N
 };
 
 class Subcrown

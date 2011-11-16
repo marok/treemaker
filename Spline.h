@@ -2,7 +2,7 @@
 #define	_SPLINE_H
 
 #include <cmath>
-
+#include <vector>
 class Spline {
 	float *x, *y;
 	int n;
@@ -38,11 +38,17 @@ class Spline {
 	}
 
 public:
-	Spline(float *x, float *y, int n)
+	Spline(std::vector<Point2d *> points)
 	{
-		this->x = x;
-		this->y = y;
-		this->n = n;
+		this->n = points.size();
+		this->x = new float[n];
+		this->y = new float[n];
+		
+		for(int i=0; i<n; i++)
+		{
+			x[i] = points[i]->x;
+			y[i] = points[i]->y;
+		}
 
 		q = new float[n-1];
 		u = new float[n-1];
@@ -53,6 +59,9 @@ public:
 
 	~Spline()
 	{
+		delete []x;
+		delete []y;
+		
 		delete []u;
 		delete []q;
 		delete []M;

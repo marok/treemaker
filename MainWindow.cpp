@@ -274,14 +274,6 @@ class MainWindow
 			init_wireframe (widget);
 			break;
 
-		case GDK_plus:
-			sdepth -= 2.0;
-			break;
-
-		case GDK_minus:
-			sdepth += 2.0;
-			break;
-
 		case GDK_Escape:
 			gtk_main_quit ();
 			break;

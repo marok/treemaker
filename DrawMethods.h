@@ -242,12 +242,12 @@ if(mode==GL_SELECT)\
 			}
 			glEnd();
 
-			float x_max, y_max;
-			splineCrown->s->globalMax(&x_max, &y_max);
-			glColor3f (1, 1, 1);
-			glBegin(GL_POINTS);
-			glVertex3f(y_max,0,x_max);
-			glEnd();
+			//float x_max, y_max;
+			//splineCrown->s->globalMax(&x_max, &y_max);
+			//glColor3f (1, 1, 1);
+			//glBegin(GL_POINTS);
+			//glVertex3f(y_max,0,x_max);
+			//glEnd();
 
 			glRotatef(360/loops,0,0,1);
 		}
