@@ -46,8 +46,8 @@ public:
 
 		for(int i=0; i<n; i++)
 		{
-			x[i] = points[i]->x;
-			y[i] = points[i]->y;
+			x[i] = points[n - i - 1]->x;
+			y[i] = points[n - i - 1]->y;
 		}
 
 		q = new float[n-1];

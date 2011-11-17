@@ -11,7 +11,7 @@ class SplineCrown: public Subcrown {
 
 	static bool cmpCrownMainPoints(Point2d* a, Point2d *b)
 	{
-		return a->x < b->x;
+		return a->x > b->x;
 	}
 
 public:

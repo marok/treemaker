@@ -5,38 +5,30 @@
 #include <gtk/gtk.h>
 #include <stdlib.h>
 #include <vector>
-
+#include "SplineCrownParametersPanel.h"
 using namespace std;
 
 class CrownParametersPanel {
 	GtkObject *xAdj, *yAdj, *zAdj;
 	GtkObject *hAdj, *rAdj;
 
-	GtkObject *splineXAdj, *splineYAdj;
-
 	GtkWidget *crownTypeCombo;
 
 	GtkWidget *editButton;
 	GtkWidget *deleteButton;
-	GtkWidget *splinePointVBox;
-
+	
 	GtkWidget *mainWindow;
 	Parameters *params;
 
 	GtkListStore *crownStore;
 	GtkWidget *crownList;
 
-	GtkListStore *splineCrownStore;
-	GtkWidget *splineCrownList;
-
 	Subcrown *selectedSubcrown;
-
-	//jeśli żadna pozycja nie zaznaczona to -1
-	int selectedSplinePonitId;
 
 	//kontrolki przyporządkowane odpowiedniej koronie, -1 znaczy, że kontrolka pasuje do wszystkich koron
 	vector< pair<int, GtkWidget*> > crownWidgets;
 
+	SplineCrownParametersPanel *scpp;
 
 	//jeżeli active równa się -1, ukrywamy wszystkie kontrolki(usuwanie, edytowanie)
 	void showWidgets(int active)
@@ -47,22 +39,6 @@ class CrownParametersPanel {
 				gtk_widget_show(crownWidgets.at(i).second);
 			else
 				gtk_widget_hide(GTK_WIDGET(crownWidgets.at(i).second));
-		}
-	}
-
-	void populateSplineCrownList(SplineCrown *splineCrown)
-	{
-		for(unsigned int i=0; i<splineCrown->crownMainPoints.size(); i++)
-		{
-			Point2d *p = splineCrown->crownMainPoints.at(i);
-
-			GtkTreeIter iter;
-			gtk_list_store_append(splineCrownStore, &iter);
-			gtk_list_store_set(splineCrownStore, &iter,
-			                   0, i,
-			                   1, p->x,
-			                   2, p->y,
-			                   -1);
 		}
 	}
 
@@ -112,134 +88,6 @@ class CrownParametersPanel {
 		}
 	}
 
-	void updateSelectedSplinePointItem()
-	{
-		Point2d* p = SPLINE_CROWN(selectedSubcrown)->crownMainPoints[selectedSplinePonitId];
-
-
-		GtkTreeIter iter;
-		GtkTreeModel *model;
-		GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(splineCrownList));
-		if (gtk_tree_selection_get_selected(selection, &model, &iter)) {
-			gtk_list_store_set(splineCrownStore, &iter,
-			                   1, p->x,
-			                   2, p->y,
-			                   -1);
-		}
-	}
-
-	static void addSplinePoint( GtkWidget *widget ,gpointer data )
-	{
-		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-
-		float size = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints.size();
-
-		float x = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints.at(size/2)->x+0.01;
-		float y = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints.at(size/2)->y+0.01;;
-
-		printf("%f\n",x);
-
-		SPLINE_CROWN(panel->selectedSubcrown)->addCrownMainPoint(new Point2d(x,y));
-
-		gtk_list_store_clear(panel->splineCrownStore);
-		panel->populateSplineCrownList(SPLINE_CROWN(panel->selectedSubcrown));
-		DrawMethods::render();
-	}
-
-
-	static void deleteSplinePoint( GtkWidget *widget ,gpointer data )
-	{
-		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-
-		GtkTreeIter iter;
-		GtkTreeModel *model;
-		int id;
-
-
-		GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(panel->splineCrownList));
-
-		if (gtk_tree_selection_get_selected(selection, &model, &iter))
-		{
-			gtk_tree_model_get (model, &iter, 0, &id, -1);
-		}
-
-		vector< Point2d* >::iterator i = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints.begin();
-		i += id;
-		SPLINE_CROWN(panel->selectedSubcrown)->deleteCrownMainPoint(i);
-
-		gtk_list_store_clear(panel->splineCrownStore);
-		panel->populateSplineCrownList(SPLINE_CROWN(panel->selectedSubcrown));
-		DrawMethods::render();
-	}
-
-	static void splineXChanged( GtkAdjustment *adj ,gpointer data )
-	{
-		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-		SPLINE_CROWN(panel->selectedSubcrown)->changeCrownMainPoint(panel->selectedSplinePonitId,
-		        gtk_adjustment_get_value(adj),
-		        SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId]->y);
-
-		panel->updateSelectedSplinePointItem();
-
-		DrawMethods::render();
-		printf("x %f\n",gtk_adjustment_get_value(adj));
-	}
-
-	static void splineYChanged( GtkAdjustment *adj ,gpointer data )
-	{
-		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-		SPLINE_CROWN(panel->selectedSubcrown)->changeCrownMainPoint(panel->selectedSplinePonitId,
-		        SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId]->x,
-		        gtk_adjustment_get_value(adj));
-
-		panel->updateSelectedSplinePointItem();
-
-		DrawMethods::render();
-	}
-
-	static void splinePointsListSelectionChanged(GtkTreeSelection *selection, gpointer data)
-	{
-		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-		GtkTreeIter iter;
-		GtkTreeModel *model;
-
-		if (gtk_tree_selection_get_selected(selection, &model, &iter))
-		{
-			gtk_tree_model_get (model, &iter, 0, &panel->selectedSplinePonitId, -1);
-			gtk_widget_show(panel->splinePointVBox);
-
-			Point2d* p = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId];
-			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->splineXAdj), p->x);
-			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->splineYAdj), p->y);
-
-			float size = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints.size();
-			if(panel->selectedSplinePonitId > 0 && panel->selectedSplinePonitId < size-1)
-			{
-				float xPrev = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId-1]->x;
-				float xNext = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId+1]->x;
-
-				gtk_adjustment_set_lower(GTK_ADJUSTMENT(panel->splineXAdj), xPrev);
-				gtk_adjustment_set_upper(GTK_ADJUSTMENT(panel->splineXAdj), xNext);
-			} else if(panel->selectedSplinePonitId == 0)
-			{
-				float xNext = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId+1]->x;
-				float x = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId]->x;
-				gtk_adjustment_set_lower(GTK_ADJUSTMENT(panel->splineXAdj), x-5);
-				gtk_adjustment_set_upper(GTK_ADJUSTMENT(panel->splineXAdj), xNext);
-			} else //panel->selectedSplinePointId == size - 1
-			{
-				float xPrev = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId-1]->x;
-				float x = SPLINE_CROWN(panel->selectedSubcrown)->crownMainPoints[panel->selectedSplinePonitId]->x;
-				gtk_adjustment_set_lower(GTK_ADJUSTMENT(panel->splineXAdj), xPrev);
-				gtk_adjustment_set_upper(GTK_ADJUSTMENT(panel->splineXAdj), x+5);
-			}
-
-		} else
-		{
-			gtk_widget_hide(panel->splinePointVBox);
-			panel->selectedSplinePonitId = -1;
-		}
-	}
 
 	static void crownXChanged( GtkAdjustment *adj ,gpointer data )
 	{
@@ -364,8 +212,7 @@ class CrownParametersPanel {
 				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rAdj), CYLINDER_CROWN(panel->selectedSubcrown)->r);
 				break;
 			case SPLINE:
-				gtk_list_store_clear(panel->splineCrownStore);
-				panel->populateSplineCrownList(SPLINE_CROWN(panel->selectedSubcrown));
+				panel->scpp->updatePanel(SPLINE_CROWN(panel->selectedSubcrown));
 				break;
 			default:
 				break;
@@ -383,11 +230,12 @@ public:
 		this->mainWindow = window;
 		this->params = params;
 		this->selectedSubcrown = NULL;
-		this->selectedSplinePonitId = -1;
 	}
 
 	GtkWidget* createPanel() {
 		GtkWidget *crownWidget = gtk_frame_new("Crown Parameters");
+		
+		scpp = new SplineCrownParametersPanel();
 
 		GtkWidget *hbox;
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 1);
@@ -477,74 +325,15 @@ public:
 #undef PACK_LABEL_AND_SLIDER
 
 
-
-		hbox = gtk_hbox_new(FALSE, 1);
-		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
-		gtk_widget_show(hbox);
-		splineCrownStore = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_FLOAT, G_TYPE_FLOAT);
-		splineCrownList = gtk_tree_view_new_with_model(GTK_TREE_MODEL(splineCrownStore));
-#define ADD_COLUMN(header, col_num)\
-	column = gtk_tree_view_column_new_with_attributes (header, renderer, "text", col_num, NULL);\
-	gtk_tree_view_append_column( GTK_TREE_VIEW(splineCrownList), column);
-		ADD_COLUMN("ID", 0);
-		ADD_COLUMN("X", 1);
-		ADD_COLUMN("Y", 2);
-#undef ADD_COLUMN
-
-		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, splineCrownList));
-		gtk_box_pack_start(GTK_BOX(hbox), splineCrownList, FALSE, FALSE, 2);
-		g_object_unref(G_OBJECT(splineCrownStore));
-
-		/*list selection*/
-		GtkTreeSelection *selectSplinePoint;
-
-		selectSplinePoint = gtk_tree_view_get_selection (GTK_TREE_VIEW (splineCrownList));
-		gtk_tree_selection_set_mode (selectSplinePoint, GTK_SELECTION_SINGLE);
-		g_signal_connect (G_OBJECT (selectSplinePoint), "changed", G_CALLBACK (splinePointsListSelectionChanged), this);
-
-		GtkWidget *splineButtonsVBox = gtk_vbox_new(FALSE,1);
-		gtk_box_pack_start(GTK_BOX(hbox), splineButtonsVBox, FALSE, FALSE, 2);
-		gtk_widget_show(splineButtonsVBox);
-
-		GtkWidget* addSplinePointButton = gtk_button_new_with_label("Add");
-		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, addSplinePointButton));
-		gtk_box_pack_start(GTK_BOX(splineButtonsVBox), addSplinePointButton, FALSE, FALSE, 2);
-		g_signal_connect (G_OBJECT (addSplinePointButton), "clicked", G_CALLBACK (addSplinePoint), this);
-
-		GtkWidget* deleteSplinePointButton = gtk_button_new_with_label("Del");
-		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, deleteSplinePointButton));
-		gtk_box_pack_start(GTK_BOX(splineButtonsVBox), deleteSplinePointButton, FALSE, FALSE, 2);
-		g_signal_connect (G_OBJECT (deleteSplinePointButton), "clicked", G_CALLBACK (deleteSplinePoint), this);
-
-		splinePointVBox = gtk_vbox_new(FALSE,1);
-		gtk_box_pack_start(GTK_BOX(vbox), splinePointVBox, FALSE, FALSE, 2);
-		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, splinePointVBox));
-
-#define PACK_LABEL_AND_SLIDER(text, adj, cb, hint)\
-    hbox = gtk_hbox_new(FALSE,1);\
-    label = gtk_label_new(text);\
-    adj=gtk_adjustment_new(0, 0, 10, 0.1 ,1,0);\
-    g_signal_connect(adj,"value_changed",G_CALLBACK(cb),this);\
-    scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
-    gtk_scale_set_digits (GTK_SCALE (scale), 1);\
-    gtk_box_pack_start(GTK_BOX(splinePointVBox),hbox,FALSE,FALSE,1);\
-    gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
-    gtk_box_pack_start(GTK_BOX(hbox),scale,TRUE,TRUE,0);\
-    gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
-    gtk_widget_show_all(hbox);
-
-		PACK_LABEL_AND_SLIDER("X:", splineXAdj, splineXChanged, "sdfgdfg");
-		PACK_LABEL_AND_SLIDER("Y:", splineYAdj, splineYChanged, "sdfgdfg");
-
-
-#undef PACK_LABEL_AND_SLIDER
-
-
 		deleteButton = gtk_button_new_with_label("Delete selected crown");
 		g_signal_connect(G_OBJECT(deleteButton), "clicked", G_CALLBACK(this->deleteCrownClicked), this);
 		gtk_box_pack_start(GTK_BOX(vbox), deleteButton, FALSE, FALSE, 2);
 		crownWidgets.push_back(pair<int, GtkWidget *>(-1, deleteButton));
 
+		
+		GtkWidget *splineCrownPanel  = scpp->createPanel();
+		gtk_box_pack_start(GTK_BOX(vbox), splineCrownPanel, FALSE, FALSE, 2);
+		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, splineCrownPanel));
 
 		gtk_container_add(GTK_CONTAINER(crownWidget), vbox);
 		gtk_widget_show(vbox);
