@@ -18,7 +18,9 @@ public:
 	Spline *s;
 	std::vector<Point2d *> crownMainPoints;
 
-
+	//punkt aktualnie edytowany
+	int activePoint;
+	
 	SplineCrown(float x, float y, float z, MethodParameters *params) {
 		std::vector<Point2d *> crownMainPoints;
 		Point2d *p = new Point2d(0, 0);
@@ -40,6 +42,8 @@ public:
 		srand(params->seed);
 
 		s = new Spline(crownMainPoints);
+		
+		this->activePoint = -1;
 	}
 
 	~SplineCrown()

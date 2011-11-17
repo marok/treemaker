@@ -194,13 +194,9 @@ class CrownParametersPanel {
 		{
 			gtk_tree_model_get (model, &iter, 0, &id, -1);
 			panel->selectedSubcrown = panel->params->crown->subcrowns.at(id);
-		} else
-		{
-			panel->selectedSubcrown = NULL;
-		}
-
-		if(panel->selectedSubcrown)
-		{
+			
+			panel->params->crown->activeSubcrown = id;
+			
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->xAdj), panel->selectedSubcrown->x);
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->yAdj), panel->selectedSubcrown->y);
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->zAdj), panel->selectedSubcrown->z);
@@ -221,8 +217,12 @@ class CrownParametersPanel {
 			panel->showWidgets(panel->selectedSubcrown->shape);
 		} else
 		{
+			panel->selectedSubcrown = NULL;
 			panel->showWidgets(-1);
+			panel->params->crown->activeSubcrown = -1;
 		}
+		
+		DrawMethods::render();
 	}
 
 public:

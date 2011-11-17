@@ -18,8 +18,11 @@ GtkWidget *windowWidget;
 
 Model3d *model = NULL;
 static int triangles=0;
+static const GLfloat colorActive[] = {1, 1, 1};
+static const GLfloat colorActivePoint[] = {1, 0, 0};
+static const GLfloat colorUnactive[] = {0, 0.5, 1};
 class DrawMethods {
-
+	
 
 public:
 
@@ -191,20 +194,21 @@ if(mode==GL_SELECT)\
 
 	static void drawEnvelopes(Crown *crown) {
 		Crown *c = crown;
+		
 		for(unsigned int i=0; i<c->subcrowns.size(); i++)
 		{
 			Subcrown *sub = c->subcrowns.at(i);
 			if(sub->shape == SPLINE)
 			{
-				drawEnvelopeSpline((SplineCrown*)sub);
+				drawEnvelopeSpline((SplineCrown*)sub, crown->activeSubcrown == (int)i, SPLINE_CROWN(sub)->activePoint);
 			} else if(sub->shape == CYLINDER)
 			{
-				drawEnvelopeCylinder((CylinderCrown*)sub);
+				drawEnvelopeCylinder((CylinderCrown*)sub,crown->activeSubcrown == (int)i);
 			}
 		}
 	}
 
-	static void drawEnvelopeSpline(SplineCrown *splineCrown)
+	static void drawEnvelopeSpline(SplineCrown *splineCrown, bool active, int activeMainPoint)
 	{
 		glPushMatrix();
 
@@ -217,7 +221,7 @@ if(mode==GL_SELECT)\
 
 		glTranslatef(splineCrown->x, splineCrown->y, splineCrown->z);
 		for(int j=0; j<loops; j++) {
-			glColor3f (0, 0.5, 1);
+			glColor3fv(active?colorActive:colorUnactive);
 			glBegin(GL_LINE_STRIP);
 			for(int i=0; i<n+1; i++) {
 				float x, y;
@@ -233,35 +237,37 @@ if(mode==GL_SELECT)\
 			}
 			glEnd();
 
-			glPointSize(4);
-			glColor3f (1, 0, 1);
-			glBegin(GL_POINTS);
-			for(int i=0; i<N; i++)
+			if(active)
 			{
-				glVertex3f(splineCrown->crownMainPoints[i]->y,0,splineCrown->crownMainPoints[i]->x);
+				glPointSize(4);
+				glColor3fv(colorUnactive);
+				glBegin(GL_POINTS);
+				for(int i=0; i<N; i++)
+				{
+					if(activeMainPoint == i)
+					{
+						glColor3fv(colorActivePoint);
+						glVertex3f(splineCrown->crownMainPoints[i]->y,0,splineCrown->crownMainPoints[i]->x);
+						glColor3fv(colorUnactive);
+					} else
+						glVertex3f(splineCrown->crownMainPoints[i]->y,0,splineCrown->crownMainPoints[i]->x);
+				}
+				glEnd();
 			}
-			glEnd();
-
-			//float x_max, y_max;
-			//splineCrown->s->globalMax(&x_max, &y_max);
-			//glColor3f (1, 1, 1);
-			//glBegin(GL_POINTS);
-			//glVertex3f(y_max,0,x_max);
-			//glEnd();
 
 			glRotatef(360/loops,0,0,1);
 		}
 		glPopMatrix();
 	}
 
-	static void drawEnvelopeCylinder(CylinderCrown *cylinderCrown)
+	static void drawEnvelopeCylinder(CylinderCrown *cylinderCrown, bool active)
 	{
 		glPushMatrix();
 
 		int loops=12;//liczba petli
 		glTranslatef(cylinderCrown->x, cylinderCrown->y, 0);
 		for(int j=0; j<loops; j++) {
-			glColor3f (0, 0.5, 1);
+			glColor3fv(active?colorActive:colorUnactive);
 			glBegin(GL_LINE_STRIP);
 			glVertex3f(0, 0, cylinderCrown->z);
 			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z);
