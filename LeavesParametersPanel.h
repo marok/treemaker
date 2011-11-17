@@ -12,7 +12,7 @@ class LeavesParametersPanel {
 	GtkWidget *vbox;
 	GtkWidget *image;
 	GtkWidget *mainWindow;
-	//int activeLeaf;
+	GtkWidget *list;
 	vector<pair<string,GtkObject *> > adjustments;
 	vector<GtkWidget *> scales;
 
@@ -22,6 +22,7 @@ class LeavesParametersPanel {
              int active=lpp->params->lp->activeLeaf;\
              if(active!=-1){\
              lpp->params->lp->leaves[active].param = adj->value;\
+             lpp->params->lp->generateTypes();\
 	  }\
 	}
 	UNROLL_CALLBACK(leafSize);
@@ -35,15 +36,15 @@ class LeavesParametersPanel {
 		LeavesParametersPanel *lpp=(LeavesParametersPanel*)data;
 		dialog = gtk_file_chooser_dialog_new("Select bmp file with leaves texture",GTK_WINDOW(lpp->mainWindow),GTK_FILE_CHOOSER_ACTION_OPEN,GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,GTK_STOCK_OPEN,GTK_RESPONSE_ACCEPT,NULL);
 		if(gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_ACCEPT) {
-			//char *filename=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-			//char *tmpname=Bmp::generateIcon(filename);
-			//gtk_image_set_from_file(GTK_IMAGE(lpp->image),tmpname);
-			//		lpp->params->lp->setLeavesPath(filename);
-			//	lpp->params->lp->leavesTexInitialized=FALSE;
+			char *filename=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+			char *tmpname=Bmp::generateIcon(filename);
+			gtk_image_set_from_file(GTK_IMAGE(lpp->image),tmpname);
+			Leaf leaf(filename);
+			lpp->params->lp->leaves.push_back(leaf);
+			lpp->add_to_list(lpp->list,leaf.getTexName());
+			lpp->activateLeaf(leaf.getTexName());
 		}
 		gtk_widget_destroy(dialog);
-
-
 	}
 	void
 	init_list(GtkWidget *list)
@@ -92,7 +93,6 @@ class LeavesParametersPanel {
 		            GTK_TREE_SELECTION(widget), &model, &iter)) {
 			gtk_tree_model_get(model, &iter, 0, &value,  -1);
 			lpp->activateWidgets(1);
-
 			lpp->activateLeaf(value);
 			g_free(value);
 		}
@@ -134,7 +134,6 @@ public:
 	LeavesParametersPanel(GtkWidget *window,Parameters *params) {
 		this->params=params;
 		this->mainWindow=window;
-		//activeLeaf=-1;
 	}
 	GtkWidget* createPanel() {
 		GtkWidget *leavesWidget=gtk_frame_new("Leaves Parameters");
@@ -146,8 +145,7 @@ public:
 		GtkObject *adj;
 		gtk_container_add (GTK_CONTAINER (leavesWidget), vbox);
 
-
-		GtkWidget *list=gtk_tree_view_new();
+		list=gtk_tree_view_new();
 		gtk_box_pack_start(GTK_BOX(vbox),list,FALSE,FALSE,1);
 
 		init_list(list);
@@ -173,7 +171,7 @@ public:
 		    gtk_widget_show(scale);
 
 		PACK_LABEL_AND_SLIDER("Leaf size:",1,2,0.1,leafSize,1,"Size of a leaves on a tree");
-		PACK_LABEL_AND_SLIDER("Size deriviation:",0,0.5,0.1,sizeDeriviation,1,"Deriviation of a leaves size");
+		PACK_LABEL_AND_SLIDER("Size deriviation:",0,0.9,0.1,sizeDeriviation,1,"Deriviation of a leaves size");
 		PACK_LABEL_AND_SLIDER("Amount:",0,1,0.01,amount,2,"Amount of leaves that type");
 
 #undef PACK_LABEL_AND_SLIDER

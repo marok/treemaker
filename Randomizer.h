@@ -27,6 +27,8 @@ public:
 			unsigned int b=random()%(ceil/2);
 			return a+b;
 		}
+		assert(0);
+		return 0;
 	}
 
 };

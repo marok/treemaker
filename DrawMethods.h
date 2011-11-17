@@ -329,37 +329,37 @@ if(mode==GL_SELECT)\
 		glColor4f(1.0, 1.0, 1.0, 1.0);
 	}
 
-
-	static void drawLeaf(Point3d *p, Vector3d *dir,Parameters *params) {
-
-
-		/*static GLuint texId,maskId;
-
-		if(!params->lp->leavesTexInitialized) {
-			params->lp->leavesTexInitialized=1;
-			Bmp bmp,*mask;
-			bmp.load (params->lp->leavesPath);
-			mask=bmp.getMask();
-
-			glGenTextures (1, &texId);
-			glGenTextures(1,&maskId);
-			glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-			int height = bmp.header.biHeight;
-			int width = bmp.header.biWidth;
-			glBindTexture(GL_TEXTURE_2D,maskId);
-			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
-
-			glBindTexture(GL_TEXTURE_2D,texId);
-			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,GL_UNSIGNED_BYTE, mask->data);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
-			bmp.cleanup();
-			mask->cleanup();
-			delete mask;
-
+	static void initLeavesTextures(Parameters *params) {
+		/* Dla kazdej tekstury liscia, jesli nie zostala zainicjowana to ja inicjuj */
+		for(unsigned int i=0; i<params->lp->leaves.size(); i++) {
+			Leaf *leaf=&params->lp->leaves[i];
+			if(!leaf->leafTexInitialized) {
+				leaf->leafTexInitialized=TRUE;
+				Bmp bmp,*mask;
+				bmp.load (leaf->leafTexPath);
+				mask=bmp.getMask();
+				glGenTextures (1, &leaf->texId);
+				glGenTextures(1,&leaf->maskId);
+				glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+				glBindTexture(GL_TEXTURE_2D,leaf->maskId);
+				glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, bmp.header.biWidth, bmp.header.biHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
+				glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+				glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+				glBindTexture(GL_TEXTURE_2D,leaf->texId);
+				glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, bmp.header.biWidth, bmp.header.biHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, mask->data);
+				glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+				glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+				bmp.cleanup();
+				mask->cleanup();
+				delete mask;
+			}
 		}
+	}
+	static void drawLeaf(Point3d *p, Vector3d *dir,Parameters *params,unsigned int cnt) {
+		//nie ma zadnego aktywnego typu liscia
+		if(params->lp->types.size()==0) return;
+		initLeavesTextures(params);
+
 		glColor4f(0.0, 0, 0, 0); // reset gl color
 
 		Vector3d a, b;
@@ -375,9 +375,12 @@ if(mode==GL_SELECT)\
 		glEnable (GL_TEXTURE_2D);
 		glPushMatrix();
 		glTranslatef(p->x,p->y,p->z);
-		float size=params->lp->leavesSize;
+		unsigned int lastTypeId=cnt;
+		//float size=params->lp->leaves[0].leafSize;
 
-		#define TEXTURIZE\
+		unsigned int type=params->lp->types[lastTypeId].first;
+		float size=params->lp->types[lastTypeId].second;
+#define TEXTURIZE\
 		glBegin(GL_QUADS);\
 		{\
 			glTexCoord2f (0.0f, 0.0f);\
@@ -392,26 +395,26 @@ if(mode==GL_SELECT)\
 		glEnd();
 		//texture mask
 		glBlendFunc(GL_DST_COLOR,GL_ZERO);
-		glBindTexture(GL_TEXTURE_2D,texId);
+		glBindTexture(GL_TEXTURE_2D,params->lp->leaves[type].texId);
 		TEXTURIZE;
 
 		//texture image
 		glBlendFunc(GL_ONE,GL_ONE);
-		glBindTexture(GL_TEXTURE_2D,maskId);
+		glBindTexture(GL_TEXTURE_2D,params->lp->leaves[type].maskId);
 
 		TEXTURIZE;
 
-		#undef TEXTURIZE
+#undef TEXTURIZE
 
 		glPopMatrix();
 		glDisable (GL_TEXTURE_2D);
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
-		glColor4f(1.0, 1.0, 1.0, 1.0);*/
+		glColor4f(1.0, 1.0, 1.0, 1.0);
 
 	}
 
-	static void drawLeaves(BranchModel *bm,Parameters *params)
+	static void drawLeaves(BranchModel *bm,Parameters *params,unsigned int cnt)
 	{
 		if(!bm) return;
 
@@ -422,13 +425,13 @@ if(mode==GL_SELECT)\
 		leafVect->normalize();
 		leafVect->mul(1);
 
-
-		drawLeaf(leaf, leafVect,params);
+		drawLeaf(leaf, leafVect,params,cnt++);
+		if(cnt>=params->lp->types.size()) cnt=0;
 		delete leafVect;
 
 		for(unsigned int i = 0; i< bm->childBranches.size(); i++)
 		{
-			drawLeaves(bm->childBranches.at(i),params);
+			drawLeaves(bm->childBranches.at(i),params,cnt);
 		}
 
 	}
@@ -448,7 +451,7 @@ if(mode==GL_SELECT)\
 			else drawLines(bm,tp);
 			//drawLines(bm,tp);
 			if(params->rp->showLeaves)
-				drawLeaves(bm,params);
+				drawLeaves(bm,params,0);
 		}
 		if(cm->params->activeMethod==1) {
 			drawLines(bm,tp);

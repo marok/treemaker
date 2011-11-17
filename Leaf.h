@@ -20,6 +20,8 @@ public:
 	float leafSize;
 	float sizeDeriviation;
 	float amount;
+	unsigned int texId;	//opengl texture binding id
+	unsigned int maskId;	//opengl mask texture binding id
 
 	static const bool LEAFTEXINITIALIZED_DEFAULT=FALSE;
 	static const bool ACTIVE_DEFAULT=FALSE;
