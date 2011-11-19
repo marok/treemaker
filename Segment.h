@@ -11,8 +11,24 @@ public:
 	Segment()
 	{
 		index = -1;
+		for(int i=0; i<MAX_CIRCLE_PTS_COUNT; i++)
+		{
+			circlePts[i] = NULL;
+		}
 	}
-
+	
+	~Segment()
+	{
+		for(int i=0; i<MAX_CIRCLE_PTS_COUNT; i++)
+		{
+			if(circlePts[i]!=NULL)
+			{
+				delete circlePts[i];
+			}
+		}
+	}
+	
+	/*Współrzędne segmentu względem jego środka*/
 	Point3d * circlePts[MAX_CIRCLE_PTS_COUNT];
 
 	/*okresla ktory punkt z tego segmentu, polaczyc z circlePts[0] poprzedniego segmentu.

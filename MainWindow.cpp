@@ -77,8 +77,8 @@ ColonizationMethod *cm = NULL;
 ParticleMethod *pm = NULL;
 //TrunkParameters *tp =NULL;
 DrawMethods *dm = NULL;
-BranchModel *bm = NULL;
-	Parameters *parameters;
+Model3d *model = NULL;
+Parameters *parameters;
 
 
 class MainWindow
@@ -181,32 +181,6 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (parameters);
-		
-		//DrawMethods::drawGrass();
-
-//		Node *a, *b, *c, *d;
-//		a = new Node(0, 0, 0);
-//		b = new Node(0, 2, 0);
-//		c = new Node(1, 4, 0);
-//		d = new Node(-1, 4, 0);
-//
-//		a->addChildren(b);
-//		b->addChildren(c);
-//		b->addChildren(d);
-//
-//		a->r = 1;
-//		b->r = 0.75;
-//		c->r = 0.5;
-//		d->r = 0.4;
-//
-//		BranchModel* bm = Model3d::node2BranchModel(a);
-//
-//		Model3d::computeSegment(bm);
-//		Model3d::computeConnectedPts(bm);
-//
-//		DrawMethods::drawLines(bm);
-//
-//		printBranch(bm);
 
 		if(coordinates){
 			DrawMethods::drawCoordinates (GL_RENDER);

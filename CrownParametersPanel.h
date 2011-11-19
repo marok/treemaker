@@ -301,10 +301,10 @@ public:
 		GtkTooltips *tooltips=gtk_tooltips_new();
 		GtkWidget *label, *scale;
 
-#define PACK_LABEL_AND_SLIDER(text, adj ,cb,hint,type)\
+#define PACK_LABEL_AND_SLIDER(text, adj , min,cb,hint,type)\
     hbox = gtk_hbox_new(FALSE,1);\
     label = gtk_label_new(text);\
-    adj=gtk_adjustment_new(0,-20, 20, 0.1 ,1,0);\
+    adj=gtk_adjustment_new(0, min, 20, 0.1 ,1,0);\
     g_signal_connect(adj,"value_changed",G_CALLBACK(cb),this);\
     scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
     crownWidgets.push_back(pair<int, GtkWidget *>(type, scale));\
@@ -316,24 +316,23 @@ public:
     gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
     gtk_widget_show(hbox);
 
-		PACK_LABEL_AND_SLIDER("X:", xAdj, crownXChanged, "sdfgdfg", -1);
-		PACK_LABEL_AND_SLIDER("Y:", yAdj, crownYChanged, "sdfgdfg", -1);
-		PACK_LABEL_AND_SLIDER("Z:", zAdj, crownZChanged, "sdfgdfg", -1);
-		PACK_LABEL_AND_SLIDER("H:", hAdj, crownHChanged, "sdfgdfg", CYLINDER);
-		PACK_LABEL_AND_SLIDER("R:", rAdj, crownRChanged, "sdfgdfg", CYLINDER);
+		PACK_LABEL_AND_SLIDER("X:", xAdj, -20, crownXChanged, "sdfgdfg", -1);
+		PACK_LABEL_AND_SLIDER("Y:", yAdj, -20, crownYChanged, "sdfgdfg", -1);
+		PACK_LABEL_AND_SLIDER("Z:", zAdj, 0, crownZChanged, "sdfgdfg", -1);
+		PACK_LABEL_AND_SLIDER("H:", hAdj, 0, crownHChanged, "sdfgdfg", CYLINDER);
+		PACK_LABEL_AND_SLIDER("R:", rAdj, 0, crownRChanged, "sdfgdfg", CYLINDER);
 
 #undef PACK_LABEL_AND_SLIDER
 
+		GtkWidget *splineCrownPanel  = scpp->createPanel();
+		gtk_box_pack_start(GTK_BOX(vbox), splineCrownPanel, FALSE, FALSE, 2);
+		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, splineCrownPanel));
 
 		deleteButton = gtk_button_new_with_label("Delete selected crown");
 		g_signal_connect(G_OBJECT(deleteButton), "clicked", G_CALLBACK(this->deleteCrownClicked), this);
 		gtk_box_pack_start(GTK_BOX(vbox), deleteButton, FALSE, FALSE, 2);
 		crownWidgets.push_back(pair<int, GtkWidget *>(-1, deleteButton));
-
 		
-		GtkWidget *splineCrownPanel  = scpp->createPanel();
-		gtk_box_pack_start(GTK_BOX(vbox), splineCrownPanel, FALSE, FALSE, 2);
-		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, splineCrownPanel));
 
 		gtk_container_add(GTK_CONTAINER(crownWidget), vbox);
 		gtk_widget_show(vbox);

@@ -56,7 +56,7 @@ class MethodParametersPanel {
 				delete model;
 			model =new Model3d(mpp->pm->getRoot(),mpp->tp);
 		}
-		bm = model->generateModel();
+		model->generateModel();
 		DrawMethods::render();
 	}
 	static void algorithmSelected(GtkWidget *widget, gpointer data) {

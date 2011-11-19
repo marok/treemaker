@@ -7,7 +7,7 @@
 extern ColonizationMethod *cm;
 extern ParticleMethod *pm;
 extern int grid;
-extern BranchModel *bm;
+extern Model3d *model;
 
 #endif	/* GLOBALVAR_H */
 

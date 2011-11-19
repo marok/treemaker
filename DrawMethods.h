@@ -14,9 +14,11 @@
 
 #include <cmath>
 
+#define VERTEX(point) glVertex3f(point.x,point.y,point.z)
+#define VERTEX_TRANS(point,trans_point) glVertex3f(point.x+trans_point.x,point.y+trans_point.y,point.z+trans_point.z)
+
 GtkWidget *windowWidget;
 
-Model3d *model = NULL;
 static int triangles=0;
 static const GLfloat colorActive[] = {1, 1, 1};
 static const GLfloat colorActivePoint[] = {1, 0, 0};
@@ -115,19 +117,29 @@ if(mode==GL_SELECT)\
 				int i1 = (i0+1)%tp->circlePoints;
 				int j1 = (j0+1)%tp->circlePoints;
 
+				Point3d rootAbs, childAbs;
+				rootAbs = bm->getAbsoluteNodePosition(root);
+				childAbs = bm->getAbsoluteNodePosition(child);
+				
 				glTexCoord2f (0.0f, 0.0f);
-				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
+				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				glTexCoord2f (1.0f, 0.0f);
-				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j0]));
+				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
 				glTexCoord2f (1.0f, 1.0f);
-				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+				//glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
 
 				glTexCoord2f (0.0f, 0.0f);
-				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
+				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				glTexCoord2f (0.0f, 1.0f);
-				glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i1]));
+				//glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
 				glTexCoord2f (1.0f, 1.0f);
-				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+				//glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
 				triangles+=2;
 			}
 
@@ -140,51 +152,89 @@ if(mode==GL_SELECT)\
 			drawTrunk(bm->childBranches.at(i), params);
 		}
 	}
-
+	
+	static void drawNodes(Node *node)
+	{
+		if(!node)
+			return;
+		
+		glPointSize(3);
+		glColor3f(1,0,1);
+		glBegin(GL_POINTS);
+		glVertex3f(node->point.x, node->point.y, node->point.z);
+		glEnd();
+		for(int i=0; i< node-> getChildLen(); i++)
+		{
+			drawNodes(node->getChildAt(i));
+		}
+	}
 
 	static void drawLines(BranchModel *bm, TrunkParameters *tp)
 	{
 		if(bm==NULL) return;
+		
 		glColor3f(1,0.5,0);
 		int nodeModelListLen = bm->nodeModelList.size();
+		Point3d branchAbs  = bm->getAbsolutePosition();
 		for(int i=0; i<nodeModelListLen-1; i++)
 		{
-			NodeModel *root= bm->nodeModelList.at(i);
+			NodeModel *node= bm->nodeModelList.at(i);
 			NodeModel *child = bm->nodeModelList.at(i+1);
 			int index = child->segment->index;
 
+			Point3d nodeAbs;
+			nodeAbs.add(branchAbs);
+			nodeAbs.add(*node->position);
+			
+			Point3d childAbs;
+			childAbs.add(branchAbs);
+			childAbs.add(*child->position);
+			
 			glBegin(GL_LINES);
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				int j0 = (index + i0) % tp->circlePoints;
 
+				Point3d circAbs;
+				circAbs.add(nodeAbs);
+				circAbs.add(*node->segment->circlePts[i0]);
+				glVertex3f(circAbs.x, circAbs.y, circAbs.z);
+				
+				
+				Point3d circChildAbs;
+				circChildAbs.add(childAbs);
+				circChildAbs.add(*child->segment->circlePts[j0]);
+				glVertex3f(circChildAbs.x, circChildAbs.y, circChildAbs.z);
+				
 				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-				int i1 = (i0+1)%tp->circlePoints;
-				int j1 = (j0+1)%tp->circlePoints;
-
-				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-
-				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-				glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
-				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-				triangles+=2;
+//				int i1 = (i0+1)%tp->circlePoints;
+//				int j1 = (j0+1)%tp->circlePoints;
+//
+//				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+//				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+//				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+//
+//				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+//				glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
+//				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+//				triangles+=2;
 			}
 			glEnd();
-			/* Rysowanie pkt nodow
-			glPointSize(3);
-			glColor3f(1,0,0);
-			glBegin(GL_POINTS);
-			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
-				int j0 = (index + i0) % tp->circlePoints;
-
-				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-			}
-			glEnd();*/
+			
+			
 		}
+		//Rysowanie pkt nodow
+		Point3d abs = bm->getAbsolutePosition();
 
+		glPointSize(3);
+		glColor3f(1, 0, 0);
+		glBegin(GL_POINTS);
+		for (unsigned int j = 0; j < bm->nodeModelList.size(); j++) {
+			NodeModel *node = bm->nodeModelList[j];
+			glVertex3f(abs.x + node->position->x, abs.y + node->position->y, abs.z + node->position->z);
+		}
+		glEnd();
+		
 		int len = bm->childBranches.size();
 		for (int i = 0; i < len; i++) {
 			drawLines(bm->childBranches.at(i), tp);
@@ -282,7 +332,7 @@ if(mode==GL_SELECT)\
 	static void drawPoints(std::vector<Point3d *> points)
 	{
 		glPointSize(3);
-		glColor3f (1, 0, 0);
+		glColor3f (1, 0, 1);
 		glBegin(GL_POINTS);
 		for(unsigned int i=0; i<points.size(); i++)
 		{
@@ -420,18 +470,19 @@ if(mode==GL_SELECT)\
 
 	}
 
-	static void drawLeaves(BranchModel *bm,Parameters *params,unsigned int cnt)
+	static void drawLeaves(BranchModel *bm, Parameters *params,unsigned int cnt)
 	{
 		if(!bm) return;
 
-		Point3d *leaf = &bm->nodeModelList.at(bm->nodeModelList.size()-1)->node->point;
-		Point3d *befLeaf = &bm->nodeModelList.at(bm->nodeModelList.size()-2)->node->point;
+		Point3d *leaf = bm->nodeModelList.at(bm->nodeModelList.size()-1)->position;
+		Point3d *befLeaf = bm->nodeModelList.at(bm->nodeModelList.size()-2)->position;
 
 		Vector3d *leafVect = new Vector3d(befLeaf, leaf);
 		leafVect->normalize();
 		leafVect->mul(1);
 
-		drawLeaf(leaf, leafVect,params,cnt++);
+		Point3d leafPoint = bm->getAbsoluteNodePosition(bm->nodeModelList.at(bm->nodeModelList.size()-1));
+		drawLeaf(&leafPoint, leafVect,params,cnt++);
 		if(cnt>=params->lp->types.size()) cnt=0;
 		delete leafVect;
 
@@ -442,7 +493,7 @@ if(mode==GL_SELECT)\
 
 	}
 
-	static void drawTreeModel (Parameters *params) {
+	static void drawTreeModel (Parameters *params) {		
 		glPushMatrix();
 		TrunkParameters *tp=params->tp;
 		//triangles=0;
@@ -453,14 +504,14 @@ if(mode==GL_SELECT)\
 			drawEnvelopes(params->crown);
 		if(cm->params->activeMethod==0) {
 			if(params->rp->showBark)
-				drawTrunk(bm,params);
-			else drawLines(bm,tp);
-			//drawLines(bm,tp);
+				drawTrunk(model?model->getBranchModel():NULL, params);
+			else drawLines(model?model->getBranchModel():NULL, tp);
+
 			if(params->rp->showLeaves)
-				drawLeaves(bm,params,0);
+				drawLeaves(model?model->getBranchModel():NULL, params,0);
 		}
 		if(cm->params->activeMethod==1) {
-			drawLines(bm,tp);
+			drawLines(model?model->getBranchModel():NULL,tp);
 		}
 		//g_print("triangles: %d\n",triangles);
 		glPopMatrix();

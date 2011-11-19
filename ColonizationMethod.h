@@ -179,6 +179,34 @@ public:
 			prvNode = newNode;
 		}
 		colonize ();
+		
+//		nodes.clear();
+//		Node *a, *b, *c, *d, *e, *f;
+//		a = new Node(0, 0, 0);
+//		a->r = 5;
+//		b = new Node(0, 0, 1);
+//		b->r = 4;
+//		c = new Node(0, 1, 1);
+//		c->r = 2;
+//		d = new Node(0, 2, 1);
+//		d->r = 1.5;
+//		e = new Node(0, 1, 2);
+//		e->r = 1;
+//		f = new Node(0, 0, 2);
+//		f->r = 3;
+//		
+//		a->addChildren(b);
+//		b->addChildren(c);
+//		b->addChildren(f);
+//		c->addChildren(d);
+//		c->addChildren(e);
+//		
+//		nodes.push_back(a);
+//		nodes.push_back(b);
+//		nodes.push_back(c);
+//		nodes.push_back(d);
+//		nodes.push_back(e);
+//		nodes.push_back(f);
 	}
 	Node *getRoot() {
 		return (nodes.size()==0)?NULL:nodes[0];
