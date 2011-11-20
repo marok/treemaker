@@ -24,7 +24,7 @@ static const GLfloat colorActive[] = {1, 1, 1};
 static const GLfloat colorActivePoint[] = {1, 0, 0};
 static const GLfloat colorUnactive[] = {0, 0.5, 1};
 class DrawMethods {
-	
+
 
 public:
 
@@ -120,7 +120,7 @@ if(mode==GL_SELECT)\
 				Point3d rootAbs, childAbs;
 				rootAbs = bm->getAbsoluteNodePosition(root);
 				childAbs = bm->getAbsoluteNodePosition(child);
-				
+
 				glTexCoord2f (0.0f, 0.0f);
 				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
 				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
@@ -152,12 +152,12 @@ if(mode==GL_SELECT)\
 			drawTrunk(bm->childBranches.at(i), params);
 		}
 	}
-	
+
 	static void drawNodes(Node *node)
 	{
 		if(!node)
 			return;
-		
+
 		glPointSize(3);
 		glColor3f(1,0,1);
 		glBegin(GL_POINTS);
@@ -172,7 +172,7 @@ if(mode==GL_SELECT)\
 	static void drawLines(BranchModel *bm, TrunkParameters *tp)
 	{
 		if(bm==NULL) return;
-		
+
 		glColor3f(1,0.5,0);
 		int nodeModelListLen = bm->nodeModelList.size();
 		Point3d branchAbs  = bm->getAbsolutePosition();
@@ -185,11 +185,11 @@ if(mode==GL_SELECT)\
 			Point3d nodeAbs;
 			nodeAbs.add(branchAbs);
 			nodeAbs.add(*node->position);
-			
+
 			Point3d childAbs;
 			childAbs.add(branchAbs);
 			childAbs.add(*child->position);
-			
+
 			glBegin(GL_LINES);
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				int j0 = (index + i0) % tp->circlePoints;
@@ -198,13 +198,13 @@ if(mode==GL_SELECT)\
 				circAbs.add(nodeAbs);
 				circAbs.add(*node->segment->circlePts[i0]);
 				glVertex3f(circAbs.x, circAbs.y, circAbs.z);
-				
-				
+
+
 				Point3d circChildAbs;
 				circChildAbs.add(childAbs);
 				circChildAbs.add(*child->segment->circlePts[j0]);
 				glVertex3f(circChildAbs.x, circChildAbs.y, circChildAbs.z);
-				
+
 				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
 //				int i1 = (i0+1)%tp->circlePoints;
@@ -220,8 +220,8 @@ if(mode==GL_SELECT)\
 //				triangles+=2;
 			}
 			glEnd();
-			
-			
+
+
 		}
 		//Rysowanie pkt nodow
 		Point3d abs = bm->getAbsolutePosition();
@@ -234,7 +234,7 @@ if(mode==GL_SELECT)\
 			glVertex3f(abs.x + node->position->x, abs.y + node->position->y, abs.z + node->position->z);
 		}
 		glEnd();
-		
+
 		int len = bm->childBranches.size();
 		for (int i = 0; i < len; i++) {
 			drawLines(bm->childBranches.at(i), tp);
@@ -244,7 +244,7 @@ if(mode==GL_SELECT)\
 
 	static void drawEnvelopes(Crown *crown) {
 		Crown *c = crown;
-		
+
 		for(unsigned int i=0; i<c->subcrowns.size(); i++)
 		{
 			Subcrown *sub = c->subcrowns.at(i);
@@ -493,7 +493,7 @@ if(mode==GL_SELECT)\
 
 	}
 
-	static void drawTreeModel (Parameters *params) {		
+	static void drawTreeModel (Parameters *params) {
 		glPushMatrix();
 		TrunkParameters *tp=params->tp;
 		//triangles=0;

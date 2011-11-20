@@ -68,16 +68,7 @@ class MethodParametersPanel {
 
 	}
 
-	void hideWidgets(gint active) {
 
-		for(unsigned int i=0; i<methodWidgets.size(); i++) {
-			GtkWidget *w=methodWidgets[i].second;
-			if(methodWidgets[i].first!=active)
-				gtk_widget_hide(w);
-			else
-				gtk_widget_show(w);
-		}
-	}
 
 
 public:
@@ -158,6 +149,16 @@ public:
 
 		hideWidgets(cm->params->ACTIVEMETHOD_DEFAULT);
 		return paramsWidget;
+	}
+	void hideWidgets(gint active) {
+
+		for(unsigned int i=0; i<methodWidgets.size(); i++) {
+			GtkWidget *w=methodWidgets[i].second;
+			if(methodWidgets[i].first!=active)
+				gtk_widget_hide(w);
+			else
+				gtk_widget_show(w);
+		}
 	}
 };
 

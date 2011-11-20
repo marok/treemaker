@@ -16,7 +16,7 @@ public:
 			circlePts[i] = NULL;
 		}
 	}
-	
+
 	~Segment()
 	{
 		for(int i=0; i<MAX_CIRCLE_PTS_COUNT; i++)
@@ -27,7 +27,7 @@ public:
 			}
 		}
 	}
-	
+
 	/*Współrzędne segmentu względem jego środka*/
 	Point3d * circlePts[MAX_CIRCLE_PTS_COUNT];
 

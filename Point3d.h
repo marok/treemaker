@@ -37,21 +37,21 @@ public:
 			return 1;
 		return 0;
 	}
-	
+
 	void sub(const Point3d p)
 	{
 		x -= p.x;
 		y -= p.y;
 		z -= p.z;
 	}
-	
+
 	void add(const Point3d p)
 	{
 		x += p.x;
 		y += p.y;
 		z += p.z;
 	}
-	
+
 	void print ()
 	{
 		printf ("%f %f %f\n", x, y, z);

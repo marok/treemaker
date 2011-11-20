@@ -1,7 +1,8 @@
 #ifndef _TRUNK_PARAMETERS_H
 #define _TRUNK_PARAMETERS_H
 #include <cstring>
-
+#include <fstream>
+#include <iostream>
 class TrunkParameters {
 public:
 #define MAXPATHLEN 256
@@ -30,6 +31,32 @@ public:
 	void setBarkPath(char *path) {
 		assert(strlen(path)<MAXPATHLEN);
 		strcpy(barkPath,path);
+	}
+	/* Serialization methods */
+
+	void save(ofstream &s)
+	{
+#define SAVE(param) s<<param<<endl;
+
+		SAVE(radiusFactor);
+		SAVE(circlePoints);
+		SAVE(aValue);
+		SAVE(mValue);
+		SAVE(barkPath);
+
+#undef SAVE
+	}
+	void load(ifstream &s)
+	{
+		barkTexInitialized=FALSE;
+#define LOAD(param) s>>param;
+
+		LOAD(radiusFactor);
+		LOAD(circlePoints);
+		LOAD(aValue);
+		LOAD(mValue);
+
+#undef LOAD
 	}
 #undef MAXPATHLEN
 };

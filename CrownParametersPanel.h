@@ -16,7 +16,7 @@ class CrownParametersPanel {
 
 	GtkWidget *editButton;
 	GtkWidget *deleteButton;
-	
+
 	GtkWidget *mainWindow;
 	Parameters *params;
 
@@ -194,9 +194,9 @@ class CrownParametersPanel {
 		{
 			gtk_tree_model_get (model, &iter, 0, &id, -1);
 			panel->selectedSubcrown = panel->params->crown->subcrowns.at(id);
-			
+
 			panel->params->crown->activeSubcrown = id;
-			
+
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->xAdj), panel->selectedSubcrown->x);
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->yAdj), panel->selectedSubcrown->y);
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->zAdj), panel->selectedSubcrown->z);
@@ -221,7 +221,7 @@ class CrownParametersPanel {
 			panel->showWidgets(-1);
 			panel->params->crown->activeSubcrown = -1;
 		}
-		
+
 		DrawMethods::render();
 	}
 
@@ -234,7 +234,7 @@ public:
 
 	GtkWidget* createPanel() {
 		GtkWidget *crownWidget = gtk_frame_new("Crown Parameters");
-		
+
 		scpp = new SplineCrownParametersPanel();
 
 		GtkWidget *hbox;
@@ -332,7 +332,7 @@ public:
 		g_signal_connect(G_OBJECT(deleteButton), "clicked", G_CALLBACK(this->deleteCrownClicked), this);
 		gtk_box_pack_start(GTK_BOX(vbox), deleteButton, FALSE, FALSE, 2);
 		crownWidgets.push_back(pair<int, GtkWidget *>(-1, deleteButton));
-		
+
 
 		gtk_container_add(GTK_CONTAINER(crownWidget), vbox);
 		gtk_widget_show(vbox);

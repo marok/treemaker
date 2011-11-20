@@ -1,6 +1,8 @@
 #ifndef _LEAF_H
 #define _LEAF_H
 #include <cstring>
+#include <fstream>
+#include <iostream>
 class Leaf {
 
 #define MAXPATHLEN		256
@@ -46,6 +48,30 @@ public:
 		if(p==NULL)
 			return p;
 		return p+1;
+	}
+	/* Serialization methods */
+	void save(ofstream &s)
+	{
+#define SAVE(param) s<<param<<endl;
+
+		SAVE(leafTexPath);
+		SAVE(leafSize);
+		SAVE(sizeDeriviation);
+		SAVE(amount);
+
+#undef SAVE
+	}
+	void load(ifstream &s)
+	{
+		leafTexInitialized=FALSE;
+#define LOAD(param) s>>param;
+
+		LOAD(leafTexPath);
+		LOAD(leafSize);
+		LOAD(sizeDeriviation);
+		LOAD(amount);
+
+#undef LOAD
 	}
 
 };

@@ -1,6 +1,8 @@
 #ifndef _LEAVESPARAMETERS_H
 #define _LEAVESPARAMETERS_H
 #include <vector>
+#include <fstream>
+#include <iostream>
 #include "Leaf.h"
 using namespace std;
 class LeavesParameters {
@@ -78,6 +80,22 @@ public:
 		}
 	}
 
+	/* Serialization methods */
+	void save(ofstream &s)
+	{
+		s<<leaves.size()<<endl;
+		for(unsigned int i=0; i<leaves.size(); i++)
+			leaves[i].save(s);
+	}
+	void load(ifstream &s)
+	{
+		activeLeaf=-1;
+		unsigned int x;
+		s>>x;
+		for(unsigned int i=0; i<x; i++)
+			leaves[i].load(s);
+		generateTypes();
+	}
 };
 
 #endif

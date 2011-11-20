@@ -11,26 +11,26 @@ public:
 	Point3d *position;
 	Segment *segment;
 	float r;
-	
+
 	NodeModel(Point3d *relativePosition, float r)
 	{
 		this->position = relativePosition;
 		this->r = r;
 	}
-	
+
 	NodeModel(Point3d absoultePosition, Point3d branchPosition, float r)
 	{
 		this->position = new Point3d(&absoultePosition);
 		this->position->sub(&branchPosition);
 		this->r = r;
 	}
-	
+
 	~NodeModel()
 	{
 		delete segment;
 		delete position;
 	}
-	
+
 	//zwraca punkt segmentu, względem początka gałęzi
 	Point3d getSegmentPointRel2BranchAt(int i)
 	{

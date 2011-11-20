@@ -16,7 +16,7 @@ class Model3d {
 	Node *root;
 	TrunkParameters *tp;
 	BranchModel *bm;
-	
+
 	void computeSegment(BranchModel *bm) {
 		Vector3d *norm;
 
@@ -207,7 +207,7 @@ class Model3d {
 		while(node)
 		{
 			branch->addNewNodeModel(node);
-			
+
 			int nodeChildrenLen = node->getChildLen();
 
 			if(nodeChildrenLen > 1)
@@ -233,11 +233,11 @@ class Model3d {
 			branch->nodeModelList[0]->r = branch->nodeModelList[1]->r;
 		return branch;
 	}
-	
+
 //	BranchModel* smoothBranch(BranchModel *bm)
 //	{
 //		BranchModel *result = new BranchModel();
-//		
+//
 //		for(unsigned int i=0; i < bm->nodeModelList.size(); i++)
 //		{
 //			Node *node;
@@ -300,10 +300,10 @@ class Model3d {
 //					result->addNodeModel(new NodeModel(node));
 //				}
 //		}
-//		
+//
 //		return result;
 //	}
-	
+
 	void printBranches(BranchModel *bm, int ind)
 	{
 		printf("%d branch: ",ind);
@@ -317,7 +317,7 @@ class Model3d {
 			printf("Node ");
 			node->position->print();
 		}
-		
+
 		int len = bm->childBranches.size();
 		for (int i = 0; i < len; i++) {
 			printBranches(bm->childBranches.at(i), ind+1);
@@ -329,7 +329,7 @@ public:
 		this->root = root;
 		this->tp=tp;
 	}
-	
+
 	~Model3d()
 	{
 		delete this->bm;

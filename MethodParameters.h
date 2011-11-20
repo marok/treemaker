@@ -3,7 +3,9 @@
 #include "Randomizer.h"
 #include "Point2d.h"
 #include <vector>
-
+#include <fstream>
+#include <iostream>
+using namespace std;
 class MethodParameters {
 protected:
 	void init() {
@@ -50,6 +52,42 @@ public:
 
 	MethodParameters() {
 		init();
+	}
+	/* Serialization methods */
+	void save(ofstream &s)
+	{
+#define SAVE(param) s<<param<<endl;
+
+		SAVE(seed);
+		SAVE(points);
+		SAVE(crownRadius);
+		SAVE(D);
+		SAVE(activeMethod);
+		SAVE(di);
+		SAVE(dk);
+		SAVE(maxRounds);
+		SAVE(ie);
+		SAVE(cd);
+		SAVE(attraction);
+
+#undef SAVE
+	}
+	void load(ifstream &s)
+	{
+#define LOAD(param) s>>param;
+
+		LOAD(seed);
+		LOAD(points);
+		LOAD(crownRadius);
+		LOAD(D);
+		LOAD(activeMethod);
+		LOAD(di);
+		LOAD(dk);
+		LOAD(maxRounds);
+		LOAD(ie);
+		LOAD(cd);
+		LOAD(attraction);
+#undef LOAD
 	}
 };
 

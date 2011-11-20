@@ -28,6 +28,7 @@
 #include "RenderingParametersPanel.h"
 #include "LeavesParametersPanel.h"
 #include "CrownParametersPanel.h"
+#include "Toolbar.h"
 
 #include "Spline.h"
 
@@ -377,9 +378,6 @@ class MainWindow
 		hbox = gtk_hbox_new (FALSE, 0);
 		vbox = gtk_vbox_new(FALSE,1);
 		gtk_container_add (GTK_CONTAINER (window), hbox);
-		//gtk_container_add(GTK_CONTAINER(window),vbox);
-		gtk_widget_show (hbox);
-		gtk_widget_show (vbox);
 
 		/*
 		 * Drawing area to draw OpenGL scene.
@@ -429,6 +427,13 @@ class MainWindow
 		gtk_box_pack_start (GTK_BOX (hbox), drawing_area, TRUE, TRUE, 0);
 
 		gtk_widget_show (drawing_area);
+		
+			  // Toolbar
+	
+	Toolbar *tbar=new Toolbar(parameters);
+  gtk_box_pack_start(GTK_BOX(vbox), tbar->createToolbar(), FALSE, FALSE, 5);
+  
+		
 
 		/*
 		 * Popup menu.
@@ -440,8 +445,6 @@ class MainWindow
 		                          "button_press_event",
 		                          G_CALLBACK (button_press_event_popup_menu),
 		                          menu);
-		//GtkWidget *otherParameters;
-		//otherParameters=gtk_frame_new("Other Parameters");
 
 		TrunkParametersPanel *tpp=new TrunkParametersPanel(window,parameters);
 		GtkWidget *trunkParameters=tpp->createPanel();
@@ -461,7 +464,6 @@ class MainWindow
 
 
 		label=gtk_label_new("T");
-		//gtk_notebook_append_page(GTK_NOTEBOOK(notebook),otherParameters,label);
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trunkParameters,label);
 
 		LeavesParametersPanel *lpp=new LeavesParametersPanel(window,parameters);
@@ -473,12 +475,12 @@ class MainWindow
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
 		
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
-//		gtk_widget_show(trunkParameters);
-		gtk_widget_show(notebook);
 
 		//g_timeout_add (1000,
 		//                 (GSourceFunc) timeout,
 		//                  window);
+		gtk_widget_show_all(window);
+		mpanel->hideWidgets(0);//hak potrzebny zeby sie pokazaly tylko potrzebne parametry
 
 		windowWidget=window;
 		return window;

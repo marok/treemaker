@@ -39,5 +39,20 @@ public:
 		//crown->subcrowns.push_back(sCrown2);
 		//crown->subcrowns.push_back(sCrown3);
 	}
+	/* Serialization methods */
+	void save(ofstream &s)
+	{
+		rp->save(s);
+		tp->save(s);
+		lp->save(s);
+		methodParams->save(s);
+	}
+	void load(ifstream &s)
+	{
+		rp->load(s);
+		rp->load(s);
+		lp->load(s);
+		methodParams->load(s);
+	}
 };
 #endif

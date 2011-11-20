@@ -10,14 +10,14 @@ class SplineCrownParametersPanel
 {
 	GtkListStore *splineCrownStore;
 	GtkWidget *splineCrownList;
-	
+
 	GtkWidget *splinePointVBox;
 	GtkWidget* deleteSplinePointButton;
 
 	GtkObject *splineXAdj, *splineYAdj;
-	
+
 	SplineCrown *selectedSplineCrown;
-	
+
 	void populateSplineCrownList(SplineCrown *splineCrown) {
 		for (unsigned int i = 0; i < splineCrown->crownMainPoints.size(); i++) {
 			Point2d *p = splineCrown->crownMainPoints.at(i);
@@ -25,13 +25,13 @@ class SplineCrownParametersPanel
 			GtkTreeIter iter;
 			gtk_list_store_append(splineCrownStore, &iter);
 			gtk_list_store_set(splineCrownStore, &iter,
-				0, i,
-				1, p->x,
-				2, p->y,
-				-1);
+			                   0, i,
+			                   1, p->x,
+			                   2, p->y,
+			                   -1);
 		}
 	}
-	
+
 	void updateSelectedSplinePointItem()
 	{
 		Point2d* p = selectedSplineCrown->crownMainPoints[selectedSplineCrown->activePoint];
@@ -47,7 +47,7 @@ class SplineCrownParametersPanel
 			                   -1);
 		}
 	}
-	
+
 	static void addSplinePoint( GtkWidget *widget ,gpointer data )
 	{
 		SplineCrownParametersPanel *panel = (SplineCrownParametersPanel*) data;
@@ -65,7 +65,7 @@ class SplineCrownParametersPanel
 		panel->populateSplineCrownList(panel->selectedSplineCrown);
 		DrawMethods::render();
 	}
-	
+
 	static void deleteSplinePoint( GtkWidget *widget ,gpointer data )
 	{
 		SplineCrownParametersPanel *panel = (SplineCrownParametersPanel*) data;
@@ -128,10 +128,10 @@ class SplineCrownParametersPanel
 			gtk_widget_show(panel->splinePointVBox);
 			if(panel->selectedSplineCrown->crownMainPoints.size() > 2)
 				gtk_widget_set_sensitive(panel->deleteSplinePointButton, TRUE);
-			
+
 			float size = panel->selectedSplineCrown->crownMainPoints.size();
 			float activePoint = panel->selectedSplineCrown->activePoint;
-			
+
 			if(activePoint > 0 && activePoint < size-1)
 			{
 				float xPrev = panel->selectedSplineCrown->crownMainPoints[activePoint-1]->x;
@@ -152,7 +152,7 @@ class SplineCrownParametersPanel
 				gtk_adjustment_set_lower(GTK_ADJUSTMENT(panel->splineXAdj), xNext + 0.1);
 				gtk_adjustment_set_upper(GTK_ADJUSTMENT(panel->splineXAdj), x + 5);
 			}
-			
+
 			Point2d* p = panel->selectedSplineCrown->crownMainPoints[activePoint];
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->splineXAdj), p->x);
 			gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->splineYAdj), p->y);
@@ -169,24 +169,24 @@ public:
 	{
 		this->selectedSplineCrown = NULL;
 	}
-	
+
 	void updatePanel(SplineCrown *selectedSplineCrown)
 	{
 		this->selectedSplineCrown = selectedSplineCrown;
-		
+
 		gtk_list_store_clear(this->splineCrownStore);
 		populateSplineCrownList(selectedSplineCrown);
 	}
-	
+
 	GtkWidget* createPanel()
 	{
 		GtkWidget *resultVBox = gtk_vbox_new(FALSE,1);
 		GtkWidget *hbox = gtk_hbox_new(FALSE, 1);
 		gtk_box_pack_start(GTK_BOX(resultVBox), hbox, FALSE, FALSE, 1);
-		
+
 		splineCrownStore = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_FLOAT, G_TYPE_FLOAT);
 		splineCrownList = gtk_tree_view_new_with_model(GTK_TREE_MODEL(splineCrownStore));
-		
+
 		GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn *column;
 #define ADD_COLUMN(header, col_num)\
@@ -199,7 +199,7 @@ public:
 
 		gtk_box_pack_start(GTK_BOX(hbox), splineCrownList, FALSE, FALSE, 2);
 		g_object_unref(G_OBJECT(splineCrownStore));
-		
+
 		/*list selection*/
 		GtkTreeSelection *selectSplinePoint;
 
@@ -235,7 +235,7 @@ public:
     gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
     gtk_box_pack_start(GTK_BOX(hbox),scale,TRUE,TRUE,0);\
     gtk_tooltips_set_tip(tooltips,scale,hint,NULL);\
-
+ 
 		PACK_LABEL_AND_SLIDER("X:", splineXAdj, splineXChanged, "sdfgdfg");
 		PACK_LABEL_AND_SLIDER("Y:", splineYAdj, splineYChanged, "sdfgdfg");
 
@@ -244,7 +244,7 @@ public:
 		gtk_widget_show_all(resultVBox);
 		gtk_widget_hide(resultVBox);
 		gtk_widget_hide(splinePointVBox);
-		
+
 		return resultVBox;
 	}
 };

@@ -10,11 +10,11 @@ private:
 	MethodParameters *params;
 public:
 	std::vector<Subcrown *> subcrowns;
-	
+
 	//aktualnie zaznaczona korona
 	//-1 kiedy żadna nie jest zaznaczona
 	int activeSubcrown;
-	
+
 	Crown(MethodParameters *params)
 	{
 		this->params = params;

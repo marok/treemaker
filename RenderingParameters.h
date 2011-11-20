@@ -19,5 +19,28 @@ public:
 		showBark=SHOWBARK_DEFAULT;
 		showGrass=SHOWGRASS_DEFAULT;
 	}
+	/* Serialization methods */
+	void save(ofstream &s)
+	{
+#define SAVE(param) s<<param<<endl;
+
+		SAVE(showEnvelopes);
+		SAVE(showLeaves);
+		SAVE(showBark);
+		SAVE(showGrass);
+
+#undef SAVE
+	}
+	void load(ifstream &s)
+	{
+#define LOAD(param) s>>param;
+
+		LOAD(showEnvelopes);
+		LOAD(showLeaves);
+		LOAD(showBark);
+		LOAD(showGrass);
+
+#undef LOAD
+	}
 };
 #endif
