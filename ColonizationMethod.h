@@ -156,6 +156,8 @@ public:
 	{
 		for(unsigned int i=0; i<nodes.size(); i++)
 			delete nodes[i];
+		for(unsigned int i=0; i<aPoints.size(); i++)
+			delete aPoints[i];
 		nodes.clear();
 		aPoints.clear();
 		srand (params->seed);
@@ -179,28 +181,28 @@ public:
 			prvNode = newNode;
 		}
 		colonize ();
-
+		
 //		nodes.clear();
 //		Node *a, *b, *c, *d, *e, *f;
 //		a = new Node(0, 0, 0);
-//		a->r = 5;
+//		a->r = 0.25;
 //		b = new Node(0, 0, 1);
-//		b->r = 4;
+//		b->r = 0.2;
 //		c = new Node(0, 1, 1);
-//		c->r = 2;
+//		c->r = 0.15;
 //		d = new Node(0, 2, 1);
-//		d->r = 1.5;
+//		d->r = 0.075;
 //		e = new Node(0, 1, 2);
-//		e->r = 1;
+//		e->r = 0.1;
 //		f = new Node(0, 0, 2);
-//		f->r = 3;
-//
+//		f->r = 0.1;
+//		
 //		a->addChildren(b);
 //		b->addChildren(c);
 //		b->addChildren(f);
 //		c->addChildren(d);
 //		c->addChildren(e);
-//
+//		
 //		nodes.push_back(a);
 //		nodes.push_back(b);
 //		nodes.push_back(c);

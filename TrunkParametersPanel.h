@@ -36,6 +36,12 @@ class TrunkParametersPanel {
 		}
 		gtk_widget_destroy(dialog);
 	}
+	
+	static void antialiasingCheckClicked(GtkWidget *w,gpointer data)
+	{
+		TrunkParameters *tp = (TrunkParameters*) data;
+		tp->antialiasing = !tp->antialiasing;
+	}
 
 public:
 	TrunkParametersPanel(GtkWidget *window,Parameters *params) {
@@ -47,11 +53,20 @@ public:
 		GtkWidget *trunkWidget=gtk_frame_new("Trunk Parameters");
 
 		GtkTooltips *tooltips=gtk_tooltips_new();
-		GtkWidget *button,*scale,*label,*hbox;
+		GtkWidget *button,*scale,*label,*hbox, *check;
 		GtkObject *adj;
+		
 		vbox=gtk_vbox_new(FALSE,1);
 
 		gtk_container_add (GTK_CONTAINER (trunkWidget), vbox);
+
+		check = gtk_check_button_new_with_label("Anti-aliasing");
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check),params->tp->antialiasing);
+		g_signal_connect(check,"clicked",G_CALLBACK(antialiasingCheckClicked),params->tp);
+		gtk_box_pack_start(GTK_BOX(vbox),check,FALSE,FALSE,0);
+		gtk_tooltips_set_tip(tooltips,check,"Anti-aliasing",NULL);
+		gtk_widget_show(check);
+		
 
 #define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
     hbox = gtk_hbox_new(FALSE,1);\

@@ -275,12 +275,12 @@ class MainWindow
 
 		if (event->direction == GDK_SCROLL_UP)
 		{
-			sdepth -= 2;
+			sdepth -= 0.5;
 			redraw = TRUE;
 		}
 		if (event->direction == GDK_SCROLL_DOWN)
 		{
-			sdepth += 2;
+			sdepth += 0.5;
 			redraw = TRUE;
 		}
 

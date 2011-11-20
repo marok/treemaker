@@ -190,7 +190,7 @@ if(mode==GL_SELECT)\
 			childAbs.add(branchAbs);
 			childAbs.add(*child->position);
 
-			glBegin(GL_LINES);
+			glBegin(GL_POINTS);
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				int j0 = (index + i0) % tp->circlePoints;
 
