@@ -39,26 +39,6 @@ class MethodParametersPanel {
 #undef UNROLL_CALLBACK
 
 
-	static void generateClicked( GtkWidget *widget ,gpointer data )
-	{
-		MethodParametersPanel *mpp=(MethodParametersPanel*)data;
-		if(mpp->cm->params->activeMethod==0) {
-			mpp->cm->init();
-			mpp->cm->generate();
-			if(model!=NULL)
-				delete model;
-			model = new  Model3d(mpp->cm->getRoot(),mpp->tp);
-		}
-		else {
-			mpp->pm->init();
-			mpp->pm->generate();
-			if(model!=NULL)
-				delete model;
-			model =new Model3d(mpp->pm->getRoot(),mpp->tp);
-		}
-		model->generateModel();
-		DrawMethods::render();
-	}
 	static void algorithmSelected(GtkWidget *widget, gpointer data) {
 
 		MethodParametersPanel *cpp=(MethodParametersPanel*)data;
@@ -136,15 +116,7 @@ public:
 
 #undef PACK_LABEL_AND_SLIDER
 
-
-		GtkWidget *button = gtk_button_new_with_label ("Generate");
-		g_signal_connect (G_OBJECT (button), "clicked",G_CALLBACK (this->generateClicked), this);
-		gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
-		gtk_tooltips_set_tip(tooltips,button,"Generates new tree model",NULL);
-
-
 		gtk_widget_show(paramsWidget);
-		gtk_widget_show(button);
 		gtk_widget_show(vbox);
 
 		hideWidgets(cm->params->ACTIVEMETHOD_DEFAULT);

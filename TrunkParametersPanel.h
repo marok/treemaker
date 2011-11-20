@@ -36,7 +36,7 @@ class TrunkParametersPanel {
 		}
 		gtk_widget_destroy(dialog);
 	}
-	
+
 	static void antialiasingCheckClicked(GtkWidget *w,gpointer data)
 	{
 		TrunkParameters *tp = (TrunkParameters*) data;
@@ -55,7 +55,7 @@ public:
 		GtkTooltips *tooltips=gtk_tooltips_new();
 		GtkWidget *button,*scale,*label,*hbox, *check;
 		GtkObject *adj;
-		
+
 		vbox=gtk_vbox_new(FALSE,1);
 
 		gtk_container_add (GTK_CONTAINER (trunkWidget), vbox);
@@ -66,7 +66,7 @@ public:
 		gtk_box_pack_start(GTK_BOX(vbox),check,FALSE,FALSE,0);
 		gtk_tooltips_set_tip(tooltips,check,"Anti-aliasing",NULL);
 		gtk_widget_show(check);
-		
+
 
 #define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
     hbox = gtk_hbox_new(FALSE,1);\

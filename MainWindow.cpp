@@ -484,7 +484,7 @@ class MainWindow
 		
 			  // Toolbar
 	
-		Toolbar *tbar=new Toolbar(parameters);
+		Toolbar *tbar=new Toolbar(parameters,cm);
 		GtkWidget *toolsPanel = tbar->createToolbar();
 
 		gtk_box_pack_start(GTK_BOX(vbox), toolsPanel, FALSE, FALSE, 5);
@@ -578,7 +578,6 @@ class MainWindow
 				exit (1);
 			}
 		}
-
 		return glconfig;
 	}
 	

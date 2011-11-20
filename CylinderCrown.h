@@ -19,7 +19,9 @@ public:
 		this->h = h;
 
 	}
-
+	CylinderCrown() {
+		this->shape=CYLINDER;
+	}
 	std::vector<Point3d *> generatePoints(int n) {
 		int points_num = n;
 		std::vector<Point3d *> result;
@@ -40,6 +42,26 @@ public:
 		}
 #undef RANDF
 		return result;
+	}
+	void save(ofstream &s)
+	{
+#define SAVE(x) s<<x<<endl;
+		SAVE(x);
+		SAVE(y);
+		SAVE(z);
+		SAVE(r);
+		SAVE(h);
+#undef SAVE
+	}
+	void load(ifstream &s)
+	{
+#define LOAD(x) s>>x;
+		LOAD(x);
+		LOAD(y);
+		LOAD(z);
+		LOAD(r);
+		LOAD(h);
+#undef LOAD
 	}
 };
 

@@ -20,7 +20,9 @@ public:
 
 	//punkt aktualnie edytowany
 	int activePoint;
-
+	SplineCrown() {
+		this->shape = SPLINE;
+	}
 	SplineCrown(float x, float y, float z, MethodParameters *params) {
 		std::vector<Point2d *> crownMainPoints;
 		Point2d *p = new Point2d(0, 0);
@@ -110,6 +112,36 @@ public:
 		}
 #undef RANDF
 		return result;
+	}
+	void save(ofstream &s)
+	{
+#define SAVE(x) s<<x<<endl;
+		SAVE(x);
+		SAVE(y);
+		SAVE(z);
+		SAVE(crownMainPoints.size());
+#undef SAVE
+		for(unsigned int i=0; i<crownMainPoints.size(); i++)
+			crownMainPoints[i]->save(s);
+	}
+	void load(ifstream &stream)
+	{
+		//crownMainPoints.clear();
+		unsigned int points;
+#define LOAD(x) stream>>x;
+		LOAD(x);
+		LOAD(y);
+		LOAD(z);
+		LOAD(points);
+#undef LOAD
+		for(unsigned int i=0; i<points; i++)
+		{
+			Point2d *p=new Point2d();
+			p->load(stream);
+			crownMainPoints.push_back(p);
+		}
+		std::sort(crownMainPoints.begin(), crownMainPoints.end(), cmpCrownMainPoints);
+		s = new Spline(crownMainPoints);
 	}
 };
 

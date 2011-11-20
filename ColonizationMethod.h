@@ -181,7 +181,7 @@ public:
 			prvNode = newNode;
 		}
 		colonize ();
-		
+
 //		nodes.clear();
 //		Node *a, *b, *c, *d, *e, *f;
 //		a = new Node(0, 0, 0);
@@ -196,13 +196,13 @@ public:
 //		e->r = 0.1;
 //		f = new Node(0, 0, 2);
 //		f->r = 0.1;
-//		
+//
 //		a->addChildren(b);
 //		b->addChildren(c);
 //		b->addChildren(f);
 //		c->addChildren(d);
 //		c->addChildren(e);
-//		
+//
 //		nodes.push_back(a);
 //		nodes.push_back(b);
 //		nodes.push_back(c);

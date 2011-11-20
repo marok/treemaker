@@ -53,24 +53,20 @@ public:
 	void save(ofstream &s)
 	{
 #define SAVE(param) s<<param<<endl;
-
 		SAVE(leafTexPath);
 		SAVE(leafSize);
 		SAVE(sizeDeriviation);
 		SAVE(amount);
-
 #undef SAVE
 	}
 	void load(ifstream &s)
 	{
 		leafTexInitialized=FALSE;
 #define LOAD(param) s>>param;
-
 		LOAD(leafTexPath);
 		LOAD(leafSize);
 		LOAD(sizeDeriviation);
 		LOAD(amount);
-
 #undef LOAD
 	}
 

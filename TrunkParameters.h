@@ -58,6 +58,7 @@ public:
 		LOAD(circlePoints);
 		LOAD(aValue);
 		LOAD(mValue);
+		LOAD(barkPath);
 
 #undef LOAD
 	}

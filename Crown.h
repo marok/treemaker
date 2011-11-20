@@ -2,7 +2,10 @@
 #define	CROWN_H
 
 #include<vector>
-#include"Subcrown.h"
+
+#include "Subcrown.h"
+#include "SplineCrown.h"
+#include "CylinderCrown.h"
 
 class Crown
 {
@@ -33,6 +36,46 @@ public:
 		}
 
 		return result;
+	}
+	void clear() {
+		for(unsigned int i=0; i<subcrowns.size(); i++)
+			delete subcrowns[i];
+		subcrowns.clear();
+	}
+	/* Serialization methods */
+	void save(ofstream &s)
+	{
+		s<<subcrowns.size()<<endl;
+		for(unsigned int i=0; i<subcrowns.size(); i++) {
+			int shape=subcrowns[i]->shape;
+			s<<shape<<endl;
+			subcrowns[i]->save(s);
+		}
+	}
+	void load(ifstream &s)
+	{
+		clear();
+		unsigned int size=0;
+		s>>size;
+		for(unsigned int i=0; i<size; i++) {
+			int shape;
+			s>>shape;
+			Subcrown *sub;
+			switch(shape)
+			{
+			case SPLINE:
+				sub=new SplineCrown();
+				break;
+			case CYLINDER:
+				sub=new CylinderCrown();
+				break;
+			default:
+				printf("Nieprawidlowy typ korony podczas wczytywania pliku ustawien");
+				assert(0);
+			}
+			sub->load(s);
+			subcrowns.push_back(sub);
+		}
 	}
 };
 

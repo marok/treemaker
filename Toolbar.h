@@ -4,6 +4,8 @@
 
 class Toolbar {
 	Parameters *params;
+	ColonizationMethod *cm;
+
 
 	static void  newClicked(GtkWidget *widget,gpointer data) {
 		g_print("newClicked\n");
@@ -21,15 +23,23 @@ class Toolbar {
 		file.close();
 	}
 	static void  refreshClicked(GtkWidget *widget,gpointer data) {
-		g_print("refreshClicked\n");
+		Toolbar *t=(Toolbar*)data;
+		t->cm->init();
+		t->cm->generate();
+		if(model!=NULL)
+			delete model;
+		model = new  Model3d(t->cm->getRoot(),t->params->tp);
+		model->generateModel();
+		DrawMethods::render();
 	}
 	static void  convertClicked(GtkWidget *widget,gpointer data) {
 		g_print("convertClicked\n");
 	}
 
 public:
-	Toolbar(Parameters *params) {
-		this->params=(Parameters*)params;
+	Toolbar(Parameters *params,ColonizationMethod *cm) {
+		this->params=params;
+		this->cm=cm;
 	}
 	GtkWidget* createToolbar() {
 		GtkWidget *toolbar;

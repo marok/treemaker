@@ -107,7 +107,7 @@ if(mode==GL_SELECT)\
 			int index = child->segment->index;
 
 			glEnable (GL_TEXTURE_2D);
-			
+
 			glBegin(GL_TRIANGLES);
 
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
@@ -146,15 +146,15 @@ if(mode==GL_SELECT)\
 		}
 		glPopName();
 	}
-	
+
 	static void drawTrunks(Model3d *model, Parameters *params)
 	{
 		if(!model)
 			return;
-		
+
 		for(unsigned int i=0; i<model->branches.size(); i++)
 		{
-			if(model->markedBranchIndex != -1 && model->markedBranchIndex == i)
+			if(model->markedBranchIndex != -1 && (model->markedBranchIndex == int(i)))
 				glColor3f(0,1,0);
 			else
 				glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color

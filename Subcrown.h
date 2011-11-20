@@ -19,6 +19,9 @@ public:
 	enum CrownShape shape;
 	float x,y,z;
 	virtual std::vector<Point3d *> generatePoints(int n) = 0;
+	/* Serialization methods */
+	virtual void save (ofstream &s) = 0;
+	virtual void load(ifstream &s) = 0;
 };
 
 

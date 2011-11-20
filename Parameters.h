@@ -46,13 +46,15 @@ public:
 		tp->save(s);
 		lp->save(s);
 		methodParams->save(s);
+		crown->save(s);
 	}
 	void load(ifstream &s)
 	{
 		rp->load(s);
-		rp->load(s);
+		tp->load(s);
 		lp->load(s);
 		methodParams->load(s);
+		crown->load(s);
 	}
 };
 #endif
