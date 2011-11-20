@@ -202,6 +202,8 @@ class Model3d {
                 Node *node = root;
 
                 BranchModel *branch = new BranchModel(parentBranch, branchPosition);
+		branches.push_back(branch);
+		
                 if(node->prev)
                 {
 			branch->addNewNodeModel(node->prev);
@@ -337,9 +339,14 @@ class Model3d {
 	}
 
 public:
+	vector<BranchModel *> branches; //tablica zawierająca wszystkie gałęzie
+	int markedBranchIndex; //index zaznaczonej gałęzi, -1 - żadna gałąź nie jest zaznaczona
+	
 	Model3d(Node *root,TrunkParameters *tp) {
 		this->root = root;
 		this->tp=tp;
+		this->bm = NULL;
+		this->markedBranchIndex = -1;
 	}
 	
 	~Model3d()
@@ -347,11 +354,18 @@ public:
 		delete this->bm;
 	}
 
-	BranchModel *getBranchModel()
+	BranchModel *getRootBranch()
 	{
 		return this->bm;
 	}
-	void generateModel() {
+	
+	void generateModel()
+	{
+		
+		if(this->bm)
+			delete this->bm;
+		branches.clear();
+		
 		computeRadius(root,0);
 		this->bm = node2BranchModel(root, NULL, new Point3d());
 		if(tp->antialiasing)

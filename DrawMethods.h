@@ -50,7 +50,6 @@ gluDisk(QUAD, 0.0f, TOP, SLICES,1);
 #define DRAW_AXIS(i) \
 quadric= gluNewQuadric();\
   if (mode == GL_SELECT)\
-         glPushName (i);\
 gluQuadricDrawStyle(quadric, GLU_FILL);\
 gluQuadricOrientation(quadric, GLU_INSIDE);\
 SOLID_CLOSED_CYLINDER(quadric, 0.1f, 0.1f, 3.0f, 8, 8)\
@@ -58,7 +57,6 @@ SOLID_CLOSED_CYLINDER(quadric, 0.2f, 0.01f, 0.5f, 8, 8)\
 glTranslatef(0.0,0.0,-3.5);\
 gluDeleteQuadric(quadric);\
 if(mode==GL_SELECT)\
-  glPopName();
 		glPushMatrix();
 		glColor3f(1,0,0);
 		DRAW_AXIS(0);
@@ -82,9 +80,10 @@ if(mode==GL_SELECT)\
 	}
 
 
-	static void drawTrunk(BranchModel *bm, Parameters *params)
+	static void drawTrunk(BranchModel *bm, unsigned int branchId, Parameters *params)
 	{
 		TrunkParameters *tp=params->tp;
+		glPushName(branchId);
 		static GLuint texId;
 		if(params->tp->barkTexInitialized==FALSE) {
 			params->tp->barkTexInitialized=TRUE;
@@ -97,7 +96,6 @@ if(mode==GL_SELECT)\
 			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
 			bmp.cleanup();
 		}
-		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
 
 		glBindTexture(GL_TEXTURE_2D,texId);
 		if(bm==NULL) return;
@@ -109,6 +107,7 @@ if(mode==GL_SELECT)\
 			int index = child->segment->index;
 
 			glEnable (GL_TEXTURE_2D);
+			
 			glBegin(GL_TRIANGLES);
 
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
@@ -142,14 +141,24 @@ if(mode==GL_SELECT)\
 				//glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
 				triangles+=2;
 			}
-
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
 		}
-
-		int len = bm->childBranches.size();
-		for (int i = 0; i < len; i++) {
-			drawTrunk(bm->childBranches.at(i), params);
+		glPopName();
+	}
+	
+	static void drawTrunks(Model3d *model, Parameters *params)
+	{
+		if(!model)
+			return;
+		
+		for(unsigned int i=0; i<model->branches.size(); i++)
+		{
+			if(model->markedBranchIndex != -1 && model->markedBranchIndex == i)
+				glColor3f(0,1,0);
+			else
+				glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
+			drawTrunk(model->branches[i], i, params);
 		}
 	}
 
@@ -504,15 +513,16 @@ if(mode==GL_SELECT)\
 			drawEnvelopes(params->crown);
 		if(cm->params->activeMethod==0) {
 			if(params->rp->showBark)
-				drawTrunk(model?model->getBranchModel():NULL, params);
-			else drawLines(model?model->getBranchModel():NULL, tp);
+				drawTrunks(model, params);
+			else drawLines(model?model->getRootBranch():NULL, tp);
 
 			if(params->rp->showLeaves)
-				drawLeaves(model?model->getBranchModel():NULL, params,0);
+				drawLeaves(model?model->getRootBranch():NULL, params,0);
 		}
 		if(cm->params->activeMethod==1) {
-			drawLines(model?model->getBranchModel():NULL,tp);
+			drawLines(model?model->getRootBranch():NULL,tp);
 		}
+
 		//g_print("triangles: %d\n",triangles);
 		glPopMatrix();
 	}

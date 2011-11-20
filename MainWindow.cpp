@@ -168,6 +168,7 @@ class MainWindow
 		/*** OpenGL BEGIN ***/
 		if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
 			return FALSE;
+		
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glMatrixMode (GL_PROJECTION);
@@ -182,7 +183,7 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (parameters);
-
+		
 		if(coordinates){
 			DrawMethods::drawCoordinates (GL_RENDER);
 			
@@ -228,6 +229,9 @@ class MainWindow
 		if (event->button == 1) {
 			beginX = event->x;
 			beginY = event->y;
+			selection(event->x, event->y);
+			gdk_window_invalidate_rect (widget->window,
+		                            &widget->allocation, FALSE);
 			return TRUE;
 		}
 
@@ -236,6 +240,8 @@ class MainWindow
 			beginY = event->y;
 			return TRUE;
 		}
+		
+		
 
 		return FALSE;
 	}
@@ -275,12 +281,12 @@ class MainWindow
 
 		if (event->direction == GDK_SCROLL_UP)
 		{
-			sdepth -= 0.5;
+			sdepth -= 1;
 			redraw = TRUE;
 		}
 		if (event->direction == GDK_SCROLL_DOWN)
 		{
-			sdepth += 0.5;
+			sdepth += 1;
 			redraw = TRUE;
 		}
 
@@ -300,6 +306,52 @@ class MainWindow
 			                NULL, event->button, event->time);
 		}
 		return TRUE;
+	}
+	
+	static void
+	selection(int x, int y) {
+		
+		glInitNames ();
+		
+		const int BUFFER_LENGTH = 64;
+		GLuint select_buffer [BUFFER_LENGTH];
+		glSelectBuffer(BUFFER_LENGTH, select_buffer);
+		int viewport[4];
+		glGetIntegerv(GL_VIEWPORT, viewport);
+
+		glMatrixMode(GL_PROJECTION);
+
+		glPushMatrix();
+
+		glLoadIdentity();
+
+		gluPickMatrix(x, viewport [3] - y, 2, 2, viewport);
+		
+		gluPerspective (64.0, aspect, zNear, zFar);
+
+		glRenderMode(GL_SELECT);
+		
+		DrawMethods::drawTreeModel(parameters);
+	
+		
+		GLint hits = glRenderMode(GL_RENDER);
+
+		glMatrixMode(GL_PROJECTION);
+
+		glPopMatrix();
+
+		if (hits == 0)
+		{
+			printf("Nic nie trafiono!\n");
+			if(model)
+				model->markedBranchIndex = -1;
+		}
+		else
+		{
+			printf("Trafiono w %d obiekt/obiektów %d!\n",hits, select_buffer[3]);
+			if(model)
+				model->markedBranchIndex = select_buffer[3];
+		}
 	}
 
 
@@ -529,6 +581,7 @@ class MainWindow
 
 		return glconfig;
 	}
+	
 public:
 	void init (int argc, char *argv[]) {
 		gtk_init (&argc, &argv);
@@ -551,11 +604,8 @@ public:
 int
 main (int argc, char *argv[])
 {
+	glutInit(&argc, argv);
 	MainWindow mw;
-
-	
-	
-
 	mw.init (argc, argv);
 	mw.run ();
 	return 0;
