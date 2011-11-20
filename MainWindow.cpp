@@ -378,6 +378,8 @@ class MainWindow
 		hbox = gtk_hbox_new (FALSE, 0);
 		vbox = gtk_vbox_new(FALSE,1);
 		gtk_container_add (GTK_CONTAINER (window), hbox);
+		gtk_widget_show(hbox);
+		gtk_widget_show(vbox);
 
 		/*
 		 * Drawing area to draw OpenGL scene.
@@ -430,9 +432,10 @@ class MainWindow
 		
 			  // Toolbar
 	
-	Toolbar *tbar=new Toolbar(parameters);
-  gtk_box_pack_start(GTK_BOX(vbox), tbar->createToolbar(), FALSE, FALSE, 5);
-  
+		Toolbar *tbar=new Toolbar(parameters);
+		GtkWidget *toolsPanel = tbar->createToolbar();
+
+		gtk_box_pack_start(GTK_BOX(vbox), toolsPanel, FALSE, FALSE, 5);
 		
 
 		/*
@@ -474,13 +477,14 @@ class MainWindow
 		label=gtk_label_new("C");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
 		
+		gtk_widget_show(notebook);
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
 
 		//g_timeout_add (1000,
 		//                 (GSourceFunc) timeout,
 		//                  window);
-		gtk_widget_show_all(window);
-		mpanel->hideWidgets(0);//hak potrzebny zeby sie pokazaly tylko potrzebne parametry
+		//gtk_widget_show_all(window);
+		//mpanel->hideWidgets(0);//hak potrzebny zeby sie pokazaly tylko potrzebne parametry
 
 		windowWidget=window;
 		return window;

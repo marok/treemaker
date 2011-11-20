@@ -61,6 +61,7 @@ public:
 
 #undef ADD_ITEM
 #undef ADD_SEPARATOR
+		gtk_widget_show_all(toolbar);
 		return toolbar;
 	}
 };
