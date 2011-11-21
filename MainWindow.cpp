@@ -168,7 +168,7 @@ class MainWindow
 		/*** OpenGL BEGIN ***/
 		if (!gdk_gl_drawable_gl_begin (gldrawable, glcontext))
 			return FALSE;
-		
+
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glMatrixMode (GL_PROJECTION);
@@ -183,10 +183,10 @@ class MainWindow
 
 		DrawMethods::drawWireframe ();
 		DrawMethods::drawTreeModel (parameters);
-		
-		if(coordinates){
+
+		if(coordinates) {
 			DrawMethods::drawCoordinates (GL_RENDER);
-			
+
 		}
 		/* Swap buffers */
 		if (gdk_gl_drawable_is_double_buffered (gldrawable))
@@ -231,7 +231,7 @@ class MainWindow
 			beginY = event->y;
 			selection(event->x, event->y);
 			gdk_window_invalidate_rect (widget->window,
-		                            &widget->allocation, FALSE);
+			                            &widget->allocation, FALSE);
 			return TRUE;
 		}
 
@@ -240,8 +240,8 @@ class MainWindow
 			beginY = event->y;
 			return TRUE;
 		}
-		
-		
+
+
 
 		return FALSE;
 	}
@@ -307,12 +307,12 @@ class MainWindow
 		}
 		return TRUE;
 	}
-	
+
 	static void
 	selection(int x, int y) {
-		
+
 		glInitNames ();
-		
+
 		const int BUFFER_LENGTH = 64;
 		GLuint select_buffer [BUFFER_LENGTH];
 		glSelectBuffer(BUFFER_LENGTH, select_buffer);
@@ -326,14 +326,14 @@ class MainWindow
 		glLoadIdentity();
 
 		gluPickMatrix(x, viewport [3] - y, 2, 2, viewport);
-		
+
 		gluPerspective (64.0, aspect, zNear, zFar);
 
 		glRenderMode(GL_SELECT);
-		
+
 		DrawMethods::drawTreeModel(parameters);
-	
-		
+
+
 		GLint hits = glRenderMode(GL_RENDER);
 
 		glMatrixMode(GL_PROJECTION);
@@ -481,14 +481,14 @@ class MainWindow
 		gtk_box_pack_start (GTK_BOX (hbox), drawing_area, TRUE, TRUE, 0);
 
 		gtk_widget_show (drawing_area);
-		
-			  // Toolbar
-	
-		Toolbar *tbar=new Toolbar(parameters,cm);
+
+		// Toolbar
+
+		Toolbar *tbar=new Toolbar(window,parameters,cm);
 		GtkWidget *toolsPanel = tbar->createToolbar();
 
 		gtk_box_pack_start(GTK_BOX(vbox), toolsPanel, FALSE, FALSE, 5);
-		
+
 
 		/*
 		 * Popup menu.
@@ -524,11 +524,11 @@ class MainWindow
 		LeavesParametersPanel *lpp=new LeavesParametersPanel(window,parameters);
 		label=gtk_label_new("L");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),lpp->createPanel(),label);
-                
-                CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
+
+		CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
 		label=gtk_label_new("C");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
-		
+
 		gtk_widget_show(notebook);
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
 
@@ -580,15 +580,15 @@ class MainWindow
 		}
 		return glconfig;
 	}
-	
+
 public:
 	void init (int argc, char *argv[]) {
 		gtk_init (&argc, &argv);
 		gtk_gl_init (&argc, &argv);
 		glconfig = configureGL ();
 		parameters=new Parameters();
-                cm = new ColonizationMethod(parameters);
-                pm = new ParticleMethod(parameters);
+		cm = new ColonizationMethod(parameters);
+		pm = new ParticleMethod(parameters);
 		window = createWindow (glconfig);
 	}
 	void run () {

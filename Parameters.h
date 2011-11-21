@@ -6,7 +6,7 @@
 #include "Crown.h"
 #include "SplineCrown.h"
 #include "CylinderCrown.h"
-
+#define TREEMAKER_VERSION "treemaker-ver0.1"
 class Parameters {
 public:
 
@@ -16,9 +16,9 @@ public:
 	Crown                   *crown;
 	MethodParameters 	*methodParams;
 
-	void clean(){
+	void clean() {
 		//clean previous settings
- 		/*if(rp!=NULL) delete rp;
+		/*if(rp!=NULL) delete rp;
 		if(tp!=NULL) delete tp;
 		if(lp!=NULL) {
 		//  lp->clear();
@@ -28,10 +28,10 @@ public:
 		//  crown->clear();
 		  delete crown;
 		}
-		if(methodParams!=NULL) delete methodParams;	  
+		if(methodParams!=NULL) delete methodParams;
 		*/
 	}
-	void init(){
+	void init() {
 		clean();
 		rp=new RenderingParameters();
 		tp=new TrunkParameters();
@@ -42,14 +42,15 @@ public:
 
 		//crown->subcrowns.push_back(new SplineCrown(-3,-3, 4, methodParams));
 		//crown->subcrowns.push_back(new SplineCrown(3, 3, 2, methodParams));
-		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));	  
+		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));
 	}
 	Parameters() {
-	  init();
+		init();
 	}
 	/* Serialization methods */
 	void save(ofstream &s)
 	{
+		s<<TREEMAKER_VERSION<<endl;
 		rp->save(s);
 		tp->save(s);
 		lp->save(s);
@@ -58,6 +59,10 @@ public:
 	}
 	void load(ifstream &s)
 	{
+		string version;
+		s>>version;
+		if(version.compare(TREEMAKER_VERSION)!=0)
+			return;
 		rp->load(s);
 		tp->load(s);
 		lp->load(s);

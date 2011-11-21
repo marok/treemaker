@@ -5,34 +5,34 @@
 class Toolbar {
 	Parameters *params;
 	ColonizationMethod *cm;
+	GtkWidget *mainWindow;
 
 
 	static void  newClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		//t->params=new Parameters();
 		t->params->init();
-		//if(model!=NULL)
-		//	delete model;
-		//model = new  Model3d(t->cm->getRoot(),t->params->tp);
-		//model->generateModel();
-		//DrawMethods::render();
 	}
 	static void  openClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		ifstream file("save.txt");
-		t->params->load(file);
-		file.close();
-		//if(model!=NULL)
-		//	delete model;
-		//model = new  Model3d(t->cm->getRoot(),t->params->tp);
-		//model->generateModel();
-		//DrawMethods::render();
+		GtkWidget *dialog = gtk_file_chooser_dialog_new("Select file to load parameters",GTK_WINDOW(t->mainWindow),GTK_FILE_CHOOSER_ACTION_OPEN,GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,GTK_STOCK_OPEN,GTK_RESPONSE_ACCEPT,NULL);
+		if(gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_ACCEPT) {
+			char *filename=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+			ifstream file(filename);
+			t->params->load(file);
+			file.close();
+		}
+		gtk_widget_destroy(dialog);
 	}
 	static void  saveClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		ofstream file("save.txt");
-		t->params->save(file);
-		file.close();
+		GtkWidget *dialog = gtk_file_chooser_dialog_new("Select file to save parameters",GTK_WINDOW(t->mainWindow),GTK_FILE_CHOOSER_ACTION_SAVE,GTK_STOCK_CANCEL,GTK_RESPONSE_CANCEL,GTK_STOCK_SAVE,GTK_RESPONSE_ACCEPT,NULL);
+		if(gtk_dialog_run(GTK_DIALOG(dialog))==GTK_RESPONSE_ACCEPT) {
+			char *filename=gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+			gtk_widget_destroy(dialog);
+			ofstream file(filename);
+			t->params->save(file);
+			file.close();
+		}
 	}
 	static void  refreshClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
@@ -49,9 +49,10 @@ class Toolbar {
 	}
 
 public:
-	Toolbar(Parameters *params,ColonizationMethod *cm) {
+	Toolbar(GtkWidget *mainWindow,Parameters *params,ColonizationMethod *cm) {
 		this->params=params;
 		this->cm=cm;
+		this->mainWindow=mainWindow;
 	}
 	GtkWidget* createToolbar() {
 		GtkWidget *toolbar;
