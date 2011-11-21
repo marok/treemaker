@@ -44,7 +44,7 @@ class MethodParametersPanel {
 		MethodParametersPanel *cpp=(MethodParametersPanel*)data;
 		gint active=gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
 		cpp->hideWidgets(active);
-		cpp->cm->params->activeMethod=active;
+		cpp->cm->params->methodParams->activeMethod=active;
 
 	}
 
@@ -83,8 +83,8 @@ public:
 #define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint,type)\
     hbox = gtk_hbox_new(FALSE,1);\
     label = gtk_label_new(text);\
-    adj=gtk_adjustment_new(cm->params->val,min,max,step,1,0);\
-    g_signal_connect(adj,"value_changed",G_CALLBACK(func),cm->params);\
+    adj=gtk_adjustment_new(cm->params->methodParams->val,min,max,step,1,0);\
+    g_signal_connect(adj,"value_changed",G_CALLBACK(func),cm->params->methodParams);\
     scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
     if(type>=0){\
       methodWidgets.push_back(pair<int,GtkWidget*>(type,scale));\
@@ -119,7 +119,7 @@ public:
 		gtk_widget_show(paramsWidget);
 		gtk_widget_show(vbox);
 
-		hideWidgets(cm->params->ACTIVEMETHOD_DEFAULT);
+		hideWidgets(cm->params->methodParams->ACTIVEMETHOD_DEFAULT);
 		return paramsWidget;
 	}
 	void hideWidgets(gint active) {

@@ -34,6 +34,10 @@ public:
 		generateTypes();
 
 	}
+	void clear(){
+	 leaves.clear();
+	 types.clear();
+	}
 	int getId(char *texName) {
 		int ret=-1;
 		for(unsigned int i=0; i<leaves.size(); i++)

@@ -511,7 +511,7 @@ if(mode==GL_SELECT)\
 			drawGrass();
 		if(params->rp->showEnvelopes)
 			drawEnvelopes(params->crown);
-		if(cm->params->activeMethod==0) {
+		if(cm->params->methodParams->activeMethod==0) {
 			if(params->rp->showBark)
 				drawTrunks(model, params);
 			else drawLines(model?model->getRootBranch():NULL, tp);
@@ -519,7 +519,7 @@ if(mode==GL_SELECT)\
 			if(params->rp->showLeaves)
 				drawLeaves(model?model->getRootBranch():NULL, params,0);
 		}
-		if(cm->params->activeMethod==1) {
+		if(cm->params->methodParams->activeMethod==1) {
 			drawLines(model?model->getRootBranch():NULL,tp);
 		}
 

@@ -8,13 +8,25 @@ class Toolbar {
 
 
 	static void  newClicked(GtkWidget *widget,gpointer data) {
-		g_print("newClicked\n");
+		Toolbar *t=(Toolbar*)data;
+		//t->params=new Parameters();
+		t->params->init();
+		//if(model!=NULL)
+		//	delete model;
+		//model = new  Model3d(t->cm->getRoot(),t->params->tp);
+		//model->generateModel();
+		//DrawMethods::render();
 	}
 	static void  openClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
 		ifstream file("save.txt");
 		t->params->load(file);
 		file.close();
+		//if(model!=NULL)
+		//	delete model;
+		//model = new  Model3d(t->cm->getRoot(),t->params->tp);
+		//model->generateModel();
+		//DrawMethods::render();
 	}
 	static void  saveClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;

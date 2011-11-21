@@ -14,30 +14,38 @@ public:
 	TrunkParameters		*tp;
 	LeavesParameters	*lp;
 	Crown                   *crown;
-	MethodParameters *methodParams;
+	MethodParameters 	*methodParams;
 
-	Parameters() {
+	void clean(){
+		//clean previous settings
+ 		/*if(rp!=NULL) delete rp;
+		if(tp!=NULL) delete tp;
+		if(lp!=NULL) {
+		//  lp->clear();
+		  delete lp;
+		}
+		if(crown!=NULL){
+		//  crown->clear();
+		  delete crown;
+		}
+		if(methodParams!=NULL) delete methodParams;	  
+		*/
+	}
+	void init(){
+		clean();
 		rp=new RenderingParameters();
 		tp=new TrunkParameters();
 		lp=new LeavesParameters();
 		methodParams = new MethodParameters();
 		crown = new Crown(methodParams);
+		crown->subcrowns.push_back(new CylinderCrown(0,0,0,3,5));
 
-		//tmp
-
-		//SplineCrown *sCrown = new SplineCrown(-3,-3, 4, methodParams);
-		//SplineCrown *sCrown2 = new SplineCrown(3, 3, 2, methodParams);
-
-		//SplineCrown *sCrown3 = new SplineCrown(0, 0, 6, methodParams);
-
-
-		CylinderCrown *cylinder = new CylinderCrown(0,0,0,3,5);
-		crown->subcrowns.push_back(cylinder);
-
-
-		//crown->subcrowns.push_back(sCrown);
-		//crown->subcrowns.push_back(sCrown2);
-		//crown->subcrowns.push_back(sCrown3);
+		//crown->subcrowns.push_back(new SplineCrown(-3,-3, 4, methodParams));
+		//crown->subcrowns.push_back(new SplineCrown(3, 3, 2, methodParams));
+		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));	  
+	}
+	Parameters() {
+	  init();
 	}
 	/* Serialization methods */
 	void save(ofstream &s)

@@ -60,7 +60,7 @@ class ColonizationMethod:public GenerationMethod
 				for (j = 0; j < nodes.size (); j++) {
 					float newDistance = ap->getDistance (&nodes[j]->point);
 
-					if (newDistance <= params->di && newDistance <= dis[i]) {
+					if (newDistance <= params->methodParams->di && newDistance <= dis[i]) {
 						dis[i] = newDistance;
 						ids[i] = j;
 					}
@@ -99,7 +99,7 @@ class ColonizationMethod:public GenerationMethod
 						sum.add (&tmp);
 					}
 					sum.normalize ();
-					sum.mul (params->D);
+					sum.mul (params->methodParams->D);
 
 					Node *newNode = new Node(&nodes[i]->point);
 
@@ -123,7 +123,7 @@ class ColonizationMethod:public GenerationMethod
 						nodes[i]->addChildren(nodes.at(nodes.size()-1));
 
 						for (j = 0; j < aPoints.size (); j++) {
-							if (newNode->point.getDistance (aPoints[j]) <= params->dk) {
+							if (newNode->point.getDistance (aPoints[j]) <= params->methodParams->dk) {
 								removeAPoint (j--);
 							}
 						}
@@ -143,13 +143,15 @@ public:
 	vector < Node *> nodes;	//tree nodes
 	vector < Point3d *> aPoints;	//attraction points
 
-	MethodParameters *params;
-	Crown *crown;
+	//MethodParameters *params;
+	//Crown *crown;
 
+	Parameters *params;
 	ColonizationMethod(Parameters *params)
 	{
-		this->params = params->methodParams;
-		crown = params->crown;
+	  this->params=params;
+	//	this->params = params->methodParams;
+	//	crown = params->crown;
 	}
 
 	void init ()
@@ -160,12 +162,12 @@ public:
 			delete aPoints[i];
 		nodes.clear();
 		aPoints.clear();
-		srand (params->seed);
+		srand (params->methodParams->seed);
 	}
 
 	void generate ()
 	{
-		aPoints = crown->generatePoints();
+		aPoints = params->crown->generatePoints();
 
 		int i;
 
@@ -181,34 +183,6 @@ public:
 			prvNode = newNode;
 		}
 		colonize ();
-
-//		nodes.clear();
-//		Node *a, *b, *c, *d, *e, *f;
-//		a = new Node(0, 0, 0);
-//		a->r = 0.25;
-//		b = new Node(0, 0, 1);
-//		b->r = 0.2;
-//		c = new Node(0, 1, 1);
-//		c->r = 0.15;
-//		d = new Node(0, 2, 1);
-//		d->r = 0.075;
-//		e = new Node(0, 1, 2);
-//		e->r = 0.1;
-//		f = new Node(0, 0, 2);
-//		f->r = 0.1;
-//
-//		a->addChildren(b);
-//		b->addChildren(c);
-//		b->addChildren(f);
-//		c->addChildren(d);
-//		c->addChildren(e);
-//
-//		nodes.push_back(a);
-//		nodes.push_back(b);
-//		nodes.push_back(c);
-//		nodes.push_back(d);
-//		nodes.push_back(e);
-//		nodes.push_back(f);
 	}
 	Node *getRoot() {
 		return (nodes.size()==0)?NULL:nodes[0];
