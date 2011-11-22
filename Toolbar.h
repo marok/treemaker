@@ -34,7 +34,8 @@ class Toolbar {
 			file.close();
 		}
 	}
-	static void  refreshClicked(GtkWidget *widget,gpointer data) {
+	
+	static void  generateClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
 		t->cm->init();
 		t->cm->generate();
@@ -42,6 +43,15 @@ class Toolbar {
 			delete model;
 		model = new  Model3d(t->cm->getRoot(),t->params->tp);
 		model->generateModel();
+		DrawMethods::render();
+	}
+	
+	static void  refreshClicked(GtkWidget *widget,gpointer data) {
+		if(!model)
+			return;
+		
+		model->generateModel();
+		
 		DrawMethods::render();
 	}
 	static void  convertClicked(GtkWidget *widget,gpointer data) {
@@ -78,7 +88,8 @@ public:
 		ADD_ITEM(GTK_STOCK_OPEN,openClicked,"Read parameters from file");
 		ADD_ITEM(GTK_STOCK_SAVE,saveClicked,"Save current parameters to file");
 		ADD_SEPARATOR
-		ADD_ITEM(GTK_STOCK_REFRESH,refreshClicked,"Generate new model based on current parameters");
+		ADD_ITEM(GTK_STOCK_EXECUTE,generateClicked,"Generates new model based on current parameters");
+		ADD_ITEM(GTK_STOCK_REFRESH,refreshClicked,"Refreshes current model");
 		ADD_SEPARATOR
 		ADD_ITEM(GTK_STOCK_CONVERT,convertClicked,"Convert model to external format");
 

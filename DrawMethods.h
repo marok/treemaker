@@ -25,16 +25,228 @@ static const GLfloat colorActivePoint[] = {1, 0, 0};
 static const GLfloat colorUnactive[] = {0, 0.5, 1};
 class DrawMethods {
 
+	static void drawPoints(std::vector<Point3d *> points)
+	{
+		glPointSize(3);
+		glColor3f (1, 0, 1);
+		glBegin(GL_POINTS);
+		for(unsigned int i=0; i<points.size(); i++)
+		{
+			glVertex3f(points.at(i)->x,points.at(i)->y,points.at(i)->z);
+		}
+		glEnd();
+	}
+	
+	static void drawPoints(BranchModel *bm)
+	{
+		Point3d branchAbs  = bm->getAbsolutePosition();
+		
+		glPointSize(4);
+		glColor3f(1, 0, 0);
+		glBegin(GL_POINTS);
+		for (unsigned int j = 0; j < bm->nodeModelList.size(); j++) {
+			NodeModel *node = bm->nodeModelList[j];
+			glVertex3f(branchAbs.x + node->position->x, branchAbs.y + node->position->y, branchAbs.z + node->position->z);
+		}
+		glEnd();
+	}
+	
+	static void
+	drawEnvelopeSpline(SplineCrown *splineCrown, bool active, int activeMainPoint) {
+		glPushMatrix();
+
+		int n = 20; //liczba punktow na krzywej
+		int loops = 12; //liczba petli
+
+		int N = splineCrown->crownMainPoints.size();
+		float startX = splineCrown->crownMainPoints[0]->x;
+		float step = (splineCrown->crownMainPoints[N - 1]->x - startX) / (float) n;
+
+		glTranslatef(splineCrown->x, splineCrown->y, splineCrown->z);
+		for (int j = 0; j < loops; j++) {
+			glColor3fv(active ? colorActive : colorUnactive);
+			glBegin(GL_LINE_STRIP);
+			for (int i = 0; i < n + 1; i++) {
+				float x, y;
+
+				if (i == 0)
+					x = startX;
+				else
+					x += step;
+
+				y = splineCrown->s->getS(x);
+
+				glVertex3f(y, 0, x);
+			}
+			glEnd();
+
+			if (active) {
+				glPointSize(4);
+				glColor3fv(colorUnactive);
+				glBegin(GL_POINTS);
+				for (int i = 0; i < N; i++) {
+					if (activeMainPoint == i) {
+						glColor3fv(colorActivePoint);
+						glVertex3f(splineCrown->crownMainPoints[i]->y, 0, splineCrown->crownMainPoints[i]->x);
+						glColor3fv(colorUnactive);
+					} else
+						glVertex3f(splineCrown->crownMainPoints[i]->y, 0, splineCrown->crownMainPoints[i]->x);
+				}
+				glEnd();
+			}
+
+			glRotatef(360 / loops, 0, 0, 1);
+		}
+		glPopMatrix();
+	}
+
+	static void
+	drawEnvelopeCylinder(CylinderCrown *cylinderCrown, bool active) {
+		glPushMatrix();
+
+		int loops = 12; //liczba petli
+		glTranslatef(cylinderCrown->x, cylinderCrown->y, 0);
+		for (int j = 0; j < loops; j++) {
+			glColor3fv(active ? colorActive : colorUnactive);
+			glBegin(GL_LINE_STRIP);
+			glVertex3f(0, 0, cylinderCrown->z);
+			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z);
+			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z + cylinderCrown->h);
+			glVertex3f(0, 0, cylinderCrown->z + cylinderCrown->h);
+			glEnd();
+			glRotatef(360 / loops, 0, 0, 1);
+		}
+		glPopMatrix();
+	}
+	
+	static void
+	drawTrunk(BranchModel *bm, Parameters *params)
+	{
+		TrunkParameters *tp=params->tp;
+		static GLuint texId;
+		if(params->tp->barkTexInitialized==FALSE) {
+			params->tp->barkTexInitialized=TRUE;
+			Bmp bmp;
+			bmp.load(params->tp->barkPath);
+			glGenTextures(1,&texId);
+			glBindTexture(GL_TEXTURE_2D,texId);
+			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, bmp.header.biWidth, bmp.header.biHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
+			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
+			bmp.cleanup();
+		}
+
+		glBindTexture(GL_TEXTURE_2D,texId);
+		if(bm==NULL) return;
+		int nodeModelListLen = bm->nodeModelList.size();
+		for(int i=0; i<nodeModelListLen-1; i++)
+		{
+			NodeModel *root= bm->nodeModelList.at(i);
+			NodeModel *child = bm->nodeModelList.at(i+1);
+			int index = child->segment->index;
+
+			glEnable (GL_TEXTURE_2D);
+
+			glBegin(GL_TRIANGLES);
+
+			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
+				int j0 = (index + i0) % tp->circlePoints;
+
+				int i1 = (i0+1)%tp->circlePoints;
+				int j1 = (j0+1)%tp->circlePoints;
+
+				Point3d rootAbs, childAbs;
+				rootAbs = bm->getAbsoluteNodePosition(root);
+				childAbs = bm->getAbsoluteNodePosition(child);
+
+				glTexCoord2f (0.0f, 0.0f);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
+				glTexCoord2f (1.0f, 0.0f);
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j0]));
+				glTexCoord2f (1.0f, 1.0f);
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+
+				glTexCoord2f (0.0f, 0.0f);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
+				glTexCoord2f (0.0f, 1.0f);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i1]));
+				glTexCoord2f (1.0f, 1.0f);
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+				triangles+=2;
+			}
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+		}
+		glPopName();
+	}
+	
+	static void
+	drawLines(BranchModel *bm, TrunkParameters *tp)
+	{
+		if(bm==NULL) return;
+
+		int nodeModelListLen = bm->nodeModelList.size();
+		Point3d branchAbs  = bm->getAbsolutePosition();
+		
+		
+		glColor3f(0.5,0,0);
+		for(int i=0; i<nodeModelListLen-1; i++)
+		{
+			NodeModel *node= bm->nodeModelList.at(i);
+			NodeModel *child = bm->nodeModelList.at(i+1);
+			int index = child->segment->index;
+
+			Point3d nodeAbs;
+			nodeAbs.add(branchAbs);
+			nodeAbs.add(*node->position);
+
+			Point3d childAbs;
+			childAbs.add(branchAbs);
+			childAbs.add(*child->position);
+			
+			
+			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
+				int j0 = (index + i0) % tp->circlePoints;
+
+
+				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
+				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
+				int i1 = (i0+1)%tp->circlePoints;
+				int j1 = (j0+1)%tp->circlePoints;
+				glBegin(GL_LINES);
+				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j0]));
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
+				glEnd();
+				
+				glBegin(GL_LINES);
+				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
+				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i1]));
+				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
+				glEnd();
+				triangles+=2;
+			}
+		}
+
+		int len = bm->childBranches.size();
+		for (int i = 0; i < len; i++) {
+			drawLines(bm->childBranches.at(i), tp);
+		}
+	}
 
 public:
 
-	static void render() {
+	static void
+	render() {
 		gtk_widget_queue_draw(windowWidget);
 
 	}
 
 
-	static void drawCoordinates(GLenum mode) {
+	static void
+	drawCoordinates(GLenum mode) {
 
 
 		GLUquadric *quadric;
@@ -79,86 +291,45 @@ if(mode==GL_SELECT)\
 
 	}
 
-
-	static void drawTrunk(BranchModel *bm, unsigned int branchId, Parameters *params)
-	{
-		TrunkParameters *tp=params->tp;
-		glPushName(branchId);
-		static GLuint texId;
-		if(params->tp->barkTexInitialized==FALSE) {
-			params->tp->barkTexInitialized=TRUE;
-			Bmp bmp;
-			bmp.load(params->tp->barkPath);
-			glGenTextures(1,&texId);
-			glBindTexture(GL_TEXTURE_2D,texId);
-			glTexImage2D (GL_TEXTURE_2D, 0, GL_RGB, bmp.header.biWidth, bmp.header.biHeight, 0, GL_RGB,GL_UNSIGNED_BYTE, bmp.data);
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	// Linear Filtering
-			glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	// Linear Filtering
-			bmp.cleanup();
-		}
-
-		glBindTexture(GL_TEXTURE_2D,texId);
-		if(bm==NULL) return;
-		int nodeModelListLen = bm->nodeModelList.size();
-		for(int i=0; i<nodeModelListLen-1; i++)
-		{
-			NodeModel *root= bm->nodeModelList.at(i);
-			NodeModel *child = bm->nodeModelList.at(i+1);
-			int index = child->segment->index;
-
-			glEnable (GL_TEXTURE_2D);
-
-			glBegin(GL_TRIANGLES);
-
-			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
-				int j0 = (index + i0) % tp->circlePoints;
-
-				int i1 = (i0+1)%tp->circlePoints;
-				int j1 = (j0+1)%tp->circlePoints;
-
-				Point3d rootAbs, childAbs;
-				rootAbs = bm->getAbsoluteNodePosition(root);
-				childAbs = bm->getAbsoluteNodePosition(child);
-
-				glTexCoord2f (0.0f, 0.0f);
-				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
-				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-				glTexCoord2f (1.0f, 0.0f);
-				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j0]));
-				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-				glTexCoord2f (1.0f, 1.0f);
-				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
-				//glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-
-				glTexCoord2f (0.0f, 0.0f);
-				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
-				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-				glTexCoord2f (0.0f, 1.0f);
-				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i1]));
-				//glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
-				glTexCoord2f (1.0f, 1.0f);
-				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
-				//glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-				triangles+=2;
-			}
-			glEnd();
-			glDisable(GL_TEXTURE_2D);
-		}
-		glPopName();
-	}
-
 	static void drawTrunks(Model3d *model, Parameters *params)
 	{
 		if(!model)
 			return;
 
+		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
+		
 		for(unsigned int i=0; i<model->branches.size(); i++)
 		{
-			if(model->markedBranchIndex != -1 && (model->markedBranchIndex == int(i)))
-				glColor3f(0,1,0);
-			else
-				glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
-			drawTrunk(model->branches[i], i, params);
+			drawTrunk(model->branches[i], params);
+		}
+	}
+	
+	static void drawTrunksEditMode(Model3d *model, Parameters *params)
+	{
+		if(!model)
+			return;
+
+		glInitNames();
+		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
+		
+		for(unsigned int i=0; i<model->branches.size(); i++)
+		{
+			glPushName(i);
+			if(model->markedBranchIndex == (int)i)
+			{
+				drawPoints(model->branches[i]);
+				
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+				glColor4f(0, 1, 0, 0.3);
+			} else
+			{
+				glDisable(GL_BLEND);
+				glColor4f(1.0, 1.0, 1.0, 1.0);
+			}
+			
+			drawTrunk(model->branches[i], params);
+			glPopName();
 		}
 	}
 
@@ -178,75 +349,16 @@ if(mode==GL_SELECT)\
 		}
 	}
 
-	static void drawLines(BranchModel *bm, TrunkParameters *tp)
+	
+	
+	static void drawTrunksLines(Model3d *model, Parameters *params)
 	{
-		if(bm==NULL) return;
+		if(!model)
+			return;
 
-		glColor3f(1,0.5,0);
-		int nodeModelListLen = bm->nodeModelList.size();
-		Point3d branchAbs  = bm->getAbsolutePosition();
-		for(int i=0; i<nodeModelListLen-1; i++)
+		for(unsigned int i=0; i<model->branches.size(); i++)
 		{
-			NodeModel *node= bm->nodeModelList.at(i);
-			NodeModel *child = bm->nodeModelList.at(i+1);
-			int index = child->segment->index;
-
-			Point3d nodeAbs;
-			nodeAbs.add(branchAbs);
-			nodeAbs.add(*node->position);
-
-			Point3d childAbs;
-			childAbs.add(branchAbs);
-			childAbs.add(*child->position);
-
-			glBegin(GL_POINTS);
-			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
-				int j0 = (index + i0) % tp->circlePoints;
-
-				Point3d circAbs;
-				circAbs.add(nodeAbs);
-				circAbs.add(*node->segment->circlePts[i0]);
-				glVertex3f(circAbs.x, circAbs.y, circAbs.z);
-
-
-				Point3d circChildAbs;
-				circChildAbs.add(childAbs);
-				circChildAbs.add(*child->segment->circlePts[j0]);
-				glVertex3f(circChildAbs.x, circChildAbs.y, circChildAbs.z);
-
-				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-//				int i1 = (i0+1)%tp->circlePoints;
-//				int j1 = (j0+1)%tp->circlePoints;
-//
-//				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-//				glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
-//				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-//
-//				glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
-//				glVertex3f(root->segment->circlePts[i1]->x,root->segment->circlePts[i1]->y,root->segment->circlePts[i1]->z);
-//				glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
-//				triangles+=2;
-			}
-			glEnd();
-
-
-		}
-		//Rysowanie pkt nodow
-		Point3d abs = bm->getAbsolutePosition();
-
-		glPointSize(3);
-		glColor3f(1, 0, 0);
-		glBegin(GL_POINTS);
-		for (unsigned int j = 0; j < bm->nodeModelList.size(); j++) {
-			NodeModel *node = bm->nodeModelList[j];
-			glVertex3f(abs.x + node->position->x, abs.y + node->position->y, abs.z + node->position->z);
-		}
-		glEnd();
-
-		int len = bm->childBranches.size();
-		for (int i = 0; i < len; i++) {
-			drawLines(bm->childBranches.at(i), tp);
+			drawLines(model->branches[i], params->tp);
 		}
 	}
 
@@ -267,88 +379,9 @@ if(mode==GL_SELECT)\
 		}
 	}
 
-	static void drawEnvelopeSpline(SplineCrown *splineCrown, bool active, int activeMainPoint)
-	{
-		glPushMatrix();
+	
 
-		int n=20;//liczba punktow na krzywej
-		int loops=12;//liczba petli
-
-		int N = splineCrown->crownMainPoints.size();
-		float startX = splineCrown->crownMainPoints[0]->x;
-		float step = (splineCrown->crownMainPoints[N - 1]->x - startX) / (float)n;
-
-		glTranslatef(splineCrown->x, splineCrown->y, splineCrown->z);
-		for(int j=0; j<loops; j++) {
-			glColor3fv(active?colorActive:colorUnactive);
-			glBegin(GL_LINE_STRIP);
-			for(int i=0; i<n+1; i++) {
-				float x, y;
-
-				if(i == 0)
-					x = startX;
-				else
-					x += step;
-
-				y = splineCrown->s->getS(x);
-
-				glVertex3f(y,0,x);
-			}
-			glEnd();
-
-			if(active)
-			{
-				glPointSize(4);
-				glColor3fv(colorUnactive);
-				glBegin(GL_POINTS);
-				for(int i=0; i<N; i++)
-				{
-					if(activeMainPoint == i)
-					{
-						glColor3fv(colorActivePoint);
-						glVertex3f(splineCrown->crownMainPoints[i]->y,0,splineCrown->crownMainPoints[i]->x);
-						glColor3fv(colorUnactive);
-					} else
-						glVertex3f(splineCrown->crownMainPoints[i]->y,0,splineCrown->crownMainPoints[i]->x);
-				}
-				glEnd();
-			}
-
-			glRotatef(360/loops,0,0,1);
-		}
-		glPopMatrix();
-	}
-
-	static void drawEnvelopeCylinder(CylinderCrown *cylinderCrown, bool active)
-	{
-		glPushMatrix();
-
-		int loops=12;//liczba petli
-		glTranslatef(cylinderCrown->x, cylinderCrown->y, 0);
-		for(int j=0; j<loops; j++) {
-			glColor3fv(active?colorActive:colorUnactive);
-			glBegin(GL_LINE_STRIP);
-			glVertex3f(0, 0, cylinderCrown->z);
-			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z);
-			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z+cylinderCrown->h);
-			glVertex3f(0, 0, cylinderCrown->z+cylinderCrown->h);
-			glEnd();
-			glRotatef(360/loops,0,0,1);
-		}
-		glPopMatrix();
-	}
-
-	static void drawPoints(std::vector<Point3d *> points)
-	{
-		glPointSize(3);
-		glColor3f (1, 0, 1);
-		glBegin(GL_POINTS);
-		for(unsigned int i=0; i<points.size(); i++)
-		{
-			glVertex3f(points.at(i)->x,points.at(i)->y,points.at(i)->z);
-		}
-		glEnd();
-	}
+	
 
 	static void drawGrass() {
 		//
@@ -501,26 +534,32 @@ if(mode==GL_SELECT)\
 		}
 
 	}
-
-	static void drawTreeModel (Parameters *params) {
+	static void
+	drawTreeModel(Parameters *params, bool generatorMode)
+	{
 		glPushMatrix();
-		TrunkParameters *tp=params->tp;
-		//triangles=0;
+		TrunkParameters *tp = params->tp;
+		//triangles=0
+		if (generatorMode) {
+			if (params->rp->showGrass)
+				drawGrass();
 
-		if(params->rp->showGrass)
-			drawGrass();
-		if(params->rp->showEnvelopes)
-			drawEnvelopes(params->crown);
-		if(cm->params->methodParams->activeMethod==0) {
-			if(params->rp->showBark)
-				drawTrunks(model, params);
-			else drawLines(model?model->getRootBranch():NULL, tp);
+			if (params->rp->showEnvelopes)
+				drawEnvelopes(params->crown);
 
-			if(params->rp->showLeaves)
-				drawLeaves(model?model->getRootBranch():NULL, params,0);
-		}
-		if(cm->params->methodParams->activeMethod==1) {
-			drawLines(model?model->getRootBranch():NULL,tp);
+			if (cm->params->methodParams->activeMethod == 0) {
+				if (params->rp->showBark)
+					drawTrunks(model, params);
+				else drawLines(model ? model->getRootBranch() : NULL, tp);
+
+				if (params->rp->showLeaves)
+					drawLeaves(model ? model->getRootBranch() : NULL, params, 0);
+			}
+			if (cm->params->methodParams->activeMethod == 1) {
+				drawLines(model ? model->getRootBranch() : NULL, tp);
+			}
+		} else {
+			drawTrunksEditMode(model, params);
 		}
 
 		//g_print("triangles: %d\n",triangles);

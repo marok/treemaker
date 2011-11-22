@@ -7,6 +7,10 @@
 #include "SplineCrown.h"
 #include "CylinderCrown.h"
 #define TREEMAKER_VERSION "treemaker-ver0.1"
+
+
+
+
 class Parameters {
 public:
 
@@ -15,7 +19,7 @@ public:
 	LeavesParameters	*lp;
 	Crown                   *crown;
 	MethodParameters 	*methodParams;
-
+	
 	void clean() {
 		//clean previous settings
 		/*if(rp!=NULL) delete rp;
@@ -38,8 +42,8 @@ public:
 		lp=new LeavesParameters();
 		methodParams = new MethodParameters();
 		crown = new Crown(methodParams);
-		crown->subcrowns.push_back(new CylinderCrown(0,0,0,3,5));
-
+		crown->subcrowns.push_back(new CylinderCrown(0,0,2,5,8));
+		
 		//crown->subcrowns.push_back(new SplineCrown(-3,-3, 4, methodParams));
 		//crown->subcrowns.push_back(new SplineCrown(3, 3, 2, methodParams));
 		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));

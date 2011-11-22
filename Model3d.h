@@ -337,6 +337,15 @@ class Model3d {
 			printBranches(bm->childBranches.at(i), ind+1);
 		}
 	}
+	
+	void populateVectorBranches(BranchModel *bm)
+	{
+		if(!bm)
+			return;
+		branches.push_back(bm);
+		for(unsigned int i=0; i<bm->childBranches.size(); i++)
+			populateVectorBranches(bm->childBranches[i]);
+	}
 
 public:
 	vector<BranchModel *> branches; //tablica zawierająca wszystkie gałęzie
@@ -361,19 +370,45 @@ public:
 
 	void generateModel()
 	{
-
 		if(this->bm)
 			delete this->bm;
 		branches.clear();
 
 		computeRadius(root,0);
 		this->bm = node2BranchModel(root, NULL, new Point3d());
+		
 		if(tp->antialiasing)
 		{
 			smoothBranch(this->bm);
 		}
 		computeSegment(this->bm);
 		computeConnectedPts(this->bm);
+	}
+	
+	void removeMarkedBranch()
+	{
+		if(markedBranchIndex != -1)
+		{
+			BranchModel *markedBranch = branches[markedBranchIndex];
+			BranchModel *parentBranch = markedBranch->parentBranch;
+			if(parentBranch)
+			{
+				for(unsigned int i=0; i<parentBranch->childBranches.size(); i++)
+					if(parentBranch->childBranches[i] == markedBranch)
+					{
+						parentBranch->childBranches.erase(parentBranch->childBranches.begin()+i);
+						break;
+					}
+			} else
+				this->bm = NULL;
+			
+			delete markedBranch;
+			
+			branches.clear();
+			populateVectorBranches(this->bm);
+			
+			this->markedBranchIndex = -1;
+		}
 	}
 };
 #endif

@@ -28,6 +28,7 @@
 #include "RenderingParametersPanel.h"
 #include "LeavesParametersPanel.h"
 #include "CrownParametersPanel.h"
+#include "EditPanel.h"
 #include "Toolbar.h"
 
 #include "Spline.h"
@@ -76,11 +77,18 @@ static float lightPosition[4] = { 100.0, -100.0, 100.0, 100.0 };
 
 ColonizationMethod *cm = NULL;
 ParticleMethod *pm = NULL;
-//TrunkParameters *tp =NULL;
-DrawMethods *dm = NULL;
-Model3d *model = NULL;
-Parameters *parameters;
 
+
+Model3d *model = NULL;
+Parameters *parameters = NULL;
+
+enum TreemakerMode
+{
+	MODE_GENERATOR,
+	MODE_EDITOR
+};
+
+TreemakerMode tmMode = MODE_GENERATOR;
 
 class MainWindow
 {
@@ -181,8 +189,10 @@ class MainWindow
 		glRotatef (-stheta, 1.0, 0.0, 0.0);
 		glRotatef (sphi, 0.0, 0.0, 1.0);
 
-		DrawMethods::drawWireframe ();
-		DrawMethods::drawTreeModel (parameters);
+		
+		DrawMethods::drawWireframe();
+	
+		DrawMethods::drawTreeModel (parameters, tmMode == MODE_GENERATOR?TRUE:FALSE);
 
 		if(coordinates) {
 			DrawMethods::drawCoordinates (GL_RENDER);
@@ -229,7 +239,10 @@ class MainWindow
 		if (event->button == 1) {
 			beginX = event->x;
 			beginY = event->y;
-			selection(event->x, event->y);
+			
+			if(tmMode == MODE_EDITOR)
+				selection(event->x, event->y);
+			
 			gdk_window_invalidate_rect (widget->window,
 			                            &widget->allocation, FALSE);
 			return TRUE;
@@ -311,8 +324,6 @@ class MainWindow
 	static void
 	selection(int x, int y) {
 
-		glInitNames ();
-
 		const int BUFFER_LENGTH = 64;
 		GLuint select_buffer [BUFFER_LENGTH];
 		glSelectBuffer(BUFFER_LENGTH, select_buffer);
@@ -331,7 +342,7 @@ class MainWindow
 
 		glRenderMode(GL_SELECT);
 
-		DrawMethods::drawTreeModel(parameters);
+		DrawMethods::drawTreeModel(parameters, FALSE);
 
 
 		GLint hits = glRenderMode(GL_RENDER);
@@ -509,10 +520,18 @@ class MainWindow
 		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm,parameters->tp);
 
 		GtkWidget *notebook=gtk_notebook_new();
+		g_signal_connect (G_OBJECT (notebook), "switch-page",
+		                  G_CALLBACK (notebookSwitchPage), NULL);
+		
+		
 		GtkWidget *label;
 		label=gtk_label_new("Algorithms");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),mpanel->createPanel(),label);
 
+		CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
+		label=gtk_label_new("C");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
+		
 		RenderingParametersPanel *renderingPanel=new RenderingParametersPanel(parameters);
 		label=gtk_label_new("R");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),renderingPanel->createPanel(),label);
@@ -525,9 +544,10 @@ class MainWindow
 		label=gtk_label_new("L");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),lpp->createPanel(),label);
 
-		CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
-		label=gtk_label_new("C");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
+		EditPanel *ep = new EditPanel();
+		label = gtk_label_new("E");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),ep->createPanel(),label);
+		
 
 		gtk_widget_show(notebook);
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
@@ -541,6 +561,25 @@ class MainWindow
 		windowWidget=window;
 		return window;
 
+	}
+	
+	static void
+	notebookSwitchPage(GtkWidget *w, gpointer page, guint pageId, gpointer userData)
+	{
+		bool draw = FALSE;
+		
+		if((tmMode == MODE_GENERATOR && pageId == 5) ||
+			(tmMode == MODE_EDITOR && pageId !=5))
+			draw = TRUE;
+		
+		if(pageId == 5)
+			tmMode = MODE_EDITOR;
+		else
+			tmMode = MODE_GENERATOR;
+		
+		if(draw)
+			DrawMethods::render();
+		
 	}
 
 	static gboolean
