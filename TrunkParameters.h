@@ -12,14 +12,12 @@ public:
 	float mValue;
 	char barkPath[MAXPATHLEN];		//path to bark texture
 	bool barkTexInitialized;
-	bool antialiasing;
 
 	static const float RADIUSFACTOR_DEFAULT=1.8;
 	static const float AVALUE_DEFAULT=0;
 	static const float MVALUE_DEFAULT=1;
 	static const int CIRCLEPOINTS_DEFAULT=10;
 	static const bool BARKTEXINITIALIZED_DEFAULT=FALSE;
-	static const bool ANTIALIASING = FALSE;
 
 	TrunkParameters() {
 		char defaultPath[]="textures/bark0_256.bmp";
@@ -29,7 +27,6 @@ public:
 		mValue=MVALUE_DEFAULT;
 		circlePoints=CIRCLEPOINTS_DEFAULT;
 		barkTexInitialized=BARKTEXINITIALIZED_DEFAULT;
-		antialiasing=ANTIALIASING;
 	}
 	void setBarkPath(char *path) {
 		assert(strlen(path)<MAXPATHLEN);

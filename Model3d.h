@@ -312,9 +312,27 @@ class Model3d {
 				bm->nodeModelList[i]->position->z = 0.75*points[1].z + 0.25*points[2].z;
 			}
 		}
-		int len = bm->childBranches.size();
-		for (int i = 0; i < len; i++) {
-			smoothBranch(bm->childBranches[i]);
+	}
+	
+	//Usuwa co drugi węzeł gałęzi. Jeśli z węzła wychodzi inna gałąź to gałąź jest przesuwana w górę gałęzi.
+	void decBranchResolution(BranchModel *bm)
+	{
+		
+		//pętlę inkrementujemy o 1 ponieważ w każdej inkrementacji usuwamy bieżący element
+		for(unsigned int i=1; i < bm->nodeModelList.size() - 1; i++)
+		{
+			//sprawdzamy czy z węzła nie wychodzi żadna gałąź
+			//jeśli tak to przesuwamy te gałęzie w górę
+			for(unsigned int j = 0; j < bm->childBranches.size(); j++)
+			{
+				if(bm->nodeModelList[i]->position == bm->childBranches[j]->position)
+				{
+					bm->childBranches[j]->position = bm->nodeModelList[i+1]->position;
+				}
+			}
+			NodeModel *node2delete = bm->nodeModelList[i];
+			bm->nodeModelList.erase(bm->nodeModelList.begin()+i);
+			delete node2delete;
 		}
 	}
 
@@ -377,10 +395,6 @@ public:
 		computeRadius(root,0);
 		this->bm = node2BranchModel(root, NULL, new Point3d());
 		
-		if(tp->antialiasing)
-		{
-			smoothBranch(this->bm);
-		}
 		computeSegment(this->bm);
 		computeConnectedPts(this->bm);
 	}
@@ -408,6 +422,28 @@ public:
 			populateVectorBranches(this->bm);
 			
 			this->markedBranchIndex = -1;
+		}
+	}
+	
+	void smoothMarkedBranch()
+	{
+		if(markedBranchIndex != -1)
+		{
+			BranchModel *marked = branches[markedBranchIndex];
+			this->smoothBranch(marked);
+			computeSegment(marked);
+			computeConnectedPts(marked);
+		}
+	}
+	
+	void decMarkedBranchResolution()
+	{
+		if(markedBranchIndex != -1)
+		{
+			BranchModel *marked = branches[markedBranchIndex];
+			decBranchResolution(marked);
+			computeSegment(marked);
+			computeConnectedPts(marked);
 		}
 	}
 };
