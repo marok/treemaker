@@ -6,6 +6,7 @@
 #include "TrunkParameters.h"
 #include "NodeModel.h"
 #include "BranchModel.h"
+#include "BranchSelection.h"
 
 using namespace std;
 
@@ -414,20 +415,21 @@ class Model3d {
 
 public:
 	vector<BranchModel *> branches; //tablica zawierająca wszystkie gałęzie
-	int markedBranchIndex; //index zaznaczonej gałęzi, -1 - żadna gałąź nie jest zaznaczona
-	int markedNodeIndex; //index zaznaczonego węzła (jeśli gałąź jest zaznaczona), -1 jeśli żaden węzeł nie jest zaznaczony
 
+	BranchSelection *selection;
+	
 	Model3d(Node *root,TrunkParameters *tp) {
 		this->root = root;
 		this->tp=tp;
 		this->bm = NULL;
-		this->markedBranchIndex = -1;
-		this->markedNodeIndex = -1;
+		
+		selection = new BranchSelection();
 	}
 
 	~Model3d()
 	{
 		delete this->bm;
+		delete this->selection;
 	}
 
 	BranchModel *getRootBranch()
@@ -450,27 +452,30 @@ public:
 	
 	void removeMarkedBranch()
 	{
-		if(markedBranchIndex != -1)
+		int i = selection->getMarkedBranch();
+		if(i != -1)
 		{
-			BranchModel *markedBranch = branches[markedBranchIndex];
-			if(markedNodeIndex <= 1)
+			BranchModel *markedBranch = branches[i];
+			
+			int j = selection->getMarkedNode();
+			if(j <= 1)
 			{
 				removeBranch(markedBranch);
 			} else
 			{
-				cutBranch(markedBranch, markedNodeIndex);
+				cutBranch(markedBranch, j);
 			}
 			
-			this->markedBranchIndex = -1;
-			this->markedNodeIndex = -1;
+			selection->unmarkBranch();
 		}
 	}
 	
 	void smoothMarkedBranch()
 	{
-		if(markedBranchIndex != -1)
+		int i = selection->getMarkedBranch();
+		if(i != -1)
 		{
-			BranchModel *marked = branches[markedBranchIndex];
+			BranchModel *marked = branches[i];
 			this->smoothBranch(marked);
 			computeSegment(marked);
 			computeConnectedPts(marked);
@@ -479,9 +484,10 @@ public:
 	
 	void decMarkedBranchResolution()
 	{
-		if(markedBranchIndex != -1)
+		int i = selection->getMarkedBranch();
+		if(i != -1)
 		{
-			BranchModel *marked = branches[markedBranchIndex];
+			BranchModel *marked = branches[i];
 			decBranchResolution(marked);
 			computeSegment(marked);
 			computeConnectedPts(marked);

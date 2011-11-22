@@ -315,7 +315,7 @@ if(mode==GL_SELECT)\
 		for(unsigned int i=0; i<model->branches.size(); i++)
 		{
 			glPushName(i);
-			if(model->markedBranchIndex == (int)i)
+			if(model->selection->isBranchMarked(i))
 			{
 				BranchModel *bm = model->branches[i];
 				Point3d branchAbs  = bm->getAbsolutePosition();
@@ -323,7 +323,7 @@ if(mode==GL_SELECT)\
 				glPointSize(6);
 				for(unsigned int j=0; j< bm->nodeModelList.size(); j++)
 				{
-					if((int)j >= model->markedNodeIndex)
+					if(model->selection->isNodeMarked(j))
 					{
 						glColor3f(1,0,0);
 					} else

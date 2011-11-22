@@ -356,8 +356,7 @@ class MainWindow
 			printf("Nic nie trafiono!\n");
 			if(model)
 			{
-				model->markedBranchIndex = -1;
-				model->markedNodeIndex = -1;
+				model->selection->unmarkBranch();
 			}
 		}
 		else
@@ -368,16 +367,16 @@ class MainWindow
 				printf("%d ",select_buffer[i]);
 			printf("\n");
 			
-			model->markedNodeIndex = -1;
-			
 			
 			if(model)
 			{
-				model->markedBranchIndex = select_buffer[3];
+				model->selection->markBranch(select_buffer[3]);
 				
 				//mamy dwie nazwy na stosie (gałąź jest zaznaczona i trafiliśmy na punkt)
 				if(select_buffer[0]==2)
-					model->markedNodeIndex = select_buffer[4];
+				{
+					model->selection->markNode(select_buffer[4]);
+				}
 			}
 		}
 	}
