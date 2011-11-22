@@ -42,7 +42,7 @@ class DrawMethods {
 		Point3d branchAbs  = bm->getAbsolutePosition();
 		
 		glPointSize(4);
-		glColor3f(1, 0, 0);
+		glColor3f(1, 1, 1);
 		glBegin(GL_POINTS);
 		for (unsigned int j = 0; j < bm->nodeModelList.size(); j++) {
 			NodeModel *node = bm->nodeModelList[j];
@@ -317,7 +317,28 @@ if(mode==GL_SELECT)\
 			glPushName(i);
 			if(model->markedBranchIndex == (int)i)
 			{
-				drawPoints(model->branches[i]);
+				BranchModel *bm = model->branches[i];
+				Point3d branchAbs  = bm->getAbsolutePosition();
+				
+				glPointSize(6);
+				for(unsigned int j=0; j< bm->nodeModelList.size(); j++)
+				{
+					if((int)j >= model->markedNodeIndex)
+					{
+						glColor3f(1,0,0);
+					} else
+					{
+						glColor3f(1,1,1);
+					}
+					glPushName(j);
+					glBegin(GL_POINTS);
+					VERTEX_TRANS(branchAbs, (*bm->nodeModelList[j]->position));
+					glEnd();
+					glPopName();
+				}
+				
+				
+				//drawPoints(bm);
 				
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

@@ -336,7 +336,7 @@ class MainWindow
 
 		glLoadIdentity();
 
-		gluPickMatrix(x, viewport [3] - y, 2, 2, viewport);
+		gluPickMatrix(x, viewport [3] - y, 4, 4, viewport);
 
 		gluPerspective (64.0, aspect, zNear, zFar);
 
@@ -355,13 +355,30 @@ class MainWindow
 		{
 			printf("Nic nie trafiono!\n");
 			if(model)
+			{
 				model->markedBranchIndex = -1;
+				model->markedNodeIndex = -1;
+			}
 		}
 		else
 		{
-			printf("Trafiono w %d obiekt/obiektów %d!\n",hits, select_buffer[3]);
+			
+			printf("Trafiono w %d obiekt/obiektów!\n",hits);
+			for(int i=0; i<4*hits; i++)
+				printf("%d ",select_buffer[i]);
+			printf("\n");
+			
+			model->markedNodeIndex = -1;
+			
+			
 			if(model)
+			{
 				model->markedBranchIndex = select_buffer[3];
+				
+				//mamy dwie nazwy na stosie (gałąź jest zaznaczona i trafiliśmy na punkt)
+				if(select_buffer[0]==2)
+					model->markedNodeIndex = select_buffer[4];
+			}
 		}
 	}
 

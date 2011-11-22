@@ -314,6 +314,21 @@ class Model3d {
 		}
 	}
 	
+	//funkcja zwraca wszystkie gałązie startujące w danym węźle
+	//parentBranch - gałąź na której leży węzeł nm
+	//WARNING! szybkie to to nie jest xD - aby ulepszyć trzeba trochę przebudować Model3d
+	vector<BranchModel *> branchesStartedInNode(BranchModel *parentBranch, NodeModel *nm)
+	{
+		vector<BranchModel *> result;
+		for(unsigned int i=0; i<parentBranch->childBranches.size(); i++)
+		{
+			if(parentBranch->childBranches[i]->position == nm->position)
+				result.push_back(parentBranch->childBranches[i]);
+		}
+		
+		return result;
+	}
+	
 	//Usuwa co drugi węzeł gałęzi. Jeśli z węzła wychodzi inna gałąź to gałąź jest przesuwana w górę gałęzi.
 	void decBranchResolution(BranchModel *bm)
 	{
@@ -323,13 +338,10 @@ class Model3d {
 		{
 			//sprawdzamy czy z węzła nie wychodzi żadna gałąź
 			//jeśli tak to przesuwamy te gałęzie w górę
-			for(unsigned int j = 0; j < bm->childBranches.size(); j++)
-			{
-				if(bm->nodeModelList[i]->position == bm->childBranches[j]->position)
-				{
-					bm->childBranches[j]->position = bm->nodeModelList[i+1]->position;
-				}
-			}
+			vector<BranchModel *> branchesToMove = branchesStartedInNode(bm,bm->nodeModelList[i]);
+			for(unsigned int j =0 ; j<branchesToMove.size(); j++)
+				branchesToMove[j]->position = bm->nodeModelList[i+1]->position;
+
 			NodeModel *node2delete = bm->nodeModelList[i];
 			bm->nodeModelList.erase(bm->nodeModelList.begin()+i);
 			delete node2delete;
@@ -364,16 +376,53 @@ class Model3d {
 		for(unsigned int i=0; i<bm->childBranches.size(); i++)
 			populateVectorBranches(bm->childBranches[i]);
 	}
+	
+	void removeBranch(BranchModel *branch)
+	{
+		BranchModel *parentBranch = branch->parentBranch;
+		if (parentBranch) {
+			for (unsigned int i = 0; i < parentBranch->childBranches.size(); i++)
+				if (parentBranch->childBranches[i] == branch) {
+					parentBranch->childBranches.erase(parentBranch->childBranches.begin() + i);
+					break;
+				}
+		} else
+			this->bm = NULL;
+
+		delete branch;
+
+		branches.clear();
+		populateVectorBranches(this->bm);
+	}
+	
+	void cutBranch(BranchModel *bm, int nodeToCutIndex)
+	{
+		
+		for(unsigned int i = nodeToCutIndex; i<bm->nodeModelList.size(); i++)
+		{
+			NodeModel *nodeToCut = bm->nodeModelList[i];
+			vector<BranchModel *> branchesToRemove = branchesStartedInNode(bm, nodeToCut);
+			for(unsigned int j=0; j<branchesToRemove.size(); j++)
+			{
+				removeBranch(branchesToRemove[j]);
+			}
+			delete bm->nodeModelList[i];
+		}
+		bm->nodeModelList.erase(bm->nodeModelList.begin()+nodeToCutIndex, bm->nodeModelList.end());
+	}
+	
 
 public:
 	vector<BranchModel *> branches; //tablica zawierająca wszystkie gałęzie
 	int markedBranchIndex; //index zaznaczonej gałęzi, -1 - żadna gałąź nie jest zaznaczona
+	int markedNodeIndex; //index zaznaczonego węzła (jeśli gałąź jest zaznaczona), -1 jeśli żaden węzeł nie jest zaznaczony
 
 	Model3d(Node *root,TrunkParameters *tp) {
 		this->root = root;
 		this->tp=tp;
 		this->bm = NULL;
 		this->markedBranchIndex = -1;
+		this->markedNodeIndex = -1;
 	}
 
 	~Model3d()
@@ -404,24 +453,16 @@ public:
 		if(markedBranchIndex != -1)
 		{
 			BranchModel *markedBranch = branches[markedBranchIndex];
-			BranchModel *parentBranch = markedBranch->parentBranch;
-			if(parentBranch)
+			if(markedNodeIndex <= 1)
 			{
-				for(unsigned int i=0; i<parentBranch->childBranches.size(); i++)
-					if(parentBranch->childBranches[i] == markedBranch)
-					{
-						parentBranch->childBranches.erase(parentBranch->childBranches.begin()+i);
-						break;
-					}
+				removeBranch(markedBranch);
 			} else
-				this->bm = NULL;
-			
-			delete markedBranch;
-			
-			branches.clear();
-			populateVectorBranches(this->bm);
+			{
+				cutBranch(markedBranch, markedNodeIndex);
+			}
 			
 			this->markedBranchIndex = -1;
+			this->markedNodeIndex = -1;
 		}
 	}
 	
