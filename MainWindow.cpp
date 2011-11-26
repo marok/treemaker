@@ -353,7 +353,7 @@ class MainWindow
 
 		if (hits == 0)
 		{
-			printf("Nic nie trafiono!\n");
+//			printf("Nic nie trafiono!\n");
 			if(model)
 			{
 				model->selection->unmarkBranch();
@@ -362,10 +362,10 @@ class MainWindow
 		else
 		{
 			
-			printf("Trafiono w %d obiekt/obiektów!\n",hits);
-			for(int i=0; i<4*hits; i++)
-				printf("%d ",select_buffer[i]);
-			printf("\n");
+//			printf("Trafiono w %d obiekt/obiektów!\n",hits);
+//			for(int i=0; i<4*hits; i++)
+//				printf("%d ",select_buffer[i]);
+//			printf("\n");
 			
 			
 			if(model)
@@ -589,7 +589,10 @@ class MainWindow
 			draw = TRUE;
 		
 		if(pageId == 5)
+		{
 			tmMode = MODE_EDITOR;
+			
+		}
 		else
 			tmMode = MODE_GENERATOR;
 		
