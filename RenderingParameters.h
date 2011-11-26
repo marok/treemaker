@@ -14,11 +14,17 @@ public:
 	static const bool SHOWGRASS_DEFAULT=FALSE;
 
 	RenderingParameters() {
+		setDefault();
+	}
+	
+	void setDefault()
+	{
 		showEnvelopes=SHOWENVELOPE_DEFAULT;
 		showLeaves=SHOWLEAVES_DEFAULT;
 		showBark=SHOWBARK_DEFAULT;
 		showGrass=SHOWGRASS_DEFAULT;
 	}
+	
 	/* Serialization methods */
 	void save(ofstream &s)
 	{

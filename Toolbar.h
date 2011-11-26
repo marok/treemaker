@@ -10,7 +10,7 @@ class Toolbar {
 
 	static void  newClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		t->params->init();
+		t->params->setDefaults();
 	}
 	static void  openClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;

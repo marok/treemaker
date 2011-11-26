@@ -22,6 +22,13 @@ public:
 	{
 		this->params = params;
 		this->activeSubcrown = -1;
+		setDefault();
+	}
+	
+	void setDefault()
+	{
+		subcrowns.clear();
+		subcrowns.push_back(new CylinderCrown(0,0,2,5,8));
 	}
 
 	std::vector<Point3d *> generatePoints()

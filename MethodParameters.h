@@ -7,8 +7,8 @@
 #include <iostream>
 using namespace std;
 class MethodParameters {
-protected:
-	void init() {
+public:
+	void setDefault() {
 		seed=SEED_DEFAULT;
 		points=POINTS_DEFAULT;
 		D=D_DEFAULT;
@@ -20,7 +20,7 @@ protected:
 		attraction=ATTRACTION_DEFAULT;
 		activeMethod=ACTIVEMETHOD_DEFAULT;
 	}
-public:
+
 	static const int SEED_DEFAULT=42;
 	static const int POINTS_DEFAULT=60;
 	static const float D_DEFAULT=0.2;
@@ -51,7 +51,7 @@ public:
 	float attraction;	//particle attraction (1 - on, 0 -off)
 
 	MethodParameters() {
-		init();
+		setDefault();
 	}
 	/* Serialization methods */
 	void save(ofstream &s)

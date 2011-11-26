@@ -20,6 +20,11 @@ public:
 	static const bool BARKTEXINITIALIZED_DEFAULT=FALSE;
 
 	TrunkParameters() {
+		setDefault();
+	}
+	
+	void setDefault()
+	{
 		char defaultPath[]="textures/bark0_256.bmp";
 		strcpy(barkPath,defaultPath);
 		radiusFactor=RADIUSFACTOR_DEFAULT;
@@ -28,6 +33,7 @@ public:
 		circlePoints=CIRCLEPOINTS_DEFAULT;
 		barkTexInitialized=BARKTEXINITIALIZED_DEFAULT;
 	}
+	
 	void setBarkPath(char *path) {
 		assert(strlen(path)<MAXPATHLEN);
 		strcpy(barkPath,path);

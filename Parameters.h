@@ -9,9 +9,15 @@
 #define TREEMAKER_VERSION "treemaker-ver0.1"
 
 
-
-
 class Parameters {
+	void init() {
+		clean();
+		rp=new RenderingParameters();
+		tp=new TrunkParameters();
+		lp=new LeavesParameters();
+		methodParams = new MethodParameters();
+		crown = new Crown(methodParams);
+	}
 public:
 
 	RenderingParameters	*rp;
@@ -35,19 +41,16 @@ public:
 		if(methodParams!=NULL) delete methodParams;
 		*/
 	}
-	void init() {
-		clean();
-		rp=new RenderingParameters();
-		tp=new TrunkParameters();
-		lp=new LeavesParameters();
-		methodParams = new MethodParameters();
-		crown = new Crown(methodParams);
-		crown->subcrowns.push_back(new CylinderCrown(0,0,2,5,8));
-		
-		//crown->subcrowns.push_back(new SplineCrown(-3,-3, 4, methodParams));
-		//crown->subcrowns.push_back(new SplineCrown(3, 3, 2, methodParams));
-		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));
+	
+	void setDefaults()
+	{
+		rp->setDefault();
+		tp->setDefault();
+		methodParams->setDefault();
+		lp->setDefault();
+		crown->setDefault();
 	}
+	
 	Parameters() {
 		init();
 	}
