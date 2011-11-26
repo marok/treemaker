@@ -36,11 +36,11 @@ class DrawMethods {
 		}
 		glEnd();
 	}
-	
+
 	static void drawPoints(BranchModel *bm)
 	{
 		Point3d branchAbs  = bm->getAbsolutePosition();
-		
+
 		glPointSize(4);
 		glColor3f(1, 1, 1);
 		glBegin(GL_POINTS);
@@ -50,7 +50,7 @@ class DrawMethods {
 		}
 		glEnd();
 	}
-	
+
 	static void
 	drawEnvelopeSpline(SplineCrown *splineCrown, bool active, int activeMainPoint) {
 		glPushMatrix();
@@ -118,10 +118,12 @@ class DrawMethods {
 		}
 		glPopMatrix();
 	}
-	
+
 	static void
 	drawTrunk(BranchModel *bm, Parameters *params)
 	{
+		float kx=3;//ile razy ma sie owinac tekstura
+		float ky=0.5;//ile jednostek tekstury na 1 jednostke dlugosci pnia
 		TrunkParameters *tp=params->tp;
 		static GLuint texId;
 		if(params->tp->barkTexInitialized==FALSE) {
@@ -139,6 +141,10 @@ class DrawMethods {
 		glBindTexture(GL_TEXTURE_2D,texId);
 		if(bm==NULL) return;
 		int nodeModelListLen = bm->nodeModelList.size();
+		static vector<Point2d> prevCoords[2];
+		prevCoords[0].clear();
+		prevCoords[1].clear();
+		// i - numer okregu w galezi
 		for(int i=0; i<nodeModelListLen-1; i++)
 		{
 			NodeModel *root= bm->nodeModelList.at(i);
@@ -146,32 +152,74 @@ class DrawMethods {
 			int index = child->segment->index;
 
 			glEnable (GL_TEXTURE_2D);
-
 			glBegin(GL_TRIANGLES);
+			// Obliczanie wspolrzednych tekstury na pniu
+			if(i==0) { //pierwszy okrag galezi wiec tycoord=0
+				float dx=root->segment->circlePts[0]->getDistance(root->segment->circlePts[1]);
+				float D=tp->circlePoints*dx;;//oblicz obwod pnia
+				for(int k=0; k<=tp->circlePoints; k++) {
+					float txcoord=(k)*dx*kx/D; //obliczam wspolrzedna x tekstury
+					Point2d tcoord(txcoord,0);
+					prevCoords[1].push_back(tcoord);
+				}
+			}
+			prevCoords[i&1].clear();// czyszcze wspolrzedne n-2 iteracji
+			float dx=child->segment->circlePts[0]->getDistance(child->segment->circlePts[1]);
+			float D=tp->circlePoints*dx;
 
+			for(int k=0; k<=tp->circlePoints; k++) {
+				// int j0 = (index + k) % tp->circlePoints;
+				//  int j1 = (j0+1)%tp->circlePoints;
+				float txcoord=(k*dx)*kx/D;
+				//float dy=root->segment->circlePts[k%tp->circlePoints]->getDistance(child->segment->circlePts[j0]);
+				//float tycoord=dy/ky+prevCoords[!(i&1)][j0].y;
+				float tycoord=ky*(i+1);
+				Point2d tcoord(txcoord,tycoord);
+				prevCoords[i&1].push_back(tcoord);
+			}
+
+			// Laczymy pkty okregu root z pktami okregu child trojkatami
+			//i0 - indeks pkt root
+			//j0 - indeks pkt child
+			//i1 - indeks nastepnego pkt root
+			//j1 - indeks nastepnego pkt child
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
+				// printf("i0=%d\n",i0);
 				int j0 = (index + i0) % tp->circlePoints;
 
 				int i1 = (i0+1)%tp->circlePoints;
 				int j1 = (j0+1)%tp->circlePoints;
+				int tj1= (j0+1);
+				int ti1= (i0+1);
 
 				Point3d rootAbs, childAbs;
 				rootAbs = bm->getAbsoluteNodePosition(root);
 				childAbs = bm->getAbsoluteNodePosition(child);
 
-				glTexCoord2f (0.0f, 0.0f);
+				//glTexCoord2f (0.0f, 0.0f);
+				glTexCoord2f(prevCoords[!(i&1)][i0].x,prevCoords[!(i&1)][i0].y);
 				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
-				glTexCoord2f (1.0f, 0.0f);
+
+				//glTexCoord2f (0.0f, 1.0f);
+				glTexCoord2f(prevCoords[i&1][j0].x,prevCoords[i&1][j0].y);
 				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j0]));
-				glTexCoord2f (1.0f, 1.0f);
+
+				//glTexCoord2f (1.0f, 1.0f);
+				glTexCoord2f(prevCoords[i&1][tj1].x,prevCoords[i&1][tj1].y);
 				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
 
-				glTexCoord2f (0.0f, 0.0f);
-				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
-				glTexCoord2f (0.0f, 1.0f);
+				//glTexCoord2f (0.0f, 1.0f);
+				glTexCoord2f(prevCoords[!(i&1)][ti1].x,prevCoords[!(i&1)][ti1].y);
 				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i1]));
-				glTexCoord2f (1.0f, 1.0f);
+
+				//glTexCoord2f (1.0f, 1.0f);
+				glTexCoord2f(prevCoords[(i&1)][tj1].x,prevCoords[(i&1)][tj1].y);
 				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
+
+				//glVertex3f(child->segment->circlePts[j1]->x,child->segment->circlePts[j1]->y,child->segment->circlePts[j1]->z);
+				glTexCoord2f(prevCoords[!(i&1)][i0].x,prevCoords[!(i&1)][i0].y);
+				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
+
 				triangles+=2;
 			}
 			glEnd();
@@ -179,7 +227,7 @@ class DrawMethods {
 		}
 		glPopName();
 	}
-	
+
 	static void
 	drawLines(BranchModel *bm, TrunkParameters *tp)
 	{
@@ -187,8 +235,8 @@ class DrawMethods {
 
 		int nodeModelListLen = bm->nodeModelList.size();
 		Point3d branchAbs  = bm->getAbsolutePosition();
-		
-		
+
+
 		glColor3f(0.5,0,0);
 		for(int i=0; i<nodeModelListLen-1; i++)
 		{
@@ -203,8 +251,8 @@ class DrawMethods {
 			Point3d childAbs;
 			childAbs.add(branchAbs);
 			childAbs.add(*child->position);
-			
-			
+
+
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				int j0 = (index + i0) % tp->circlePoints;
 
@@ -219,7 +267,7 @@ class DrawMethods {
 				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
 				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
 				glEnd();
-				
+
 				glBegin(GL_LINES);
 				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
 				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i1]));
@@ -297,13 +345,13 @@ if(mode==GL_SELECT)\
 			return;
 
 		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
-		
+
 		for(unsigned int i=0; i<model->branches.size(); i++)
 		{
 			drawTrunk(model->branches[i], params);
 		}
 	}
-	
+
 	static void drawTrunksEditMode(Model3d *model, Parameters *params)
 	{
 		if(!model)
@@ -311,7 +359,7 @@ if(mode==GL_SELECT)\
 
 		glInitNames();
 		glColor4f(1.0, 1.0, 1.0, 1.0); // reset gl color
-		
+
 		for(unsigned int i=0; i<model->branches.size(); i++)
 		{
 			glPushName(i);
@@ -319,7 +367,7 @@ if(mode==GL_SELECT)\
 			{
 				BranchModel *bm = model->branches[i];
 				Point3d branchAbs  = bm->getAbsolutePosition();
-				
+
 				glPointSize(6);
 				for(unsigned int j=0; j< bm->nodeModelList.size(); j++)
 				{
@@ -336,10 +384,10 @@ if(mode==GL_SELECT)\
 					glEnd();
 					glPopName();
 				}
-				
-				
+
+
 				//drawPoints(bm);
-				
+
 				glEnable(GL_BLEND);
 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 				glColor4f(0, 1, 0, 0.3);
@@ -348,7 +396,7 @@ if(mode==GL_SELECT)\
 				glDisable(GL_BLEND);
 				glColor4f(1.0, 1.0, 1.0, 1.0);
 			}
-			
+
 			drawTrunk(model->branches[i], params);
 			glPopName();
 		}
@@ -370,8 +418,8 @@ if(mode==GL_SELECT)\
 		}
 	}
 
-	
-	
+
+
 	static void drawTrunksLines(Model3d *model, Parameters *params)
 	{
 		if(!model)
@@ -400,9 +448,9 @@ if(mode==GL_SELECT)\
 		}
 	}
 
-	
 
-	
+
+
 
 	static void drawGrass() {
 		//

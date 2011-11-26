@@ -117,6 +117,7 @@ class LeavesParametersPanel {
 			refreshScales();
 			//load image
 			gtk_image_set_from_file(GTK_IMAGE(image),Bmp::generateIcon(params->lp->leaves[id].leafTexPath));
+			draw_petiole(id);
 			gtk_widget_show(image);
 		}
 	}
@@ -129,6 +130,64 @@ class LeavesParametersPanel {
 		for(unsigned int i=0; i<scales.size(); i++)
 			gtk_widget_queue_draw(scales[i]);
 
+	}
+	static gint
+	image_pressed (GtkWidget *widget, GdkEventButton *event,gpointer data)
+	{
+		LeavesParametersPanel *lpp=(LeavesParametersPanel*)data;
+		if (event->button == 1)
+		{
+			int x=event->x;
+			int y=event->y;
+			x-=50;
+			int id=lpp->params->lp->activeLeaf;
+			if(x>=0&&x<128&&id!=-1)
+			{
+				//obliczanie nowej pozycji szypulki
+				Point2d *petiole=&lpp->params->lp->leaves[id].petiole;
+				petiole->x=float(x)/float(128);
+				petiole->y=float(y)/float(128);
+				gtk_image_set_from_file(GTK_IMAGE(lpp->image),Bmp::generateIcon(lpp->params->lp->leaves[id].leafTexPath));
+				lpp->draw_petiole(id);
+			}
+			gtk_widget_queue_draw(lpp->image);
+		}
+		return TRUE;
+	}
+	void draw_petiole(int id) {
+
+		int x=params->lp->leaves[id].petiole.x*127;
+		int y=params->lp->leaves[id].petiole.y*127;
+		int width, height, rowstride, n_channels;
+		guchar *pixels, *p;
+		GdkPixbuf * pixbuf=gtk_image_get_pixbuf(GTK_IMAGE(image));
+		n_channels = gdk_pixbuf_get_n_channels (pixbuf);
+
+		g_assert (gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB);
+		g_assert (gdk_pixbuf_get_bits_per_sample (pixbuf) == 8);
+		g_assert (n_channels == 3);
+
+		width = gdk_pixbuf_get_width (pixbuf);
+		height = gdk_pixbuf_get_height (pixbuf);
+
+		g_assert (x >= 0 && x < width);
+		g_assert (y >= 0 && y < height);
+
+		rowstride = gdk_pixbuf_get_rowstride (pixbuf);
+		pixels = gdk_pixbuf_get_pixels (pixbuf);
+
+		//draw rectangle
+		for(int dx=-2; dx<=2; dx++)
+			for(int dy=-2; dy<=2; dy++)
+				for(int i=0; i<9; i++) {
+					if(x+dx>=0&&x+dx<width)
+						if(y+dy>=0&&y+dy<height) {
+							p = pixels + (y+dy) * rowstride + (x+dx) * n_channels;
+							p[0] = 0;
+							p[1] = 120;
+							p[2] = 0;
+						}
+				}
 	}
 public:
 	LeavesParametersPanel(GtkWidget *window,Parameters *params) {
@@ -176,8 +235,14 @@ public:
 
 #undef PACK_LABEL_AND_SLIDER
 		//leaf image
+		GtkWidget *eventBox=gtk_event_box_new();
+		gtk_box_pack_start(GTK_BOX(vbox),eventBox,FALSE,FALSE,1);
+		gtk_signal_connect (GTK_OBJECT (eventBox), "button_press_event",
+		                    (GtkSignalFunc)image_pressed, this);
+		gtk_widget_show(eventBox);
 		image=gtk_image_new_from_icon_name ("broken image" ,  GTK_ICON_SIZE_LARGE_TOOLBAR);
-		gtk_box_pack_start(GTK_BOX(vbox),image,FALSE,FALSE,1);
+		gtk_tooltips_set_tip(tooltips,eventBox,"Click on the image to select petiole",NULL);
+		gtk_container_add(GTK_CONTAINER(eventBox),image);
 
 		//leaf add button
 		button=gtk_button_new_with_label("Add leaf");

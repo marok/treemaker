@@ -25,11 +25,6 @@ public:
 
 
 	LeavesParameters() {
-		setDefault();
-	}
-	
-	void setDefault()
-	{
 		activeLeaf=-1;
 #define ADD_LEAF(name)  {Leaf def((char*)name); leaves.push_back(def);}
 		ADD_LEAF("textures/leaf0_256.bmp");
@@ -37,11 +32,11 @@ public:
 		ADD_LEAF("textures/leaf2_512.bmp");
 #undef ADD_LEAF
 		generateTypes();
+
 	}
-	
-	void clear(){
-	 leaves.clear();
-	 types.clear();
+	void clear() {
+		leaves.clear();
+		types.clear();
 	}
 	int getId(char *texName) {
 		int ret=-1;

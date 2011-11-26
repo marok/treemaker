@@ -3,6 +3,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+
 class Leaf {
 
 #define MAXPATHLEN		256
@@ -14,6 +15,8 @@ class Leaf {
 		leafSize=LEAFSIZE_DEFAULT;
 		sizeDeriviation=SIZEDERIVIATION_DEFAULT;
 		amount=AMOUNT_DEFAULT;
+		petiole.x=0.5;
+		petiole.y=1;
 	}
 public:
 	char leafTexPath[MAXPATHLEN];
@@ -24,6 +27,7 @@ public:
 	float amount;
 	unsigned int texId;	//opengl texture binding id
 	unsigned int maskId;	//opengl mask texture binding id
+	Point2d		petiole;//polozenie szypulki na teksturze (0-1)(0-1)
 
 	static const bool LEAFTEXINITIALIZED_DEFAULT=FALSE;
 	static const bool ACTIVE_DEFAULT=FALSE;
@@ -57,6 +61,7 @@ public:
 		SAVE(leafSize);
 		SAVE(sizeDeriviation);
 		SAVE(amount);
+		petiole.save(s);
 #undef SAVE
 	}
 	void load(ifstream &s)
@@ -67,6 +72,7 @@ public:
 		LOAD(leafSize);
 		LOAD(sizeDeriviation);
 		LOAD(amount);
+		petiole.load(s);
 #undef LOAD
 	}
 

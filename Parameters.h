@@ -7,17 +7,7 @@
 #include "SplineCrown.h"
 #include "CylinderCrown.h"
 #define TREEMAKER_VERSION "treemaker-ver0.1"
-
-
 class Parameters {
-	void init() {
-		clean();
-		rp=new RenderingParameters();
-		tp=new TrunkParameters();
-		lp=new LeavesParameters();
-		methodParams = new MethodParameters();
-		crown = new Crown(methodParams);
-	}
 public:
 
 	RenderingParameters	*rp;
@@ -25,34 +15,24 @@ public:
 	LeavesParameters	*lp;
 	Crown                   *crown;
 	MethodParameters 	*methodParams;
-	
+
 	void clean() {
-		//clean previous settings
-		/*if(rp!=NULL) delete rp;
-		if(tp!=NULL) delete tp;
-		if(lp!=NULL) {
-		//  lp->clear();
-		  delete lp;
-		}
-		if(crown!=NULL){
-		//  crown->clear();
-		  delete crown;
-		}
-		if(methodParams!=NULL) delete methodParams;
-		*/
 	}
-	
-	void setDefaults()
-	{
-		rp->setDefault();
-		tp->setDefault();
-		methodParams->setDefault();
-		lp->setDefault();
-		crown->setDefault();
+	void setDefaults() {
+		clean();
+		rp=new RenderingParameters();
+		tp=new TrunkParameters();
+		lp=new LeavesParameters();
+		methodParams = new MethodParameters();
+		crown = new Crown(methodParams);
+		crown->subcrowns.push_back(new CylinderCrown(0,0,0,3,5));
+
+		//crown->subcrowns.push_back(new SplineCrown(-3,-3, 4, methodParams));
+		//crown->subcrowns.push_back(new SplineCrown(3, 3, 2, methodParams));
+		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));
 	}
-	
 	Parameters() {
-		init();
+		setDefaults();
 	}
 	/* Serialization methods */
 	void save(ofstream &s)
