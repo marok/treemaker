@@ -3,7 +3,7 @@
 
 #include <gtk/gtk.h>
 #include <vector>
-#include "GlobalVar.h"
+
 
 using namespace std;
 

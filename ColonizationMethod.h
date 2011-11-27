@@ -9,7 +9,7 @@
 #include "MethodParameters.h"
 #include "Parameters.h"
 #include "SplineCrown.h"
-#include "CylinderCrown.h"
+#include "TruncatedConeCrown.h"
 
 using namespace std;
 

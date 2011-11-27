@@ -101,18 +101,18 @@ class DrawMethods {
 	}
 
 	static void
-	drawEnvelopeCylinder(CylinderCrown *cylinderCrown, bool active) {
+	drawEnvelopeTruncatedCone(TruncatedConeCrown *truncatedConeCrown, bool active) {
 		glPushMatrix();
 
 		int loops = 12; //liczba petli
-		glTranslatef(cylinderCrown->x, cylinderCrown->y, 0);
+		glTranslatef(truncatedConeCrown->x, truncatedConeCrown->y, 0);
 		for (int j = 0; j < loops; j++) {
 			glColor3fv(active ? colorActive : colorUnactive);
 			glBegin(GL_LINE_STRIP);
-			glVertex3f(0, 0, cylinderCrown->z);
-			glVertex3f(cylinderCrown->r_down, 0, cylinderCrown->z);
-			glVertex3f(cylinderCrown->r_up, 0, cylinderCrown->z + cylinderCrown->h);
-			glVertex3f(0, 0, cylinderCrown->z + cylinderCrown->h);
+			glVertex3f(0, 0, truncatedConeCrown->z);
+			glVertex3f(truncatedConeCrown->r_down, 0, truncatedConeCrown->z);
+			glVertex3f(truncatedConeCrown->r_up, 0, truncatedConeCrown->z + truncatedConeCrown->h);
+			glVertex3f(0, 0, truncatedConeCrown->z + truncatedConeCrown->h);
 			glEnd();
 			glRotatef(360 / loops, 0, 0, 1);
 		}
@@ -441,9 +441,9 @@ if(mode==GL_SELECT)\
 			if(sub->shape == SPLINE)
 			{
 				drawEnvelopeSpline((SplineCrown*)sub, crown->activeSubcrown == (int)i, SPLINE_CROWN(sub)->activePoint);
-			} else if(sub->shape == CYLINDER)
+			} else if(sub->shape == TRUNCATEDCONE)
 			{
-				drawEnvelopeCylinder((CylinderCrown*)sub,crown->activeSubcrown == (int)i);
+				drawEnvelopeTruncatedCone((TruncatedConeCrown*)sub,crown->activeSubcrown == (int)i);
 			}
 		}
 	}

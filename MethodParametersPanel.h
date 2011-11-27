@@ -8,7 +8,7 @@
 #include "ParticleMethod.h"
 #include "Model3d.h"
 #include "DrawMethods.h"
-#include "GlobalVar.h"
+
 
 using namespace std;
 

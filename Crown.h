@@ -5,7 +5,7 @@
 
 #include "Subcrown.h"
 #include "SplineCrown.h"
-#include "CylinderCrown.h"
+#include "TruncatedConeCrown.h"
 
 class Crown
 {
@@ -28,7 +28,7 @@ public:
 	void setDefault()
 	{
 		subcrowns.clear();
-		subcrowns.push_back(new CylinderCrown(0,0,2,5,3,8));
+		subcrowns.push_back(new TruncatedConeCrown(0,0,2,5,3,8));
 	}
 
 	std::vector<Point3d *> generatePoints()
@@ -73,8 +73,8 @@ public:
 			case SPLINE:
 				sub=new SplineCrown();
 				break;
-			case CYLINDER:
-				sub=new CylinderCrown();
+			case TRUNCATEDCONE:
+				sub=new TruncatedConeCrown();
 				break;
 			default:
 				printf("Nieprawidlowy typ korony podczas wczytywania pliku ustawien");

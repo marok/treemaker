@@ -2,13 +2,13 @@
 #define	ISUBCROWN_H
 
 #include<vector>
-#define CYLINDER_CROWN(sub) ((CylinderCrown*)sub)
+#define TRUNCATEDCONE_CROWN(sub) ((TruncatedConeCrown*)sub)
 #define SPLINE_CROWN(sub) ((SplineCrown*)sub)
 
 enum CrownShape
 {
 	SPLINE,
-	CYLINDER,
+	TRUNCATEDCONE,
 	SPHERE,
 	CROWNSHAPE_N
 };

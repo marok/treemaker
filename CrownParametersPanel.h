@@ -62,7 +62,7 @@ class CrownParametersPanel {
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
 		                   0, id,
-		                   1, sub->shape == SPLINE?"Spline":"Cylinder",
+		                   1, sub->shape == SPLINE?"Spline":"Truncated Cone",
 		                   2, buffX,
 		                   3, buffY,
 		                   4, buffZ,
@@ -116,9 +116,9 @@ class CrownParametersPanel {
 	static void crownHChanged( GtkAdjustment *adj ,gpointer data )
 	{
 		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-		if(panel->selectedSubcrown->shape == CYLINDER)
+		if(panel->selectedSubcrown->shape == TRUNCATEDCONE)
 		{
-			CYLINDER_CROWN(panel->selectedSubcrown)->h = gtk_adjustment_get_value(adj);
+			TRUNCATEDCONE_CROWN(panel->selectedSubcrown)->h = gtk_adjustment_get_value(adj);
 		}
 		DrawMethods::render();
 	}
@@ -126,9 +126,9 @@ class CrownParametersPanel {
 	static void crownRDownChanged( GtkAdjustment *adj ,gpointer data )
 	{
 		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-		if(panel->selectedSubcrown->shape == CYLINDER)
+		if(panel->selectedSubcrown->shape == TRUNCATEDCONE)
 		{
-			CYLINDER_CROWN(panel->selectedSubcrown)->r_down = gtk_adjustment_get_value(adj);
+			TRUNCATEDCONE_CROWN(panel->selectedSubcrown)->r_down = gtk_adjustment_get_value(adj);
 		}
 		DrawMethods::render();
 	}
@@ -136,9 +136,9 @@ class CrownParametersPanel {
 	static void crownRUpChanged( GtkAdjustment *adj ,gpointer data )
 	{
 		CrownParametersPanel *panel = (CrownParametersPanel*) data;
-		if(panel->selectedSubcrown->shape == CYLINDER)
+		if(panel->selectedSubcrown->shape == TRUNCATEDCONE)
 		{
-			CYLINDER_CROWN(panel->selectedSubcrown)->r_up = gtk_adjustment_get_value(adj);
+			TRUNCATEDCONE_CROWN(panel->selectedSubcrown)->r_up = gtk_adjustment_get_value(adj);
 		}
 		DrawMethods::render();
 	}
@@ -180,7 +180,7 @@ class CrownParametersPanel {
 			sub = new SplineCrown(0,0,0, panel->params->methodParams);
 		} else if(active == 1)
 		{
-			sub = new CylinderCrown(
+			sub = new TruncatedConeCrown(
 			    0,0,0,
 			    1,1,1);
 		}
@@ -213,10 +213,10 @@ class CrownParametersPanel {
 
 			switch(panel->selectedSubcrown->shape)
 			{
-			case CYLINDER:
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->hAdj), CYLINDER_CROWN(panel->selectedSubcrown)->h);
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rDownAdj), CYLINDER_CROWN(panel->selectedSubcrown)->r_down);
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rUpAdj), CYLINDER_CROWN(panel->selectedSubcrown)->r_up);
+			case TRUNCATEDCONE:
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->hAdj), TRUNCATEDCONE_CROWN(panel->selectedSubcrown)->h);
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rDownAdj), TRUNCATEDCONE_CROWN(panel->selectedSubcrown)->r_down);
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rUpAdj), TRUNCATEDCONE_CROWN(panel->selectedSubcrown)->r_up);
 				break;
 			case SPLINE:
 				panel->scpp->updatePanel(SPLINE_CROWN(panel->selectedSubcrown));
@@ -258,7 +258,7 @@ public:
 		crownTypeCombo = gtk_combo_box_new_text();
 		gtk_widget_show(crownTypeCombo);
 		gtk_combo_box_append_text(GTK_COMBO_BOX(crownTypeCombo),"Spline Crown");
-		gtk_combo_box_append_text(GTK_COMBO_BOX(crownTypeCombo),"Cylinder Crown");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(crownTypeCombo),"Truncated Cone Crown");
 		gtk_combo_box_set_active(GTK_COMBO_BOX(crownTypeCombo),0);
 		gtk_box_pack_start(GTK_BOX(hbox),crownTypeCombo,FALSE,FALSE,2);
 
@@ -330,9 +330,9 @@ public:
 		PACK_LABEL_AND_SLIDER("X:", xAdj, -20, crownXChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Y:", yAdj, -20, crownYChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Z:", zAdj, 0, crownZChanged, "sdfgdfg", -1);
-		PACK_LABEL_AND_SLIDER("H:", hAdj, 0, crownHChanged, "sdfgdfg", CYLINDER);
-		PACK_LABEL_AND_SLIDER("R UP:", rUpAdj, 0, crownRUpChanged, "sdfgdfg", CYLINDER);
-		PACK_LABEL_AND_SLIDER("R DOWN:", rDownAdj, 0, crownRDownChanged, "sdfgdfg", CYLINDER);
+		PACK_LABEL_AND_SLIDER("H:", hAdj, 0, crownHChanged, "sdfgdfg", TRUNCATEDCONE);
+		PACK_LABEL_AND_SLIDER("R UP:", rUpAdj, 0, crownRUpChanged, "sdfgdfg", TRUNCATEDCONE);
+		PACK_LABEL_AND_SLIDER("R DOWN:", rDownAdj, 0, crownRDownChanged, "sdfgdfg", TRUNCATEDCONE);
 
 #undef PACK_LABEL_AND_SLIDER
 

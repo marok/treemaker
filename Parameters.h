@@ -5,7 +5,7 @@
 #include "LeavesParameters.h"
 #include "Crown.h"
 #include "SplineCrown.h"
-#include "CylinderCrown.h"
+#include "TruncatedConeCrown.h"
 #define TREEMAKER_VERSION "treemaker-ver0.1"
 class Parameters {
 public:
