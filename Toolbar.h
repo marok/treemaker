@@ -1,7 +1,7 @@
 #ifndef _TOOLBAR_H
 #define _TOOLBAR_H
 #include <gtk/gtk.h>
-
+#include "Exporter.h"
 class Toolbar {
 	Parameters *params;
 	ColonizationMethod *cm;
@@ -55,7 +55,13 @@ class Toolbar {
 		DrawMethods::render();
 	}
 	static void  convertClicked(GtkWidget *widget,gpointer data) {
+		Toolbar *t=(Toolbar*)data;
 		g_print("convertClicked\n");
+		char filename[]="tree0.obj";
+		Exporter ex;
+		ex.init(filename);
+		ex.exportTrunk(model, t->params);
+		ex.save();
 	}
 
 public:
