@@ -25,11 +25,6 @@ public:
 		lp=new LeavesParameters();
 		methodParams = new MethodParameters();
 		crown = new Crown(methodParams);
-		crown->subcrowns.push_back(new CylinderCrown(0,0,0,3,5));
-
-		//crown->subcrowns.push_back(new SplineCrown(-3,-3, 4, methodParams));
-		//crown->subcrowns.push_back(new SplineCrown(3, 3, 2, methodParams));
-		//crown->subcrowns.push_back(new SplineCrown(0, 0, 6, methodParams));
 	}
 	Parameters() {
 		setDefaults();

@@ -107,7 +107,6 @@ class Model3d {
 			//liczymy różnice pomiędzy obliczonym wektorem a wektorem z poprzedniego segmentu
 			if(prvNode!=NULL && i==0 && !angleDiffComputed)
 			{
-				prvNode->position;
 				//wektory a i b wyznaczają płaszczyznę na której powinien się znaleźć punkt z nastepnego segmentu
 				Vector3d *a = new Vector3d(prvNode->segment->circlePts[0]);
 				Vector3d *b = new Vector3d(prvNode->position, nodeModel->position);
@@ -138,40 +137,43 @@ class Model3d {
 	void computeConnectedPts(BranchModel *bm)
 	{
 
-		int nodeModelListLen = bm->nodeModelList.size();
+		
+                int nodeModelListLen = bm->nodeModelList.size();
 
-		for(int i=0; i<nodeModelListLen - 1; i++)
-		{
-			NodeModel *root = bm->nodeModelList.at(i);
-			NodeModel *child = bm->nodeModelList.at(i+1);
+                for(int i=0; i<nodeModelListLen - 1; i++)
+                {
+                        NodeModel *root = bm->nodeModelList.at(i);
+                        NodeModel *child = bm->nodeModelList.at(i+1);
 
-			Vector3d *r = new Vector3d(root->segment->circlePts[0]);
-			Point3d *p = new Point3d(child->position);
-			p->x += r->d[0];
-			p->y += r->d[1];
-			p->z += r->d[2];
+                        Vector3d *r = new Vector3d(root->segment->circlePts[0]);
+                        Point3d *p = new Point3d(child->position);
+                        p->x += r->d[0];
+                        p->y += r->d[1];
+                        p->z += r->d[2];
 
-			int index;
-			float zeroDistance;
-	
-			index = i;
-			Point3d segPoint = child->getSegmentPointRel2BranchAt(0);
-			zeroDistance = p->getDistance(&segPoint);
-			
-	
-			//dla parzystego circlePoints bedzie działac ;)
-			Point3d segPoint2 = child->getSegmentPointRel2BranchAt(tp->circlePoints/2);
-			float midDistance = p->getDistance(&segPoint2);
-	
-			
-			if(midDistance < zeroDistance)
-				child->segment->index = tp->circlePoints/2;
-		}
+                        int index;
+                        float minDistance;
+                        for (int i = 0; i < tp->circlePoints; i++) {
+                                if (i == 0) {
+                                        index = i;
+                                        Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
+                                        minDistance = p->getDistance(&segPoint);
+                                } else {
+                                        Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
+                                        float currentDistance = p->getDistance(&segPoint);
+                                        if (currentDistance < minDistance) {
+                                                minDistance = currentDistance;
+                                                index = i;
+                                        }
+                                }
+                        }
+                        child->segment->index = index;
+                }
 
-		int len = bm->childBranches.size();
-		for (int i = 0; i < len; i++) {
-			computeConnectedPts(bm->childBranches.at(i));
-		}
+                int len = bm->childBranches.size();
+                for (int i = 0; i < len; i++) {
+                        computeConnectedPts(bm->childBranches.at(i));
+                }
 	}
 
 
@@ -398,7 +400,29 @@ class Model3d {
 	//Zwraca liczbę usunietych węzłów, wartosc ma sens tylko w trybie zaznaczania point_point
 	int decBranchResolution(BranchModel *bm, int start, int end)
 	{
+		
+		
 		int deletedNodes = 0;
+		if(selection->applyForChildren)
+		{
+			if(start == -1 && end == -1)
+				for(unsigned int i=0; i<bm->childBranches.size(); i++)
+					decBranchResolution(bm->childBranches[i],-1,-1);
+			else
+			{
+				for(int i=start; i<end; i++)
+				{
+					vector<BranchModel *> b = branchesStartedInNode(bm,bm->nodeModelList[i]);
+					for(unsigned int j=0; j<b.size(); j++)
+						decBranchResolution(b[j], -1, -1);
+				}
+			}
+		}
+		
+		
+		if(bm->nodeModelList.size() <= 2)
+			return 0;
+		
 		
 		if(start == -1)
 			start = 0;
@@ -414,11 +438,6 @@ class Model3d {
 			for(unsigned int j =0 ; j<branchesToMove.size(); j++)
 			{
 				branchesToMove[j]->position = bm->nodeModelList[i+1]->position;
-				if(selection->applyForChildren)
-				{
-					BranchModel *a = branchesToMove[j];
-					decBranchResolution(a,-1,-1);
-				}
 			}
 
 			NodeModel *node2delete = bm->nodeModelList[i];

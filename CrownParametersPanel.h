@@ -10,7 +10,7 @@ using namespace std;
 
 class CrownParametersPanel {
 	GtkObject *xAdj, *yAdj, *zAdj;
-	GtkObject *hAdj, *rAdj;
+	GtkObject *hAdj, *rDownAdj, *rUpAdj;
 
 	GtkWidget *crownTypeCombo;
 
@@ -123,12 +123,22 @@ class CrownParametersPanel {
 		DrawMethods::render();
 	}
 
-	static void crownRChanged( GtkAdjustment *adj ,gpointer data )
+	static void crownRDownChanged( GtkAdjustment *adj ,gpointer data )
 	{
 		CrownParametersPanel *panel = (CrownParametersPanel*) data;
 		if(panel->selectedSubcrown->shape == CYLINDER)
 		{
-			CYLINDER_CROWN(panel->selectedSubcrown)->r = gtk_adjustment_get_value(adj);
+			CYLINDER_CROWN(panel->selectedSubcrown)->r_down = gtk_adjustment_get_value(adj);
+		}
+		DrawMethods::render();
+	}
+	
+	static void crownRUpChanged( GtkAdjustment *adj ,gpointer data )
+	{
+		CrownParametersPanel *panel = (CrownParametersPanel*) data;
+		if(panel->selectedSubcrown->shape == CYLINDER)
+		{
+			CYLINDER_CROWN(panel->selectedSubcrown)->r_up = gtk_adjustment_get_value(adj);
 		}
 		DrawMethods::render();
 	}
@@ -172,7 +182,7 @@ class CrownParametersPanel {
 		{
 			sub = new CylinderCrown(
 			    0,0,0,
-			    1,1);
+			    1,1,1);
 		}
 
 		panel->params->crown->subcrowns.push_back(sub);
@@ -205,7 +215,8 @@ class CrownParametersPanel {
 			{
 			case CYLINDER:
 				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->hAdj), CYLINDER_CROWN(panel->selectedSubcrown)->h);
-				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rAdj), CYLINDER_CROWN(panel->selectedSubcrown)->r);
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rDownAdj), CYLINDER_CROWN(panel->selectedSubcrown)->r_down);
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rUpAdj), CYLINDER_CROWN(panel->selectedSubcrown)->r_up);
 				break;
 			case SPLINE:
 				panel->scpp->updatePanel(SPLINE_CROWN(panel->selectedSubcrown));
@@ -320,7 +331,8 @@ public:
 		PACK_LABEL_AND_SLIDER("Y:", yAdj, -20, crownYChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Z:", zAdj, 0, crownZChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("H:", hAdj, 0, crownHChanged, "sdfgdfg", CYLINDER);
-		PACK_LABEL_AND_SLIDER("R:", rAdj, 0, crownRChanged, "sdfgdfg", CYLINDER);
+		PACK_LABEL_AND_SLIDER("R UP:", rUpAdj, 0, crownRUpChanged, "sdfgdfg", CYLINDER);
+		PACK_LABEL_AND_SLIDER("R DOWN:", rDownAdj, 0, crownRDownChanged, "sdfgdfg", CYLINDER);
 
 #undef PACK_LABEL_AND_SLIDER
 
@@ -339,6 +351,14 @@ public:
 		gtk_widget_show(crownWidget);
 		return crownWidget;
 	}
+	
+	void updatePanel()
+	{
+		gtk_tree_store_clear(GTK_TREE_STORE(crownStore));
+		populateCrownList();
+		showWidgets(-1);
+	}
+	
 };
 
 

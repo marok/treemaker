@@ -7,15 +7,16 @@
 class CylinderCrown: public Subcrown
 {
 public:
-	float r, h;
+	float r_down, r_up, h;
 
-	CylinderCrown(float x, float y, float z, float r, float h)
+	CylinderCrown(float x, float y, float z, float r_down, float r_up, float h)
 	{
 		this->shape = CYLINDER;
 		this->x = x;
 		this->y = y;
 		this->z = z;
-		this->r = r;
+		this->r_down = r_down;
+		this->r_up = r_up;
 		this->h = h;
 
 	}
@@ -24,14 +25,18 @@ public:
 	}
 	std::vector<Point3d *> generatePoints(int n) {
 		int points_num = n;
+		float r_max = r_up > r_down? r_up: r_down;
 		std::vector<Point3d *> result;
 		result.clear();
 
 #define RANDF() (float)random()/(float)RAND_MAX
 
 		while (points_num) {
-			float r_rand = sqrt(RANDF()) * r;
+			float r_rand = sqrt(RANDF()) * r_max;
 			float h_rand = RANDF() * h;
+			
+			if((r_up-r_rand)*(0-h_rand)-(h-h_rand)*(r_down-r_rand) > 0)
+				continue;
 
 
 			float alfa = RANDF()*2.0 * M_PI;
@@ -49,7 +54,8 @@ public:
 		SAVE(x);
 		SAVE(y);
 		SAVE(z);
-		SAVE(r);
+		SAVE(r_down);
+		SAVE(r_up);
 		SAVE(h);
 #undef SAVE
 	}
@@ -59,7 +65,8 @@ public:
 		LOAD(x);
 		LOAD(y);
 		LOAD(z);
-		LOAD(r);
+		LOAD(r_down);
+		LOAD(r_up);
 		LOAD(h);
 #undef LOAD
 	}

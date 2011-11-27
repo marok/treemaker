@@ -28,7 +28,7 @@ public:
 	void setDefault()
 	{
 		subcrowns.clear();
-		subcrowns.push_back(new CylinderCrown(0,0,2,5,8));
+		subcrowns.push_back(new CylinderCrown(0,0,2,5,3,8));
 	}
 
 	std::vector<Point3d *> generatePoints()

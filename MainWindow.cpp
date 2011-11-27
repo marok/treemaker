@@ -371,7 +371,7 @@ class MainWindow
 			if(model)
 			{
 				model->selection->markBranch(select_buffer[3]);
-				
+			
 				//mamy dwie nazwy na stosie (gałąź jest zaznaczona i trafiliśmy na punkt)
 				if(select_buffer[0]==2)
 				{

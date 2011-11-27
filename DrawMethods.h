@@ -110,8 +110,8 @@ class DrawMethods {
 			glColor3fv(active ? colorActive : colorUnactive);
 			glBegin(GL_LINE_STRIP);
 			glVertex3f(0, 0, cylinderCrown->z);
-			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z);
-			glVertex3f(cylinderCrown->r, 0, cylinderCrown->z + cylinderCrown->h);
+			glVertex3f(cylinderCrown->r_down, 0, cylinderCrown->z);
+			glVertex3f(cylinderCrown->r_up, 0, cylinderCrown->z + cylinderCrown->h);
 			glVertex3f(0, 0, cylinderCrown->z + cylinderCrown->h);
 			glEnd();
 			glRotatef(360 / loops, 0, 0, 1);
