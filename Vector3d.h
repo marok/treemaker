@@ -49,7 +49,7 @@ public:
 		foreachcoord_i d[i] /= old_length;
 	}
 	void print () {
-		printf ("v %f %f %f\n", d[0], d[1], d[2]);
+		g_print ("v %f %f %f\n", d[0], d[1], d[2]);
 	}
 
 	Vector3d * crossProduct(Vector3d * a)
@@ -57,6 +57,11 @@ public:
 		return new Vector3d(this->d[1]*a->d[2] - this->d[2]*a->d[1],
 		                    - this->d[0]*a->d[2] + this->d[2]*a->d[0],
 		                    this->d[0]*a->d[1] - this->d[1]*a->d[0]);
+	}
+	
+	float dotProduct(Vector3d * a)
+	{
+		return this->d[0]*a->d[0] + this->d[1]*a->d[1] + this->d[2]*a->d[2];
 	}
 
 #undef foreachcoord_i

@@ -10,7 +10,7 @@ class Segment
 public:
 	Segment()
 	{
-		index = -1;
+		index = 0;
 		for(int i=0; i<MAX_CIRCLE_PTS_COUNT; i++)
 		{
 			circlePts[i] = NULL;

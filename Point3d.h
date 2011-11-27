@@ -54,7 +54,7 @@ public:
 
 	void print ()
 	{
-		printf ("%f %f %f\n", x, y, z);
+		g_print ("p %f %f %f\n", x, y, z);
 	}
 };
 #endif

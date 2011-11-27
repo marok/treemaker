@@ -50,7 +50,7 @@ class Model3d {
 			}
 			norm->normalize();
 
-			computeOneSegment(norm, nm);
+			computeOneSegment(norm, nm, i!=0?bm->nodeModelList[i-1]:NULL);
 
 			delete(norm);
 		}
@@ -64,10 +64,11 @@ class Model3d {
 
 	//liczy pojedynczy segment dla NodeModel
 	//norm - wektor normalny do powierzchni wyznaczonej przez segment
-	void computeOneSegment(Vector3d *norm, NodeModel *nodeModel)
+	void computeOneSegment(Vector3d *norm, NodeModel *nodeModel, NodeModel *prvNode)
 	{
 		Vector3d *U, *V;
 		float factor;
+		
 
 		if (abs(norm->d[0]) >= abs(norm->d[1])) {
 			factor = 1 / sqrt(norm->d[0] * norm->d[0] + norm->d[2] * norm->d[2]);
@@ -84,6 +85,9 @@ class Model3d {
 
 		Segment *segment = nodeModel->segment;
 
+		float angleDiff = 0;
+		bool angleDiffComputed = false;
+		
 		for (int i = 0; i < tp->circlePoints; i++) {
 			Vector3d *u, *v;
 			u = new Vector3d();
@@ -91,8 +95,8 @@ class Model3d {
 			u->add(U);
 			v->add(V);
 
-			u->mul(nodeModel->r * cos((float) i * angle));
-			v->mul(nodeModel->r * sin((float) i * angle));
+			u->mul(nodeModel->r * cos((float) i * angle+angleDiff));
+			v->mul(nodeModel->r * sin((float) i * angle+angleDiff));
 			u->add(v);
 
 			segment->circlePts[i] = new Point3d();
@@ -100,6 +104,28 @@ class Model3d {
 			segment->circlePts[i]->y = u->d[1];
 			segment->circlePts[i]->z = u->d[2];
 
+			//liczymy różnice pomiędzy obliczonym wektorem a wektorem z poprzedniego segmentu
+			if(prvNode!=NULL && i==0 && !angleDiffComputed)
+			{
+				prvNode->position;
+				//wektory a i b wyznaczają płaszczyznę na której powinien się znaleźć punkt z nastepnego segmentu
+				Vector3d *a = new Vector3d(prvNode->segment->circlePts[0]);
+				Vector3d *b = new Vector3d(prvNode->position, nodeModel->position);
+				Vector3d *n = a->crossProduct(b);
+				n->normalize();
+				
+				Vector3d *c = new Vector3d(nodeModel->segment->circlePts[0]);
+			
+				angleDiff = M_PI_2 - acos(n->dotProduct(c)/(n->length()*c->length()));
+				angleDiffComputed = true;
+				i--;
+				
+				delete a;
+				delete b;
+				delete n;
+				delete c;
+			}
+			
 			//printf("%d. %f %f %f %f %f %f\n",i,node->point.x,node->point.y,node->point.z, node->segment->circlePts[i]->x,node->segment->circlePts[i]->y,node->segment->circlePts[i]->z);
 
 			delete(u);
@@ -126,22 +152,20 @@ class Model3d {
 			p->z += r->d[2];
 
 			int index;
-			float minDistance;
-			for (int i = 0; i < tp->circlePoints; i++) {
-				if (i == 0) {
-					index = i;
-					Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
-					minDistance = p->getDistance(&segPoint);
-				} else {
-					Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
-					float currentDistance = p->getDistance(&segPoint);
-					if (currentDistance < minDistance) {
-						minDistance = currentDistance;
-						index = i;
-					}
-				}
-			}
-			child->segment->index = index;
+			float zeroDistance;
+	
+			index = i;
+			Point3d segPoint = child->getSegmentPointRel2BranchAt(0);
+			zeroDistance = p->getDistance(&segPoint);
+			
+	
+			//dla parzystego circlePoints bedzie działac ;)
+			Point3d segPoint2 = child->getSegmentPointRel2BranchAt(tp->circlePoints/2);
+			float midDistance = p->getDistance(&segPoint2);
+	
+			
+			if(midDistance < zeroDistance)
+				child->segment->index = tp->circlePoints/2;
 		}
 
 		int len = bm->childBranches.size();
