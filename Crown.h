@@ -6,6 +6,7 @@
 #include "Subcrown.h"
 #include "SplineCrown.h"
 #include "TruncatedConeCrown.h"
+#include "SphereCrown.h"
 
 class Crown
 {
@@ -75,6 +76,9 @@ public:
 				break;
 			case TRUNCATEDCONE:
 				sub=new TruncatedConeCrown();
+				break;
+			case SPHERE:
+				sub = new SphereCrown();
 				break;
 			default:
 				printf("Nieprawidlowy typ korony podczas wczytywania pliku ustawien");

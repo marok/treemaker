@@ -51,10 +51,8 @@ public:
 	}
 	void save(ofstream &s)
 	{
+		Subcrown::save(s);
 #define SAVE(x) s<<x<<endl;
-		SAVE(x);
-		SAVE(y);
-		SAVE(z);
 		SAVE(r_down);
 		SAVE(r_up);
 		SAVE(h);
@@ -62,10 +60,8 @@ public:
 	}
 	void load(ifstream &s)
 	{
+		Subcrown::load(s);
 #define LOAD(x) s>>x;
-		LOAD(x);
-		LOAD(y);
-		LOAD(z);
 		LOAD(r_down);
 		LOAD(r_up);
 		LOAD(h);

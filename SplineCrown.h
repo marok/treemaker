@@ -115,10 +115,8 @@ public:
 	}
 	void save(ofstream &s)
 	{
+		Subcrown::save(s);
 #define SAVE(x) s<<x<<endl;
-		SAVE(x);
-		SAVE(y);
-		SAVE(z);
 		SAVE(crownMainPoints.size());
 #undef SAVE
 		for(unsigned int i=0; i<crownMainPoints.size(); i++)
@@ -126,12 +124,9 @@ public:
 	}
 	void load(ifstream &stream)
 	{
-		//crownMainPoints.clear();
+		Subcrown::load(stream);
 		unsigned int points;
 #define LOAD(x) stream>>x;
-		LOAD(x);
-		LOAD(y);
-		LOAD(z);
 		LOAD(points);
 #undef LOAD
 		for(unsigned int i=0; i<points; i++)

@@ -118,6 +118,31 @@ class DrawMethods {
 		}
 		glPopMatrix();
 	}
+	
+	static void
+	drawEnvelopeSphere(SphereCrown *sphereCrown, bool active)
+	{
+		glPushMatrix();
+
+		int loops = 6; //liczba petli
+		int n = 20; //liczba punktów na półokręgu
+		glTranslatef(sphereCrown->x, sphereCrown->y, sphereCrown->z);
+		for (int j = 0; j < loops; j++) {
+			glColor3fv(active ? colorActive : colorUnactive);
+			glBegin(GL_LINE_STRIP);
+			{
+				for(int i=0; i<=n; i++)
+				{
+					float x = sphereCrown->r*cos(2.0*(float)i*M_PI/(float)n);
+					float y = sphereCrown->r*sin(2.0*(float)i*M_PI/(float)n);
+					glVertex3f(x,0,y);
+				}
+			}
+			glEnd();
+			glRotatef(180 / loops, 0, 0, 1);
+		}
+		glPopMatrix();
+	}
 
 	static void
 	drawTrunk(BranchModel *bm, Parameters *params)
@@ -330,7 +355,7 @@ if(mode==GL_SELECT)\
 
 		glPushMatrix();
 		glColor3f(0,0,1);
-		glRotatef(90,1,0,0);
+		glRotatef(-90,1,0,0);
 		DRAW_AXIS(2);
 		glPopMatrix();
 #undef DRAW_AXIS
@@ -438,12 +463,19 @@ if(mode==GL_SELECT)\
 		for(unsigned int i=0; i<c->subcrowns.size(); i++)
 		{
 			Subcrown *sub = c->subcrowns.at(i);
-			if(sub->shape == SPLINE)
+			switch(sub->shape)
 			{
-				drawEnvelopeSpline((SplineCrown*)sub, crown->activeSubcrown == (int)i, SPLINE_CROWN(sub)->activePoint);
-			} else if(sub->shape == TRUNCATEDCONE)
-			{
-				drawEnvelopeTruncatedCone((TruncatedConeCrown*)sub,crown->activeSubcrown == (int)i);
+				case SPLINE:
+					drawEnvelopeSpline(SPLINE_CROWN(sub), crown->activeSubcrown == (int)i, SPLINE_CROWN(sub)->activePoint);
+					break;
+				case TRUNCATEDCONE:
+					drawEnvelopeTruncatedCone(TRUNCATEDCONE_CROWN(sub),crown->activeSubcrown == (int)i);
+					break;
+				case SPHERE:
+					drawEnvelopeSphere(SPHERE_CROWN(sub), crown->activeSubcrown == (int)i);
+					break;
+				default:
+					break;
 			}
 		}
 	}

@@ -10,7 +10,7 @@ using namespace std;
 
 class CrownParametersPanel: public IPanel {
 	GtkObject *xAdj, *yAdj, *zAdj;
-	GtkObject *hAdj, *rDownAdj, *rUpAdj;
+	GtkObject *hAdj, *rDownAdj, *rUpAdj, *rAdj;
 
 	GtkWidget *crownTypeCombo;
 
@@ -53,16 +53,18 @@ class CrownParametersPanel: public IPanel {
 
 	void storeAppendSubcrown(Subcrown *sub, gint id, GtkListStore *store)
 	{
-		char buffX[6], buffY[6], buffZ[6];
+		char buffX[6], buffY[6], buffZ[6], buffShape[20];
 		sprintf(buffX, "%.1f", sub->x);
 		sprintf(buffY, "%.1f", sub->y);
 		sprintf(buffZ, "%.1f", sub->z);
+		
+		strcpy(buffShape, sub->shape == SPLINE?"Spline":(sub->shape == TRUNCATEDCONE?"Truncated Cone":"Sphere"));
 
 		GtkTreeIter iter;
 		gtk_list_store_append(store, &iter);
 		gtk_list_store_set(store, &iter,
 		                   0, id,
-		                   1, sub->shape == SPLINE?"Spline":"Truncated Cone",
+		                   1, buffShape,
 		                   2, buffX,
 		                   3, buffY,
 		                   4, buffZ,
@@ -142,6 +144,16 @@ class CrownParametersPanel: public IPanel {
 		}
 		DrawMethods::render();
 	}
+	
+	static void crownRChanged( GtkAdjustment *adj ,gpointer data )
+	{
+		CrownParametersPanel *panel = (CrownParametersPanel*) data;
+		if(panel->selectedSubcrown->shape == SPHERE)
+		{
+			SPHERE_CROWN(panel->selectedSubcrown)->r = gtk_adjustment_get_value(adj);
+		}
+		DrawMethods::render();
+	}
 
 	static void deleteCrownClicked( GtkWidget *widget ,gpointer data )
 	{
@@ -175,14 +187,19 @@ class CrownParametersPanel: public IPanel {
 		Subcrown *sub;
 
 		gint active=gtk_combo_box_get_active(GTK_COMBO_BOX(panel->crownTypeCombo));
-		if(active == 0)
+		switch(active)
 		{
-			sub = new SplineCrown(0,0,0, panel->params->methodParams);
-		} else if(active == 1)
-		{
-			sub = new TruncatedConeCrown(
-			    0,0,0,
-			    1,1,1);
+			case 0:
+				sub = new SplineCrown(0,0,0, panel->params->methodParams);
+				break;
+			case 1:
+				sub = new TruncatedConeCrown(
+					0,0,0,
+					1,1,1);
+				break;
+			case 2:
+				sub = new SphereCrown(0,0,5,5);
+				break;
 		}
 
 		panel->params->crown->subcrowns.push_back(sub);
@@ -221,6 +238,8 @@ class CrownParametersPanel: public IPanel {
 			case SPLINE:
 				panel->scpp->updatePanel(SPLINE_CROWN(panel->selectedSubcrown));
 				break;
+			case SPHERE:
+				gtk_adjustment_set_value(GTK_ADJUSTMENT(panel->rAdj), SPHERE_CROWN(panel->selectedSubcrown)->r);
 			default:
 				break;
 			}
@@ -259,6 +278,7 @@ public:
 		gtk_widget_show(crownTypeCombo);
 		gtk_combo_box_append_text(GTK_COMBO_BOX(crownTypeCombo),"Spline Crown");
 		gtk_combo_box_append_text(GTK_COMBO_BOX(crownTypeCombo),"Truncated Cone Crown");
+		gtk_combo_box_append_text(GTK_COMBO_BOX(crownTypeCombo),"Sphere Crown");
 		gtk_combo_box_set_active(GTK_COMBO_BOX(crownTypeCombo),0);
 		gtk_box_pack_start(GTK_BOX(hbox),crownTypeCombo,FALSE,FALSE,2);
 
@@ -290,8 +310,6 @@ public:
 		ADD_COLUMN("z", 4);
 
 #undef ADD_COLUMN
-
-
 
 
 		gtk_box_pack_start(GTK_BOX(vbox), crownList, FALSE, FALSE, 0);
@@ -330,12 +348,18 @@ public:
 		PACK_LABEL_AND_SLIDER("X:", xAdj, -20, crownXChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Y:", yAdj, -20, crownYChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Z:", zAdj, 0, crownZChanged, "sdfgdfg", -1);
+		
+		/*TruncatedCone parameters*/
 		PACK_LABEL_AND_SLIDER("H:", hAdj, 0, crownHChanged, "sdfgdfg", TRUNCATEDCONE);
 		PACK_LABEL_AND_SLIDER("R UP:", rUpAdj, 0, crownRUpChanged, "sdfgdfg", TRUNCATEDCONE);
 		PACK_LABEL_AND_SLIDER("R DOWN:", rDownAdj, 0, crownRDownChanged, "sdfgdfg", TRUNCATEDCONE);
+		
+		/*Sphere parameters*/
+		PACK_LABEL_AND_SLIDER("R:", rAdj, 0, crownRChanged, "sdfgdfg", SPHERE);
 
 #undef PACK_LABEL_AND_SLIDER
 
+		/*Spline parameters*/
 		GtkWidget *splineCrownPanel  = scpp->createPanel();
 		gtk_box_pack_start(GTK_BOX(vbox), splineCrownPanel, FALSE, FALSE, 2);
 		crownWidgets.push_back(pair<int, GtkWidget *>(SPLINE, splineCrownPanel));
