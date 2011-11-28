@@ -8,6 +8,14 @@
 #include "TruncatedConeCrown.h"
 #define TREEMAKER_VERSION "treemaker-ver0.1"
 class Parameters {
+	void init() {
+                clean();
+                rp=new RenderingParameters();
+                tp=new TrunkParameters();
+                lp=new LeavesParameters();
+                methodParams = new MethodParameters();
+                crown = new Crown(methodParams);
+        }
 public:
 
 	RenderingParameters	*rp;
@@ -18,17 +26,20 @@ public:
 
 	void clean() {
 	}
-	void setDefaults() {
-		clean();
-		rp=new RenderingParameters();
-		tp=new TrunkParameters();
-		lp=new LeavesParameters();
-		methodParams = new MethodParameters();
-		crown = new Crown(methodParams);
-	}
-	Parameters() {
-		setDefaults();
-	}
+	
+	void setDefaults()
+        {
+                rp->setDefault();
+                tp->setDefault();
+                methodParams->setDefault();
+                lp->setDefault();
+                crown->setDefault();
+        }
+        
+        Parameters() {
+                init();
+        }
+	
 	/* Serialization methods */
 	void save(ofstream &s)
 	{

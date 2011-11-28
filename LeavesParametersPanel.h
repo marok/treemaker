@@ -7,7 +7,7 @@
 #include "LeavesParameters.h"
 #include "Bmp.h"
 using namespace std;
-class LeavesParametersPanel {
+class LeavesParametersPanel: public IPanel{
 	Parameters *params;
 	GtkWidget *vbox;
 	GtkWidget *image;
@@ -15,7 +15,7 @@ class LeavesParametersPanel {
 	GtkWidget *list;
 	vector<pair<string,GtkObject *> > adjustments;
 	vector<GtkWidget *> scales;
-
+	
 #define UNROLL_CALLBACK(param)\
 	static void param##Changed( GtkAdjustment *adj, gpointer data){\
              LeavesParametersPanel *lpp = (LeavesParametersPanel *)data;\
@@ -65,8 +65,14 @@ class LeavesParametersPanel {
 		                        GTK_TREE_MODEL(store));
 
 		g_object_unref(store);
-		for(unsigned int i=0; i<params->lp->leaves.size(); i++)
-			add_to_list(list,params->lp->leaves[i].getTexName());
+		populate_list(list);
+	}
+	
+	void
+	populate_list(GtkWidget *list)
+	{
+		for (unsigned int i = 0; i < params->lp->leaves.size(); i++)
+			add_to_list(list, params->lp->leaves[i].getTexName());
 	}
 
 	void
@@ -139,7 +145,7 @@ class LeavesParametersPanel {
 		{
 			int x=event->x;
 			int y=event->y;
-			x-=50;
+			x-=100;
 			int id=lpp->params->lp->activeLeaf;
 			if(x>=0&&x<128&&id!=-1)
 			{
@@ -201,7 +207,8 @@ public:
 		GtkWidget *button,*hbox;
 		vbox=gtk_vbox_new(FALSE,1);
 		GtkWidget *label,*scale;
-		GtkObject *adj;
+		GtkObject* adj;
+	
 		gtk_container_add (GTK_CONTAINER (leavesWidget), vbox);
 
 		list=gtk_tree_view_new();
@@ -256,6 +263,17 @@ public:
 		gtk_widget_show(vbox);
 		gtk_widget_show(list);
 		return leavesWidget;
+	}
+	
+	void updatePanel()
+	{
+		GtkListStore *store;
+
+		store = GTK_LIST_STORE(gtk_tree_view_get_model
+		                       (GTK_TREE_VIEW(list)));
+		gtk_list_store_clear(store);
+		populate_list(list);
+		activateWidgets(FALSE);
 	}
 
 };

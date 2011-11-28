@@ -23,6 +23,7 @@
 #include "ColonizationMethod.h"
 #include "ParticleMethod.h"
 #include "Model3d.h"
+#include "IPanel.h"
 #include "MethodParametersPanel.h"
 #include "TrunkParametersPanel.h"
 #include "RenderingParametersPanel.h"
@@ -37,7 +38,7 @@
 
 #include "DrawMethods.h"
 #include "Crown.h"
-
+#include "Panels.h"
 
 #define DEFAULT_WIDTH  800
 #define DEFAULT_HEIGHT 600
@@ -94,6 +95,7 @@ class MainWindow
 {
 	GtkWidget *window;
 	GdkGLConfig *glconfig;
+	Panels *panels;
 
 	static void realize (GtkWidget * widget, gpointer data) {
 		GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
@@ -509,9 +511,20 @@ class MainWindow
 
 		gtk_widget_show (drawing_area);
 
+		
+		/*** Panels initialization ***/
+		Panels *panels = new Panels(
+			new MethodParametersPanel(cm,pm,parameters->tp),
+			new CrownParametersPanel(window,parameters),
+			new RenderingParametersPanel(parameters),
+			new TrunkParametersPanel(window,parameters),
+			new LeavesParametersPanel(window,parameters),
+			new EditPanel()
+			);
+		
+		
 		// Toolbar
-
-		Toolbar *tbar=new Toolbar(window,parameters,cm);
+		Toolbar *tbar=new Toolbar(window,parameters,cm, panels);
 		GtkWidget *toolsPanel = tbar->createToolbar();
 
 		gtk_box_pack_start(GTK_BOX(vbox), toolsPanel, FALSE, FALSE, 5);
@@ -528,51 +541,41 @@ class MainWindow
 		                          G_CALLBACK (button_press_event_popup_menu),
 		                          menu);
 
-		TrunkParametersPanel *tpp=new TrunkParametersPanel(window,parameters);
-		GtkWidget *trunkParameters=tpp->createPanel();
+		
 		gtk_box_pack_start(GTK_BOX(hbox),vbox,FALSE,FALSE,1);
-
-
-		MethodParametersPanel *mpanel = new MethodParametersPanel(cm,pm,parameters->tp);
 
 		GtkWidget *notebook=gtk_notebook_new();
 		g_signal_connect (G_OBJECT (notebook), "switch-page",
 		                  G_CALLBACK (notebookSwitchPage), NULL);
 		
-		
 		GtkWidget *label;
-		label=gtk_label_new("Algorithms");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),mpanel->createPanel(),label);
-
-		CrownParametersPanel *cpp=new CrownParametersPanel(window,parameters);
-		label=gtk_label_new("C");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),cpp->createPanel(),label);
 		
-		RenderingParametersPanel *renderingPanel=new RenderingParametersPanel(parameters);
+		label=gtk_label_new("Algorithms");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getMPP()->createPanel(),label);
+
+		
+		label=gtk_label_new("C");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getCPP()->createPanel(),label);
+		
+		
 		label=gtk_label_new("R");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),renderingPanel->createPanel(),label);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getRPP()->createPanel(),label);
 
 
 		label=gtk_label_new("T");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),trunkParameters,label);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getTPP()->createPanel(),label);
 
-		LeavesParametersPanel *lpp=new LeavesParametersPanel(window,parameters);
+		
 		label=gtk_label_new("L");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),lpp->createPanel(),label);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getLPP()->createPanel(),label);
 
-		EditPanel *ep = new EditPanel();
+		
 		label = gtk_label_new("E");
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),ep->createPanel(),label);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getEP()->createPanel(),label);
 		
 
 		gtk_widget_show(notebook);
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
-
-		//g_timeout_add (1000,
-		//                 (GSourceFunc) timeout,
-		//                  window);
-		//gtk_widget_show_all(window);
-		//mpanel->hideWidgets(0);//hak potrzebny zeby sie pokazaly tylko potrzebne parametry
 
 		windowWidget=window;
 		return window;

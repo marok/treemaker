@@ -5,11 +5,13 @@
 #include <gdk/gdkkeysyms.h>
 #include "TrunkParameters.h"
 #include "Bmp.h"
-class TrunkParametersPanel {
+class TrunkParametersPanel: public IPanel {
 	Parameters *params;
 	GtkWidget *vbox;
 	GtkWidget *mainWindow;
 	GtkWidget *image;
+	
+	GtkObject *adjRFac, *adjAVal, *adjMVal, *adjCirc;
 
 #define UNROLL_CALLBACK(param)\
 	static void param##Changed( GtkAdjustment *adj, gpointer data){\
@@ -18,7 +20,7 @@ class TrunkParametersPanel {
 	}
 
 	UNROLL_CALLBACK(radiusFactor);
-	UNROLL_CALLBACK(circlePoints);
+	UNROLL_CALLBACK(circlePointsCurrentAdj);
 	UNROLL_CALLBACK(aValue);
 	UNROLL_CALLBACK(mValue);
 
@@ -48,19 +50,19 @@ public:
 
 		GtkTooltips *tooltips=gtk_tooltips_new();
 		GtkWidget *button,*scale,*label,*hbox;
-		GtkObject *adj;
+		
 
 		vbox=gtk_vbox_new(FALSE,1);
 
 		gtk_container_add (GTK_CONTAINER (trunkWidget), vbox);
 
 
-#define PACK_LABEL_AND_SLIDER(text,val,min,max,step,func,digits,hint)\
+#define PACK_LABEL_AND_SLIDER(var_name,text,val,min,max,step,func,digits,hint)\
     hbox = gtk_hbox_new(FALSE,1);\
     label = gtk_label_new(text);\
-    adj=gtk_adjustment_new(params->tp->val,min,max,step,1,0);\
-    g_signal_connect(adj,"value_changed",G_CALLBACK(func),params);\
-    scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
+    var_name=gtk_adjustment_new(params->tp->val,min,max,step,1,0);\
+    g_signal_connect(var_name,"value_changed",G_CALLBACK(func),params);\
+    scale=gtk_hscale_new(GTK_ADJUSTMENT(var_name));\
     gtk_scale_set_digits (GTK_SCALE (scale), digits);\
     gtk_box_pack_start(GTK_BOX(vbox),hbox,FALSE,FALSE,1);\
     gtk_box_pack_start(GTK_BOX(hbox),label,FALSE,FALSE,0);\
@@ -71,10 +73,10 @@ public:
     gtk_widget_show(scale);
 
 		//trunk parameters
-		PACK_LABEL_AND_SLIDER("rFactor",RADIUSFACTOR_DEFAULT,1.0,2.5,0.1,radiusFactorChanged,1,"Radius factor");
-		PACK_LABEL_AND_SLIDER("aValue",AVALUE_DEFAULT,0.00,0.01,0.0001,aValueChanged,3,"Branch diameter increase value");
-		PACK_LABEL_AND_SLIDER("mValue",MVALUE_DEFAULT,1,1.1,0.01,mValueChanged,2,"Branch diameter multiplication value");
-		PACK_LABEL_AND_SLIDER("circle",CIRCLEPOINTS_DEFAULT,3,20,1,circlePointsChanged,0,"Points aproximating branch circle");
+		PACK_LABEL_AND_SLIDER(adjRFac,"rFactor",RADIUSFACTOR_DEFAULT,1.0,2.5,0.1,radiusFactorChanged,1,"Radius factor");
+		PACK_LABEL_AND_SLIDER(adjAVal,"aValue",AVALUE_DEFAULT,0.00,0.01,0.0001,aValueChanged,3,"Branch diameter increase value");
+		PACK_LABEL_AND_SLIDER(adjMVal,"mValue",MVALUE_DEFAULT,1,1.1,0.01,mValueChanged,2,"Branch diameter multiplication value");
+		PACK_LABEL_AND_SLIDER(adjCirc,"circle",CIRCLEPOINTS_DEFAULT,3,20,1,circlePointsCurrentAdjChanged,0,"Points aproximating branch circle");
 
 #undef PACK_LABEL_AND_SLIDER
 
@@ -96,6 +98,16 @@ public:
 		gtk_widget_show(vbox);
 
 		return trunkWidget;
+	}
+	
+	void updatePanel()
+	{
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjRFac), params->tp->radiusFactor);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjAVal), params->tp->aValue);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjMVal), params->tp->mValue);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjCirc), params->tp->circlePointsCurrentAdj);
+		
+		gtk_image_set_from_file(GTK_IMAGE(image), Bmp::generateIcon(params->tp->barkPath));
 	}
 };
 #endif

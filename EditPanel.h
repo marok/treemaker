@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class EditPanel
+class EditPanel:public IPanel
 {
 	
 	vector< pair< SelectionMode ,GtkWidget*> > widgets;
@@ -146,7 +146,10 @@ public:
 		return editWidget;
 	}
 	
-	
+	void updatePanel()
+	{
+		
+	}
 };
 
 

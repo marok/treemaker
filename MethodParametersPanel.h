@@ -3,6 +3,7 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <vector>
+#include <map>
 #include "MethodParameters.h"
 #include "ColonizationMethod.h"
 #include "ParticleMethod.h"
@@ -12,7 +13,8 @@
 
 using namespace std;
 
-class MethodParametersPanel {
+class MethodParametersPanel: public IPanel
+{
 
 	GtkWidget *vbox;
 	GtkWidget *hbox;
@@ -20,6 +22,7 @@ class MethodParametersPanel {
 	ParticleMethod *pm;
 	TrunkParameters *tp;
 	vector <pair<int,GtkWidget *> > methodWidgets;
+	map<const char*, GtkObject*> adjustments;
 
 
 #define UNROLL_CALLBACK(param)\
@@ -46,6 +49,16 @@ class MethodParametersPanel {
 		cpp->hideWidgets(active);
 		cpp->cm->params->methodParams->activeMethod=active;
 
+	}
+	void hideWidgets(gint active) {
+
+		for(unsigned int i=0; i<methodWidgets.size(); i++) {
+			GtkWidget *w=methodWidgets[i].second;
+			if(methodWidgets[i].first!=active)
+				gtk_widget_hide(w);
+			else
+				gtk_widget_show(w);
+		}
 	}
 
 
@@ -84,6 +97,7 @@ public:
     hbox = gtk_hbox_new(FALSE,1);\
     label = gtk_label_new(text);\
     adj=gtk_adjustment_new(cm->params->methodParams->val,min,max,step,1,0);\
+    adjustments.insert(pair<const char*,GtkObject*>(text,adj));\
     g_signal_connect(adj,"value_changed",G_CALLBACK(func),cm->params->methodParams);\
     scale=gtk_hscale_new(GTK_ADJUSTMENT(adj));\
     if(type>=0){\
@@ -122,16 +136,27 @@ public:
 		hideWidgets(cm->params->methodParams->ACTIVEMETHOD_DEFAULT);
 		return paramsWidget;
 	}
-	void hideWidgets(gint active) {
+	
+	void updatePanel()
+	{
+		MethodParameters *mp = cm->params->methodParams;
 
-		for(unsigned int i=0; i<methodWidgets.size(); i++) {
-			GtkWidget *w=methodWidgets[i].second;
-			if(methodWidgets[i].first!=active)
-				gtk_widget_hide(w);
-			else
-				gtk_widget_show(w);
-		}
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["Seed:"]), mp->seed);
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["D:"]), mp->D);
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["Points:"]), mp->points);
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["di:"]), mp->di);
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["dk:"]), mp->dk);
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["cd:"]), mp->cd);
+
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["attraction:"]), mp->attraction);
 	}
+	
 };
 
 

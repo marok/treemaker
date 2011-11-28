@@ -25,15 +25,21 @@ public:
 
 
 	LeavesParameters() {
-		activeLeaf=-1;
-#define ADD_LEAF(name)  {Leaf def((char*)name); leaves.push_back(def);}
-		ADD_LEAF("textures/leaf0_256.bmp");
-		ADD_LEAF("textures/leaf1_512.bmp");
-		ADD_LEAF("textures/leaf2_512.bmp");
-#undef ADD_LEAF
+                setDefault();
 		generateTypes();
-
-	}
+        }
+        
+        void setDefault()
+        {
+                activeLeaf=-1;
+		leaves.clear();
+#define ADD_LEAF(name)  {Leaf def((char*)name); leaves.push_back(def);}
+                ADD_LEAF("textures/leaf0_256.bmp");
+                ADD_LEAF("textures/leaf1_512.bmp");
+                ADD_LEAF("textures/leaf2_512.bmp");
+#undef ADD_LEAF
+                
+        }
 	void clear() {
 		leaves.clear();
 		types.clear();

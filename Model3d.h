@@ -20,6 +20,7 @@ class Model3d {
 	Node *root;
 	TrunkParameters *tp;
 	BranchModel *bm;
+	
 
 	void computeSegment(BranchModel *bm) {
 		Vector3d *norm;

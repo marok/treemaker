@@ -2,15 +2,18 @@
 #define _TOOLBAR_H
 #include <gtk/gtk.h>
 #include "Exporter.h"
+#include "Panels.h"
+
 class Toolbar {
 	Parameters *params;
 	ColonizationMethod *cm;
 	GtkWidget *mainWindow;
-
+	Panels *panels;
 
 	static void  newClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
 		t->params->setDefaults();
+		t->panels->updatePanels();
 	}
 	static void  openClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
@@ -22,6 +25,7 @@ class Toolbar {
 			file.close();
 		}
 		gtk_widget_destroy(dialog);
+		t->panels->updatePanels();
 	}
 	static void  saveClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
@@ -41,15 +45,20 @@ class Toolbar {
 		t->cm->generate();
 		if(model!=NULL)
 			delete model;
+		
+		t->params->tp->setCirclePointsValue();
 		model = new  Model3d(t->cm->getRoot(),t->params->tp);
 		model->generateModel();
 		DrawMethods::render();
 	}
 	
 	static void  refreshClicked(GtkWidget *widget,gpointer data) {
+		Toolbar *t=(Toolbar*)data;
+		
 		if(!model)
 			return;
 		
+		t->params->tp->setCirclePointsValue();
 		model->generateModel();
 		
 		DrawMethods::render();
@@ -65,10 +74,11 @@ class Toolbar {
 	}
 
 public:
-	Toolbar(GtkWidget *mainWindow,Parameters *params,ColonizationMethod *cm) {
+	Toolbar(GtkWidget *mainWindow,Parameters *params,ColonizationMethod *cm, Panels *panels) {
 		this->params=params;
 		this->cm=cm;
 		this->mainWindow=mainWindow;
+		this->panels = panels;
 	}
 	GtkWidget* createToolbar() {
 		GtkWidget *toolbar;

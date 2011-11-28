@@ -8,7 +8,7 @@
 #include "SplineCrownParametersPanel.h"
 using namespace std;
 
-class CrownParametersPanel {
+class CrownParametersPanel: public IPanel {
 	GtkObject *xAdj, *yAdj, *zAdj;
 	GtkObject *hAdj, *rDownAdj, *rUpAdj;
 
@@ -354,7 +354,7 @@ public:
 	
 	void updatePanel()
 	{
-		gtk_tree_store_clear(GTK_TREE_STORE(crownStore));
+		gtk_list_store_clear(crownStore);
 		populateCrownList();
 		showWidgets(-1);
 	}

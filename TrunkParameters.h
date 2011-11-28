@@ -7,7 +7,14 @@ class TrunkParameters {
 public:
 #define MAXPATHLEN 256
 	float radiusFactor;
+	
+	//liczba punktów segmentu w wygenerowanym modelu
 	int circlePoints;
+	
+	//liczba punktów segmentu aktualnie na suwaku
+	//po wciśnięciu generate bądź refresh circlePoints <- circlePointsCurrentAdj
+	int circlePointsCurrentAdj;
+	
 	float aValue;
 	float mValue;
 	char barkPath[MAXPATHLEN];		//path to bark texture
@@ -30,7 +37,7 @@ public:
 		radiusFactor=RADIUSFACTOR_DEFAULT;
 		aValue=AVALUE_DEFAULT;
 		mValue=MVALUE_DEFAULT;
-		circlePoints=CIRCLEPOINTS_DEFAULT;
+		circlePointsCurrentAdj = CIRCLEPOINTS_DEFAULT;
 		barkTexInitialized=BARKTEXINITIALIZED_DEFAULT;
 	}
 	
@@ -38,6 +45,12 @@ public:
 		assert(strlen(path)<MAXPATHLEN);
 		strcpy(barkPath,path);
 	}
+	
+	void setCirclePointsValue()
+	{
+		circlePoints = circlePointsCurrentAdj;
+	}
+	
 	/* Serialization methods */
 
 	void save(ofstream &s)
@@ -58,7 +71,7 @@ public:
 #define LOAD(param) s>>param;
 
 		LOAD(radiusFactor);
-		LOAD(circlePoints);
+		LOAD(circlePointsCurrentAdj);
 		LOAD(aValue);
 		LOAD(mValue);
 		LOAD(barkPath);
