@@ -209,7 +209,7 @@ class Exporter {
 		//float size=params->lp->leaves[0].leafSize;
 
 		unsigned int type=params->lp->types[lastTypeId].first;
-		float size=params->lp->types[lastTypeId].second;
+		//float size=params->lp->types[lastTypeId].second;
 		
 		Point2d petiole = params->lp->leaves[type].petiole;
 		
@@ -229,7 +229,7 @@ class Exporter {
 		b.add(dir);
 		b.add(tmp2);
 		
-		#define FT(va,s,t,u) Point3d va(p->x+s,p->y+t,p->y+u); 
+		#define FT(va,s,t,u) Point3d va(p->x+s,p->y+t,p->z+u); 
 		#define TT(va,u,v) Point2d va(u,v);
 		TT(at,petiole.x, 1.0f);
 		FT(av,0,0,0);

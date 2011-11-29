@@ -152,15 +152,15 @@ public:
 		gtk_tooltips_set_tip(tooltips,GTK_WIDGET(item),hint,NULL);
 		
 		
-		ADD_ITEM(GTK_STOCK_REMOVE, deleteBranchClicked, "Delete selected branch. All selected branch's children will be removed");
+		ADD_ITEM(GTK_STOCK_CUT, deleteBranchClicked, "Delete selected branch. All selected branch's children will be removed");
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_POINT_END,GTK_WIDGET(item)));
-		ADD_ITEM(GTK_STOCK_ABOUT, smoothBranchClicked, "Smooth selected branch");
+		ADD_ITEM(GTK_STOCK_ADD, smoothBranchClicked, "Smooth selected branch");
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_POINT_POINT,GTK_WIDGET(item)));
-		ADD_ITEM(GTK_STOCK_ABOUT, reduceBranchResolutionClicked, "Reduce branch resolution by half");
+		ADD_ITEM(GTK_STOCK_REMOVE, reduceBranchResolutionClicked, "Reduce branch resolution by half");
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_POINT_POINT,GTK_WIDGET(item)));
-		ADD_ITEM(GTK_STOCK_ABOUT, addGravityClicked, "Add gravity to the selected branch");
+		ADD_ITEM(GTK_STOCK_GOTO_BOTTOM, addGravityClicked, "Add gravity to the selected branch");
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_ALL,GTK_WIDGET(item)));
-		ADD_ITEM(GTK_STOCK_ABOUT, subGravityClicked, "Substract gravity from the selected branch");
+		ADD_ITEM(GTK_STOCK_GOTO_TOP, subGravityClicked, "Substract gravity from the selected branch");
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_ALL,GTK_WIDGET(item)));
 #undef ADD_ITEM
 		

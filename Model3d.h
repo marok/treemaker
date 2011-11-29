@@ -574,17 +574,28 @@ class Model3d {
 			Point3d castOZ = Point3d(0,0,bm->nodeModelList[i]->position->z);
 			bm->nodeModelList[i]->position->z -= (factor*(float)i*castOZ.getDistance(bm->nodeModelList[i]->position));
 		}
+		
+		if(selection->applyForChildren)
+		{
+			for(unsigned int i = 0; i<bm->childBranches.size(); i++)
+				addGravityToTheBranch(bm->childBranches[i], factor);
+		}
 			
 	}
 	
 	void subGravityToTheBranch(BranchModel *bm, float factor)
 	{
-		for(unsigned int i=bm->nodeModelList.size()-1; i>=0; i--)
+		for(int i=(int)bm->nodeModelList.size()-1; i >= 0; i--)
 		{
 			Point3d castOZ = Point3d(0,0,bm->nodeModelList[i]->position->z);
 			bm->nodeModelList[i]->position->z += (factor*(float)i*castOZ.getDistance(bm->nodeModelList[i]->position));
 		}
-			
+		
+		if(selection->applyForChildren)
+		{
+			for(int i = (int) bm->childBranches.size()-1; i>=0; i--)
+				subGravityToTheBranch(bm->childBranches[i], factor);
+		}
 	}
 	
 
@@ -682,15 +693,27 @@ public:
 	void addGravity()
 	{
 		const float factor = 0.01;
-		for(unsigned int i=0; i<branches.size(); i++)
-			addGravityToTheBranch(branches[i],factor);
+		
+		int i = selection->getMarkedBranch();
+		if(i != -1)
+		{
+			BranchModel *marked = branches[i];
+			if(selection->getMode() == SELECTION_ALL)
+				addGravityToTheBranch(marked,factor);
+		}
 	}
 	
 	void subGravity()
 	{
 		const float factor = 0.01;
-		for(unsigned int i=branches.size()-1; i>=0; i--)
-			subGravityToTheBranch(branches[i],factor);
+		
+		int i = selection->getMarkedBranch();
+		if(i != -1)
+		{
+			BranchModel *marked = branches[i];
+			if(selection->getMode() == SELECTION_ALL)
+				subGravityToTheBranch(marked,factor);
+		}
 	}
 	
 	void decMarkedBranchResolution()
