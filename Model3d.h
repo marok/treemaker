@@ -537,7 +537,7 @@ class Model3d {
 				node->leaf->norm = new Vector3d(branches[0]->position, &nodeP);
 				node->leaf->norm->normalize();
 				
-				Vector3d gravity = Vector3d(0,0,-0.8*(float)rand()/(float)RAND_MAX);
+				Vector3d gravity = Vector3d(0,0,-0.9*(float)rand()/(float)RAND_MAX);
 				node->leaf->norm->add(&gravity);
 				node->leaf->norm->normalize();
 				
@@ -549,6 +549,42 @@ class Model3d {
 				leavesCnt--;
 			}
 		}
+	}
+	
+	void clearLeaves()
+	{
+		for(unsigned int i = 0; i < branches.size(); i++)
+		{
+			BranchModel *branch = branches[i];
+			for(unsigned int j=0; j<branch->nodeModelList.size(); j++)
+			{
+				if(branch->nodeModelList[j]->leaf)
+				{
+					delete branch->nodeModelList[j]->leaf;
+					branch->nodeModelList[j]->leaf = NULL;
+				}
+			}
+		}
+	}
+	
+	void addGravityToTheBranch(BranchModel *bm, float factor)
+	{
+		for(unsigned int i=0; i<bm->nodeModelList.size(); i++)
+		{
+			Point3d castOZ = Point3d(0,0,bm->nodeModelList[i]->position->z);
+			bm->nodeModelList[i]->position->z -= (factor*(float)i*castOZ.getDistance(bm->nodeModelList[i]->position));
+		}
+			
+	}
+	
+	void subGravityToTheBranch(BranchModel *bm, float factor)
+	{
+		for(unsigned int i=bm->nodeModelList.size()-1; i>=0; i--)
+		{
+			Point3d castOZ = Point3d(0,0,bm->nodeModelList[i]->position->z);
+			bm->nodeModelList[i]->position->z += (factor*(float)i*castOZ.getDistance(bm->nodeModelList[i]->position));
+		}
+			
 	}
 	
 
@@ -587,6 +623,14 @@ public:
 		
 		computeSegment(this->bm);
 		computeConnectedPts(this->bm);
+		computeLeavesPosition();
+	}
+	
+	void refreshModel()
+	{
+		computeSegment(this->bm);
+		computeConnectedPts(this->bm);
+		clearLeaves();
 		computeLeavesPosition();
 	}
 	
@@ -633,6 +677,20 @@ public:
 			computeSegment(marked);
 			computeConnectedPts(marked);
 		}
+	}
+	
+	void addGravity()
+	{
+		const float factor = 0.01;
+		for(unsigned int i=0; i<branches.size(); i++)
+			addGravityToTheBranch(branches[i],factor);
+	}
+	
+	void subGravity()
+	{
+		const float factor = 0.01;
+		for(unsigned int i=branches.size()-1; i>=0; i--)
+			subGravityToTheBranch(branches[i],factor);
 	}
 	
 	void decMarkedBranchResolution()

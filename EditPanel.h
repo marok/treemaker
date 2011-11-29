@@ -77,6 +77,24 @@ class EditPanel:public IPanel
 		}
 	}
 	
+	static void addGravityClicked(GtkWidget *w, gpointer data)
+	{
+		if(model)
+		{
+			model->addGravity();
+			DrawMethods::render();
+		}
+	}
+	
+	static void subGravityClicked(GtkWidget *w, gpointer data)
+	{
+		if(model)
+		{
+			model->subGravity();
+			DrawMethods::render();
+		}
+	}
+	
 public:
 	EditPanel()
 	{
@@ -140,6 +158,10 @@ public:
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_POINT_POINT,GTK_WIDGET(item)));
 		ADD_ITEM(GTK_STOCK_ABOUT, reduceBranchResolutionClicked, "Reduce branch resolution by half");
 		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_POINT_POINT,GTK_WIDGET(item)));
+		ADD_ITEM(GTK_STOCK_ABOUT, addGravityClicked, "Add gravity to the selected branch");
+		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_ALL,GTK_WIDGET(item)));
+		ADD_ITEM(GTK_STOCK_ABOUT, subGravityClicked, "Substract gravity from the selected branch");
+		widgets.push_back(pair< SelectionMode,GtkWidget* >(SELECTION_ALL,GTK_WIDGET(item)));
 #undef ADD_ITEM
 		
 		gtk_widget_show_all(editWidget);

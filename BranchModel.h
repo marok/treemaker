@@ -19,7 +19,7 @@ public:
 	BranchModel *parentBranch;
 
 	//Pozycja gałęzi względem gałęzi rodzica;
-	//UWAGA: to jest ten sam wskaźnik co w obiekcie NodeModel w gałęzi-rodzicu
+	//UWAGA: to jest ten sam obiekt co w obiekcie NodeModel w gałęzi-rodzicu
 	Point3d *position;
 
 	BranchModel(BranchModel *parentBranch, Point3d* branchPosition)

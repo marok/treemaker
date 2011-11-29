@@ -579,11 +579,11 @@ if(mode==GL_SELECT)\
 		Vector3d a, b, *tmp1, *tmp2;
 		tmp1 = dir->crossProduct(norm);
 		tmp1->normalize();
-		tmp1->mul(petiole.x);
+		tmp1->mul(1-petiole.x);
 		
 		tmp2 = dir->crossProduct(norm);
 		tmp2->normalize();
-		tmp2->mul(petiole.x-1);
+		tmp2->mul(-1.0*petiole.x);
 		
 		a.add(dir);
 		a.add(tmp1);

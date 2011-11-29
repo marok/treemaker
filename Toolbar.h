@@ -59,7 +59,7 @@ class Toolbar {
 			return;
 		
 		t->params->tp->setCirclePointsValue();
-		model->generateModel();
+		model->refreshModel();
 		
 		DrawMethods::render();
 	}

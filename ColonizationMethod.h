@@ -39,7 +39,7 @@ class ColonizationMethod:public GenerationMethod
 
 		int runda = 0;
 
-		while (left && runda++ < 2000 && nodes.size () < 2000) {
+		while (left && runda++ < 2000 && nodes.size () < 8000) {
 			left = aPoints.size ();
 
 			bool added = 0;
@@ -67,9 +67,9 @@ class ColonizationMethod:public GenerationMethod
 				}
 			}
 
-			static vector < int >N[2000];
+			static vector < int >N[8000];
 
-			for (i = 0; i < 2000; i++)
+			for (i = 0; i < 8000; i++)
 				N[i].clear ();
 
 			for (i = 0; i < left; i++) {
@@ -103,10 +103,13 @@ class ColonizationMethod:public GenerationMethod
 
 					Node *newNode = new Node(&nodes[i]->point);
 
+					
+					
 					newNode->point.x += sum.d[0];
 					newNode->point.y += sum.d[1];
 					newNode->point.z += sum.d[2];
-
+					
+					
 					added = 1;
 					int duplication = 0;
 
