@@ -1,4 +1,4 @@
-This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=pdflatex 2010.5.17)  29 NOV 2011 21:15
+This is pdfeTeX, Version 3.141592-1.21a-2.2 (Web2C 7.5.4) (format=pdflatex 2010.5.17)  29 NOV 2011 22:19
 entering extended mode
 **treemaker.tex
 (./treemaker.tex
@@ -981,27 +981,66 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 Package hyperref Warning: Option `pdfauthor' has already been used,
 (hyperref)                setting the option has no effect on input line 22.
 
-! Undefined control sequence.
-l.23 \institution
-                 {Politechnika Gdańska}
-? 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 LaTeX Font Warning: Font shape `T1/cmss/m/n' in size <4> not available
 (Font)              size <5> substituted on input line 28.
 
 [1
 
-{/usr/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-<img/colonization_1.png, id=76, 234.8775pt x 234.8775pt>
+{/usr/share/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2
+
+] [3
+
+]
+<img/colonization_1.png, id=110, 234.8775pt x 234.8775pt>
 File: img/colonization_1.png Graphic file (type png)
 
-<use img/colonization_1.png> [3
+<use img/colonization_1.png> [4
 
  <./img/colonization_1.png>]
+<img/colonization_2.png, id=138, 202.50656pt x 222.07968pt>
+File: img/colonization_2.png Graphic file (type png)
+
+<use img/colonization_2.png>
+<img/colonization_3.png, id=139, 220.57407pt x 231.86626pt>
+File: img/colonization_3.png Graphic file (type png)
+
+<use img/colonization_3.png> [5
+
+ <./img/colonization_2.png> <./img/colonization_3.png>] <img/colonization_4.png
+, id=166, 242.40562pt x 218.31563pt>
+File: img/colonization_4.png Graphic file (type png)
+
+<use img/colonization_4.png>
+<img/colonization_5.png, id=167, 229.60782pt x 198.7425pt>
+File: img/colonization_5.png Graphic file (type png)
+
+<use img/colonization_5.png> [6
+
+ <./img/colonization_4.png> <./img/colonization_5.png>] <img/colonization_6.png
+, id=194, 185.19188pt x 194.97844pt>
+File: img/colonization_6.png Graphic file (type png)
+
+<use img/colonization_6.png>
+<img/colonization_7.png, id=195, 177.66376pt x 205.5178pt>
+File: img/colonization_7.png Graphic file (type png)
+
+<use img/colonization_7.png>
+<img/colonization_8.png, id=196, 182.93344pt x 206.27063pt>
+File: img/colonization_8.png Graphic file (type png)
+
+<use img/colonization_8.png> [7
+
+ <./img/colonization_6.png> <./img/colonization_7.png> <./img/colonization_8.pn
+g>]
+<img/colonization_9.png, id=224, 662.475pt x 426.84468pt>
+File: img/colonization_9.png Graphic file (type png)
+
+<use img/colonization_9.png> [8
+
+ <./img/colonization_9.png>] [9
+
+]
 \tf@nav=\write6
 \openout6 = `treemaker.nav'.
 
@@ -1011,25 +1050,27 @@ File: img/colonization_1.png Graphic file (type png)
 \tf@snm=\write8
 \openout8 = `treemaker.snm'.
 
- (./treemaker.aux)
+
+(./treemaker.aux)
 
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
  ) 
 Here is how much of TeX's memory you used:
- 8440 strings out of 94500
- 138051 string characters out of 1176766
- 222067 words of memory out of 1000000
- 11388 multiletter control sequences out of 10000+50000
- 9271 words of font info for 24 fonts, out of 500000 for 2000
+ 8600 strings out of 94500
+ 141890 string characters out of 1176766
+ 223067 words of memory out of 1000000
+ 11526 multiletter control sequences out of 10000+50000
+ 10801 words of font info for 26 fonts, out of 500000 for 2000
  580 hyphenation exceptions out of 1000
- 55i,15n,53p,255b,499s stack positions out of 1500i,500n,5000p,200000b,5000s
+ 55i,15n,53p,255b,524s stack positions out of 1500i,500n,5000p,200000b,5000s
 PDF statistics:
- 103 PDF objects out of 300000
- 7 named destinations out of 131072
- 72 words of extra memory for PDF output out of 65536
- </home/ukasz/.texmf-var/pk/ljfour/jknappen/ec/ecss1440.600pk> </home/ukasz/.
-texmf-var/pk/ljfour/jknappen/ec/ecss0600.600pk> </home/ukasz/.texmf-var/pk/ljfo
-ur/jknappen/ec/ecss1095.600pk>
-Output written on treemaker.pdf (3 pages, 116940 bytes).
+ 274 PDF objects out of 300000
+ 19 named destinations out of 131072
+ 124 words of extra memory for PDF output out of 65536
+ </home/ukasz/.texmf-var/pk/ljfour/jknappen/ec/ecss0900.600pk> </home/ukasz/.
+texmf-var/pk/ljfour/jknappen/ec/ecss1000.600pk> </home/ukasz/.texmf-var/pk/ljfo
+ur/jknappen/ec/ecss0600.600pk> </home/ukasz/.texmf-var/pk/ljfour/jknappen/ec/ec
+ss1095.600pk> </home/ukasz/.texmf-var/pk/ljfour/jknappen/ec/ecss1440.600pk>
+Output written on treemaker.pdf (9 pages, 408324 bytes).
