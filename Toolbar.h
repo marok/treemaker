@@ -66,11 +66,14 @@ class Toolbar {
 	static void  convertClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
 		g_print("convertClicked\n");
-		char filename[]="tree0.obj";
+		char filename[]="models/tree0.obj";
 		Exporter ex;
 		ex.init(filename);
 		ex.exportTrunk(model, t->params);
-		ex.save();
+		ex.saveTrunk();
+		ex.exportLeaves(model ? model->getRootBranch() : NULL, t->params, 0);
+		ex.saveLeaves();
+		ex.close();
 	}
 
 public:

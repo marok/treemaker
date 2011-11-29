@@ -11,7 +11,7 @@ class TrunkParametersPanel: public IPanel {
 	GtkWidget *mainWindow;
 	GtkWidget *image;
 	
-	GtkObject *adjRFac, *adjAVal, *adjMVal, *adjCirc;
+	GtkObject *adjRFac, *adjAVal, *adjMVal, *adjCirc, *adjKx, *adjKy;
 
 #define UNROLL_CALLBACK(param)\
 	static void param##Changed( GtkAdjustment *adj, gpointer data){\
@@ -23,6 +23,9 @@ class TrunkParametersPanel: public IPanel {
 	UNROLL_CALLBACK(circlePointsCurrentAdj);
 	UNROLL_CALLBACK(aValue);
 	UNROLL_CALLBACK(mValue);
+	UNROLL_CALLBACK(kx);
+	UNROLL_CALLBACK(ky);
+
 
 #undef UNROLL_CALLBACK
 	static void chooseBarkClicked(GtkWidget *w,gpointer data) {
@@ -77,6 +80,8 @@ public:
 		PACK_LABEL_AND_SLIDER(adjAVal,"aValue",AVALUE_DEFAULT,0.00,0.01,0.0001,aValueChanged,3,"Branch diameter increase value");
 		PACK_LABEL_AND_SLIDER(adjMVal,"mValue",MVALUE_DEFAULT,1,1.1,0.01,mValueChanged,2,"Branch diameter multiplication value");
 		PACK_LABEL_AND_SLIDER(adjCirc,"circle",CIRCLEPOINTS_DEFAULT,3,20,1,circlePointsCurrentAdjChanged,0,"Points aproximating branch circle");
+		PACK_LABEL_AND_SLIDER(adjKx,"kx",KX_DEFAULT,1,10,1,kxChanged,0,"How many texture length is needed to cover trunk around");
+		PACK_LABEL_AND_SLIDER(adjKy,"ky",KY_DEFAULT,0.2,2,0.1,kyChanged,1,"Texture size to trunk length ratio");
 
 #undef PACK_LABEL_AND_SLIDER
 
@@ -106,7 +111,8 @@ public:
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjAVal), params->tp->aValue);
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjMVal), params->tp->mValue);
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjCirc), params->tp->circlePointsCurrentAdj);
-		
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjKx),   params->tp->kx);
+		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjKy),   params->tp->ky);
 		gtk_image_set_from_file(GTK_IMAGE(image), Bmp::generateIcon(params->tp->barkPath));
 	}
 };
