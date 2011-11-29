@@ -147,8 +147,8 @@ class DrawMethods {
 	static void
 	drawTrunk(BranchModel *bm, Parameters *params)
 	{
-		float kx=3;//ile razy ma sie owinac tekstura
-		float ky=0.5;//ile jednostek tekstury na 1 jednostke dlugosci pnia
+		float kx=params->tp->kx;//3;//ile razy ma sie owinac tekstura
+		float ky=params->tp->ky;//0.5;//ile jednostek tekstury na 1 jednostke dlugosci pnia
 		TrunkParameters *tp=params->tp;
 		static GLuint texId;
 		if(params->tp->barkTexInitialized==FALSE) {

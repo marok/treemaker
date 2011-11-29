@@ -19,12 +19,17 @@ public:
 	float mValue;
 	char barkPath[MAXPATHLEN];		//path to bark texture
 	bool barkTexInitialized;
+	float kx;			//ile razy ma sie owinac tekstura wokol pnia
+	float ky;			//ile jednostek tekstury na jednostke pnia
 
+	
 	static const float RADIUSFACTOR_DEFAULT=1.8;
 	static const float AVALUE_DEFAULT=0;
 	static const float MVALUE_DEFAULT=1;
 	static const int CIRCLEPOINTS_DEFAULT=10;
 	static const bool BARKTEXINITIALIZED_DEFAULT=FALSE;
+	static const float KX_DEFAULT=3;
+	static const float KY_DEFAULT=0.5; 
 
 	TrunkParameters() {
 		setDefault();
@@ -39,6 +44,9 @@ public:
 		mValue=MVALUE_DEFAULT;
 		circlePointsCurrentAdj = CIRCLEPOINTS_DEFAULT;
 		barkTexInitialized=BARKTEXINITIALIZED_DEFAULT;
+		kx=KX_DEFAULT;
+		ky=KY_DEFAULT;
+	
 	}
 	
 	void setBarkPath(char *path) {
@@ -62,7 +70,8 @@ public:
 		SAVE(aValue);
 		SAVE(mValue);
 		SAVE(barkPath);
-
+		SAVE(kx);
+		SAVE(ky);
 #undef SAVE
 	}
 	void load(ifstream &s)
@@ -75,6 +84,8 @@ public:
 		LOAD(aValue);
 		LOAD(mValue);
 		LOAD(barkPath);
+		LOAD(kx);
+		LOAD(ky);
 
 #undef LOAD
 	}
