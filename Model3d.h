@@ -537,6 +537,10 @@ class Model3d {
 				node->leaf->norm = new Vector3d(branches[0]->position, &nodeP);
 				node->leaf->norm->normalize();
 				
+				Vector3d gravity = Vector3d(0,0,-0.8*(float)rand()/(float)RAND_MAX);
+				node->leaf->norm->add(&gravity);
+				node->leaf->norm->normalize();
+				
 				Vector3d v = Vector3d(node->position, branch->nodeModelList[nodeId-1]->position);
 				
 				node->leaf->dir = node->leaf->norm->crossProduct(&v);
