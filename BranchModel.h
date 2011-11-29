@@ -12,6 +12,8 @@ class BranchModel
 {
 public:
 	std::vector<BranchModel*> childBranches;
+	
+	//tablica z węzłami gałęzi. Zawsza posiada przynajmniej 2 elementy.
 	std::vector<NodeModel*> nodeModelList;
 
 	BranchModel *parentBranch;

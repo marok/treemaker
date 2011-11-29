@@ -47,7 +47,7 @@ class Toolbar {
 			delete model;
 		
 		t->params->tp->setCirclePointsValue();
-		model = new  Model3d(t->cm->getRoot(),t->params->tp);
+		model = new  Model3d(t->cm->getRoot(),t->params);
 		model->generateModel();
 		DrawMethods::render();
 	}

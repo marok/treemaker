@@ -10,6 +10,7 @@ public:
 	//Pozycja względem początka gałęzi(branch->position)
 	Point3d *position;
 	Segment *segment;
+	LeafModel *leaf;
 	float r;
 
 	NodeModel(Point3d *relativePosition, float r)
@@ -17,6 +18,7 @@ public:
 		this->position = relativePosition;
 		this->r = r;
 		this->segment = new Segment();
+		this->leaf = NULL;
 	}
 
 	NodeModel(Point3d absoultePosition, Point3d branchAbsolutePosition, float r)
@@ -24,14 +26,17 @@ public:
 		this->position = new Point3d(&absoultePosition);
 		this->position->sub(&branchAbsolutePosition);
 		this->segment = new Segment();
-
+	
 		this->r = r;
+		this->leaf = NULL;
 	}
 
 	~NodeModel()
 	{
 		delete position;
 		delete segment;
+		if(leaf)
+			delete leaf;
 	}
 
 	//zwraca punkt segmentu, względem początka gałęzi

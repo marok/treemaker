@@ -554,20 +554,13 @@ if(mode==GL_SELECT)\
 			}
 		}
 	}
-	static void drawLeaf(Point3d *p, Vector3d *dir,Parameters *params,unsigned int cnt) {
+	static void drawLeaf(Point3d *p, Vector3d *dir, Vector3d *norm,Parameters *params,unsigned int cnt) {
 		//nie ma zadnego aktywnego typu liscia
 		if(params->lp->types.size()==0) return;
 		initLeavesTextures(params);
 
 		glColor4f(0.0, 0, 0, 0); // reset gl color
-
-		Vector3d a, b;
-		a.d[2] = b.d[2] = dir->d[2]/2;
-		a.d[0] = dir->length()*sin(asin(dir->d[1]/dir->length()-M_PI_4));
-		b.d[0] = dir->d[0] - a.d[0];
-
-		a.d[1] = dir->length()*cos(asin(dir->d[1]/dir->length()-M_PI_4));
-		b.d[1] = dir->d[1] - a.d[1];
+		
 
 		glEnable(GL_BLEND);// Turn Blending On
 		glDisable(GL_DEPTH_TEST);
@@ -579,17 +572,49 @@ if(mode==GL_SELECT)\
 
 		unsigned int type=params->lp->types[lastTypeId].first;
 		float size=params->lp->types[lastTypeId].second;
+		
+		Point2d petiole = params->lp->leaves[type].petiole;
+		
+		/*ustalenie położenia liścia*/
+		Vector3d a, b, *tmp1, *tmp2;
+		tmp1 = dir->crossProduct(norm);
+		tmp1->normalize();
+		tmp1->mul(petiole.x);
+		
+		tmp2 = dir->crossProduct(norm);
+		tmp2->normalize();
+		tmp2->mul(petiole.x-1);
+		
+		a.add(dir);
+		a.add(tmp1);
+		
+		
+		b.add(dir);
+		b.add(tmp2);
+		
+		
+		
 #define TEXTURIZE\
-		glBegin(GL_QUADS);\
+		glBegin(GL_TRIANGLES);\
 		{\
-			glTexCoord2f (0.0f, 0.0f);\
+			glTexCoord2f (petiole.x, 1.0f);\
 			glVertex3f(0,0,0);\
 			glTexCoord2f (1.0f, 0.0f);\
-			glVertex3f(a.d[0]*size,a.d[1]*size,a.d[2]*size);\
-			glTexCoord2f (1.0f, 1.0f);\
-			glVertex3f(dir->d[0]*size,dir->d[1]*size,dir->d[2]*size);\
+			glVertex3f(a.d[0],a.d[1],a.d[2]);\
+			glTexCoord2f (0.0f, 0.0f);\
+			glVertex3f(b.d[0],b.d[1],b.d[2]);\
+			glTexCoord2f (petiole.x, 1.0f);\
+			glVertex3f(0,0,0);\
+			glTexCoord2f (0.0f, 0.0f);\
+			glVertex3f(b.d[0],b.d[1],b.d[2]);\
 			glTexCoord2f (0.0f, 1.0f);\
-			glVertex3f(b.d[0]*size,b.d[1]*size,b.d[2]*size);\
+			glVertex3f(tmp2->d[0],tmp2->d[1],tmp2->d[2]);\
+			glTexCoord2f (petiole.x, 1.0f);\
+			glVertex3f(0,0,0);\
+			glTexCoord2f (1.0f, 1.0f);\
+			glVertex3f(tmp1->d[0],tmp1->d[1],tmp1->d[2]);\
+			glTexCoord2f (1.0f, 0.0f);\
+			glVertex3f(a.d[0],a.d[1],a.d[2]);\
 		}\
 		glEnd();
 		//texture mask
@@ -610,24 +635,22 @@ if(mode==GL_SELECT)\
 		glEnable(GL_DEPTH_TEST);
 		glDisable(GL_BLEND);
 		glColor4f(1.0, 1.0, 1.0, 1.0);
-
+		delete tmp1;
+		delete tmp2;
 	}
 
 	static void drawLeaves(BranchModel *bm, Parameters *params,unsigned int cnt)
 	{
 		if(!bm) return;
-
-		Point3d *leaf = bm->nodeModelList.at(bm->nodeModelList.size()-1)->position;
-		Point3d *befLeaf = bm->nodeModelList.at(bm->nodeModelList.size()-2)->position;
-
-		Vector3d *leafVect = new Vector3d(befLeaf, leaf);
-		leafVect->normalize();
-		leafVect->mul(1);
-
-		Point3d leafPoint = bm->getAbsoluteNodePosition(bm->nodeModelList.at(bm->nodeModelList.size()-1));
-		drawLeaf(&leafPoint, leafVect,params,cnt++);
-		if(cnt>=params->lp->types.size()) cnt=0;
-		delete leafVect;
+		
+		for(unsigned int i=0; i<bm->nodeModelList.size(); i++)
+			if(bm->nodeModelList[i]->leaf)
+			{
+				NodeModel *node = bm->nodeModelList[i];
+				Point3d leafPoint = bm->getAbsoluteNodePosition(node);
+				drawLeaf(&leafPoint, node->leaf->dir, node->leaf->norm,params,cnt++);
+				if(cnt >= params->lp->types.size()) cnt=0;
+			}
 
 		for(unsigned int i = 0; i< bm->childBranches.size(); i++)
 		{

@@ -22,6 +22,7 @@ public:
 	vector<Leaf> leaves;
 	vector<pair<int,float > > types;//types of possible leaves (texture,size)
 	int activeLeaf; //leaf visible on gui
+	int leavesCount;
 
 
 	LeavesParameters() {
@@ -31,6 +32,7 @@ public:
         
         void setDefault()
         {
+		leavesCount = 50;
                 activeLeaf=-1;
 		leaves.clear();
 #define ADD_LEAF(name)  {Leaf def((char*)name); leaves.push_back(def);}
@@ -93,6 +95,7 @@ public:
 	/* Serialization methods */
 	void save(ofstream &s)
 	{
+		s<<leavesCount<<endl;
 		s<<leaves.size()<<endl;
 		for(unsigned int i=0; i<leaves.size(); i++)
 			leaves[i].save(s);
@@ -100,6 +103,8 @@ public:
 	void load(ifstream &s)
 	{
 		activeLeaf=-1;
+		
+		s>>leavesCount;
 		unsigned int x;
 		s>>x;
 		for(unsigned int i=0; i<x; i++)

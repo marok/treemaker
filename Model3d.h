@@ -4,6 +4,7 @@
 #include <cmath>
 #include <vector>
 #include "TrunkParameters.h"
+#include "LeafModel.h"
 #include "NodeModel.h"
 #include "BranchModel.h"
 #include "BranchSelection.h"
@@ -18,8 +19,8 @@ using namespace std;
 //Obiekty Node są zamienione z reprezentacji bezwzględnej(współrzędne względem (0,0,0)) na reprezentację względną(współrzędne względem pola position)
 class Model3d {
 	Node *root;
-	TrunkParameters *tp;
 	BranchModel *bm;
+	Parameters *params;
 	
 
 	void computeSegment(BranchModel *bm) {
@@ -82,14 +83,14 @@ class Model3d {
 		V = norm->crossProduct(U);
 
 
-		float angle = 2 * M_PI / tp->circlePoints;
+		float angle = 2 * M_PI / params->tp->circlePoints;
 
 		Segment *segment = nodeModel->segment;
 
 		float angleDiff = 0;
 		bool angleDiffComputed = false;
 		
-		for (int i = 0; i < tp->circlePoints; i++) {
+		for (int i = 0; i < params->tp->circlePoints; i++) {
 			Vector3d *u, *v;
 			u = new Vector3d();
 			v = new Vector3d();
@@ -154,7 +155,7 @@ class Model3d {
 
                         int index;
                         float minDistance;
-                        for (int i = 0; i < tp->circlePoints; i++) {
+                        for (int i = 0; i < params->tp->circlePoints; i++) {
                                 if (i == 0) {
                                         index = i;
                                         Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
@@ -186,11 +187,11 @@ class Model3d {
 		{
 			for(int i=0; i< childLen; i++)
 			{
-				root->r +=  pow(computeRadius(root->getChildAt(i),rec+1), tp->radiusFactor);
+				root->r +=  pow(computeRadius(root->getChildAt(i),rec+1), params->tp->radiusFactor);
 			}
 
-			root->r = pow(root->r*tp->mValue+tp->aValue, 1.0/tp->radiusFactor);
-
+			root->r = pow(root->r, 1.0/params->tp->radiusFactor);
+			root->r = root->r*params->tp->mValue+params->tp->aValue;
 		} else
 		{
 			root->r = CHILD_RADIUS;
@@ -518,15 +519,43 @@ class Model3d {
 		bm->nodeModelList.erase(bm->nodeModelList.begin()+nodeToCutIndex, bm->nodeModelList.end());
 	}
 	
+	void computeLeavesPosition()
+	{
+		int leavesCnt = params->lp->leavesCount;
+		
+		while(leavesCnt)
+		{
+			int branchId = rand() % branches.size();
+			BranchModel *branch = branches[branchId];
+			int nodeId = sqrt((float)rand()/(float)RAND_MAX)*(branch->nodeModelList.size()-1) + 1; //nie możemy wylosować 0. elementu
+			NodeModel *node = branch->nodeModelList[nodeId];
+			if(!node->leaf)
+			{
+				node->leaf = new LeafModel();
+				
+				Point3d nodeP = branch->getAbsoluteNodePosition(node);
+				node->leaf->norm = new Vector3d(branches[0]->position, &nodeP);
+				node->leaf->norm->normalize();
+				
+				Vector3d v = Vector3d(node->position, branch->nodeModelList[nodeId-1]->position);
+				
+				node->leaf->dir = node->leaf->norm->crossProduct(&v);
+				node->leaf->dir->normalize();
+				
+				leavesCnt--;
+			}
+		}
+	}
+	
 
 public:
 	vector<BranchModel *> branches; //tablica zawierająca wszystkie gałęzie
 
 	BranchSelection *selection;
 	
-	Model3d(Node *root,TrunkParameters *tp) {
+	Model3d(Node *root, Parameters *params) {
 		this->root = root;
-		this->tp=tp;
+		this->params = params;
 		this->bm = NULL;
 		
 		selection = new BranchSelection();
@@ -554,6 +583,7 @@ public:
 		
 		computeSegment(this->bm);
 		computeConnectedPts(this->bm);
+		computeLeavesPosition();
 	}
 	
 	void removeMarkedBranch()

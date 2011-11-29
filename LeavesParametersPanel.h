@@ -16,6 +16,8 @@ class LeavesParametersPanel: public IPanel{
 	vector<pair<string,GtkObject *> > adjustments;
 	vector<GtkWidget *> scales;
 	
+	GtkObject* adjLeavesCount;
+	
 #define UNROLL_CALLBACK(param)\
 	static void param##Changed( GtkAdjustment *adj, gpointer data){\
              LeavesParametersPanel *lpp = (LeavesParametersPanel *)data;\
@@ -46,6 +48,13 @@ class LeavesParametersPanel: public IPanel{
 		}
 		gtk_widget_destroy(dialog);
 	}
+	
+	static void leavesCountChanged( GtkAdjustment *adj, gpointer data)
+	{
+		LeavesParametersPanel *lpp=(LeavesParametersPanel*)data;
+		lpp->params->lp->leavesCount = gtk_adjustment_get_value(adj);
+	}
+	
 	void
 	init_list(GtkWidget *list)
 	{
@@ -211,6 +220,20 @@ public:
 	
 		gtk_container_add (GTK_CONTAINER (leavesWidget), vbox);
 
+		hbox = gtk_hbox_new(FALSE, 1);
+		label = gtk_label_new("Leaves count:");
+		adjLeavesCount = gtk_adjustment_new(params->lp->leavesCount, 0, 400, 5, 1, 0);
+		g_signal_connect(adjLeavesCount, "value_changed", G_CALLBACK(leavesCountChanged),this);
+		scale = gtk_hscale_new(GTK_ADJUSTMENT(adjLeavesCount));
+		gtk_scale_set_digits(GTK_SCALE(scale), 0);
+		gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 1);
+		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox), scale, TRUE, TRUE, 0);
+		gtk_tooltips_set_tip(tooltips, scale, "Leaves count", NULL);
+		gtk_widget_show(label);
+		gtk_widget_show(hbox);
+		gtk_widget_show(scale);
+		
 		list=gtk_tree_view_new();
 		gtk_box_pack_start(GTK_BOX(vbox),list,FALSE,FALSE,1);
 

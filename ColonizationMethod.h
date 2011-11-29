@@ -111,11 +111,13 @@ class ColonizationMethod:public GenerationMethod
 					int duplication = 0;
 
 					for (k = 0; k < nodes.size (); k++)
+					{
 						if (newNode->isEqual (nodes[k])) {
 							duplication = 1;
 							added = 0;
-
+							break;
 						}
+					}
 					if (duplication == 0) {
 						nodes.push_back (newNode);
 
@@ -138,7 +140,7 @@ class ColonizationMethod:public GenerationMethod
 			}
 		}
 	}
-
+	
 public:
 	vector < Node *> nodes;	//tree nodes
 	vector < Point3d *> aPoints;	//attraction points
