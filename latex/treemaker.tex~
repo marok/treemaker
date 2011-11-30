@@ -64,7 +64,7 @@
 \item{Losowanie atraktorów w otoczce korony}
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_1.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_1.png} 
 \end{figure}
 \begin{footnotesize}
 \hfillŹródło: [1]
@@ -78,10 +78,10 @@
 \end{itemize}
 \begin{multicols}{2}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_2.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_2.png} 
 \end{figure}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_3.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_3.png} 
 \end{figure}
 \end{multicols}
 \begin{footnotesize}
@@ -95,10 +95,10 @@
 \item{Przetwarzanie (postprocessing) węzłów drzewa}
 \end{itemize}\begin{multicols}{2}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_4.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_4.png} 
 \end{figure}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_5.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_5.png} 
 \end{figure}
 \end{multicols}
 \begin{footnotesize}
@@ -106,20 +106,19 @@
 \end{footnotesize}
 \end{frame}
 
-
 \begin{frame}\frametitle{Algorytm kolonizacyjny}
 \begin{itemize}
 \item{Generowanie geometrii drzewa}
 \item{Teksturowanie, dodanie liści}
 \end{itemize}\begin{multicols}{3}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_6.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_6.png} 
 \end{figure}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_7.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_7.png} 
 \end{figure}
 \begin{figure}
-\includegraphics[scale=0.5]{img/colonization_8.png} 
+\includegraphics[scale=0.5]{img/colonization/colonization_8.png} 
 \end{figure}
 \end{multicols}
 \begin{footnotesize}
@@ -132,12 +131,130 @@
 \item{Bardziej szczegółowo (przykład 2D)}
 \end{itemize}
 \begin{figure}
-\includegraphics[scale=0.4]{img/colonization_9.png} 
+\includegraphics[scale=0.35]{img/colonization/colonization_9.png} 
 \end{figure}
 \begin{footnotesize}
 \hfillŹródło: [1]
 \end{footnotesize}
 \end{frame}
+
+\begin{frame}\frametitle{Efekty - program}
+\begin{figure}
+\includegraphics[scale=0.35]{img/treemaker.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.5]{img/blender/blender0.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.4]{img/blender/blender1.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.4]{img/blender/blender2.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.4]{img/blender/blender3.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.25]{img/blender/blender4.png} 
+\end{figure}
+\end{frame}
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.25]{img/blender/blender5.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.25]{img/blender/blender6.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender7.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender8.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.4]{img/blender/blender9.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender10.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender11.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender12.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.4]{img/blender/blender13.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender14.png} 
+\end{figure}
+\end{frame}
+\begin{frame}\frametitle{Efekty - blender}
+\begin{figure}
+\includegraphics[scale=0.3]{img/blender/blender15.png} 
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Efekty - blender}
+\begin{multicols}{3}
+\begin{figure}
+\includegraphics[scale=0.25]{img/blender/blender16.png} 
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.25]{img/blender/blender17.png} 
+\end{figure}
+\begin{figure}
+\includegraphics[scale=0.25]{img/blender/blender18.png} 
+\end{figure}
+\end{multicols}
+\end{frame}
+
+
 
 \begin{frame}\frametitle{Źródła}
 \begin{enumerate}
