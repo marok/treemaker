@@ -1,0 +1,20 @@
+\chapter{Wstęp teoretyczny}
+
+
+
+\section{Historia i stan obecny dziedziny}
+
+\section{Algorytm kolonizacyjny}
+
+\section{Tworzenie geometrii modelu}
+
+Przykład kodu źródłowego:
+
+\begin{verbatim}
+    
+    @Override
+    public String toString() {
+        return "x: " + x + " y: " + y + " z: " + z;
+    }
+
+\end{verbatim}

@@ -1,0 +1,139 @@
+\documentclass[a4paper,12pt]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[polish]{babel}
+\usepackage[MeX]{polski}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+\usepackage{multirow}
+\usepackage{longtable}
+
+\frenchspacing
+\renewcommand\thesection{\arabic{section}.}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}.}
+\renewcommand\thesubsubsection{\arabic{section}.\arabic{subsection}.\arabic{subsubsection}.}
+\brokenpenalty=5000
+\clubpenalty=5000
+\widowpenalty=5000
+\hyphenpenalty=1000
+\tolerance=300
+
+\begin{document}
+
+% Strona tytułowa
+%\maketitle
+\begin{table}[!ht]
+	\begin{center}
+		\begin{tabular}{lcr}
+		\multirow{3}{*}{\includegraphics[width=30mm]{images/logo1.png}} &
+		
+		\vspace{5mm}
+		
+		\textbf{Politechnika Gdańska} &
+		\multirow{3}{*}{\includegraphics[width=25mm]{images/logo2.png}}\\
+		& \textbf{WYDZIAŁ ELEKTRONIKI} & \\
+		& \textbf{TELEKOMUNIKACJI I INFORMATYKI} &
+		\end{tabular}
+	\end{center}
+\end{table}
+
+\vspace{15mm}
+
+\begin{par}
+	\centering
+		\textbf{\large{
+				Dokumentacja projektu dyplomowego inżynierskiego
+		}}
+		
+		\vspace{10mm}
+		
+		\emph{\textbf{\Huge{
+				Edytor do proceduralnego generowania modeli drzew
+		}}}
+	
+	
+	\vspace{15mm}
+	
+	\begin{table}[!ht]
+		\begin{center}
+			\begin{tabular}{lc}
+				Łukasz Odzioba & 119415 \\
+				Mariusz Okrój & 119416 
+			\end{tabular}
+		\end{center}
+	\end{table}
+\end{par}
+
+\begin{par}
+	Opiekun pracy: \\
+	dr inż. Michał Małafiejski
+
+	\vspace{5mm}
+
+	Katedra opiekuna pracy: \\
+	Katedra Algorytmów i Modelowania Systemów
+
+	\vspace{15mm}
+
+	Streszczenie dokumentu: \\
+	Dokument zawiera opis narzędzia do łatwego tworzenia trójwymiarowych modeli
+	drzew w oparciu o zadany przez użytkownika zbiór parametrów opisujących oczekiwany wygląd modelu.
+\end{par}
+
+\begin{par}
+	\begin{center}
+		Gdańsk, 2011
+	\end{center}
+\end{par}
+
+% Oświadczenie o samodzielności wykonania pracy
+\newpage
+\begin{par}
+	\begin{center}
+		\large
+		\underline{OŚWIADCZENIE}
+	\end{center}
+\end{par}
+
+\begin{par}
+	Oświadczam, że niniejszą pracę dyplomową wykonałem samodzielnie. Wszystkie
+	informacje umieszczone w~pracy uzyskane ze źródeł pisanych oraz informacje ustne
+	pochodzące od innych osób zostały udokumentowane w~wykazie literatury
+	odpowiednimi odnośnikami.
+\end{par}
+
+\vspace{20mm}
+
+\begin{par}
+	\begin{flushright}
+		\ldots\ldots\ldots\ldots\ldots\ldots\ldots\ldots \\
+		podpis dyplomanta
+	\end{flushright}
+\end{par}
+
+% Spis treści
+\tableofcontents
+
+% Treść pracy
+\include{01_wstep}
+
+\include{02_teoria}
+
+\include{03_specyfikacja}
+
+\include{04_dokumentacja}
+
+\include{05_problemy}
+
+\include{06_podsumowanie}
+
+\include{07_zalaczniki}
+
+% Literatura
+\addcontentsline{toc}{chapter}{Bibliografia}
+\begin{thebibliography}{1}
+\bibitem{pfgd}A. Runions, B. Lane, P. Prusinkiewicz: \emph{Modeling Trees with a Space Colonization Algorithm}.
+Eurographics Workshop on Natural Phenomena 2007
+\end{thebibliography}
+
+\end{document}

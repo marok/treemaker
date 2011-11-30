@@ -54,10 +54,6 @@ class Exporter {
 	}
 	int findTexture(Point2d *a){
 	    int found=0;
-	    //	if(a->x>1)
-	//	  a->x=a->x-(int)(a->x);
-	//	if(a->y>1)
-	//	  a->y=a->y-(int)(a->y);
 		if(abs(0-a->x)<0.01) a->x=0;
 		if(abs(0-a->y)<0.01) a->y=0;
 		
