@@ -211,7 +211,7 @@ class Exporter {
 		//float size=params->lp->leaves[0].leafSize;
 		if(params->lp->types.size()==0) return;
 		unsigned int type=params->lp->types[lastTypeId].first;
-		float size=params->lp->types[lastTypeId].second;
+		//float size=params->lp->types[lastTypeId].second;
 		
 		Point2d petiole = params->lp->leaves[type].petiole;
 		

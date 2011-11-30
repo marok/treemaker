@@ -93,6 +93,7 @@ class ColonizationMethod:public GenerationMethod
 
 						Vector3d tmp = Vector3d (s);
 
+						
 						Vector3d tmp2 = Vector3d (p);
 
 						tmp.sub (&tmp2);
@@ -100,7 +101,9 @@ class ColonizationMethod:public GenerationMethod
 					}
 					sum.normalize ();
 					sum.mul (params->methodParams->D);
-
+					
+					
+					
 					Node *newNode = new Node(&nodes[i]->point);
 
 					
