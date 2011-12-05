@@ -3,13 +3,13 @@
 
 
 \section{Historia i stan obecny dziedziny}
-Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Massachusets Institute of Technology [3] powstał pierwszy
+Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Massachusets Institute of Technology \cite{jankowski} powstał pierwszy
 komputer wyposażony w grafoskop. Obecnie większość użytkowników nie potrafi sobie wyobrazić komputera bez graficznego interfejsu.
 Coraz większe możliwości nowoczesnych komputerów są motorem napędowym rozmaitych badań nad komputerowymi modelami świata rzeczywistego.
-Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiajac w 1962r[5] drzewo jako samoorganizującą się
+Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiajac w 1962r\cite{ulam} drzewo jako samoorganizującą się
 strukturę. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestreń.
 Honda zaproponował w 1971r. modelowanie drzew jako stuktury rekursywnej opisanej
-zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji[4]. Dopiero w latach osiemdziesiatych
+zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji\cite{honda}. Dopiero w latach osiemdziesiatych
 możliwości uwczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 85r \cite{bloomenthal}
 przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzielić na dwie grupy:
 \begin{itemize}
@@ -19,15 +19,40 @@ przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzieli
 Problem stworzenia modelu drzewa możemy podzielić na stworzenie modelów jego składowych np gałęzi, kory, liści, czy kwiatów i późniejsze
 ich połączenie w jedną całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części.
 
-\section{Algorytm kolonizacyjny}
-Algorytm kolonizacji przestrzeni dalej nazywany algorytmem kolonizacyjnym opiera się na biologicznym aspekcie rywalizacji roślin o dostępną wokół nich przestrzeń. Po raz pierwszy został zaprezentowany w 2007 roku [1], będąc rozszerzeniem na przestrzeń trójwymiarową metody generowania liści przy wykorzystaniu systemów cząsteczkowych [2]. Podstawową ich ideą było umieszczanie cząstek w obrysie liścia, a następnie śledzenie ich ruchu w kierunku szypułki uwzględniając wzajemne przyciąganie cząstek. Z biologicznego punktu widzenia miało to uzasadnienie jako śledzenie trasy transportu substancji niezbędnych do życia rośliny. W podejściu kolonizacyjnym symuluje się iteracyjny wzrost gałęzi drzewa, aż do wykorzystania całego dostępnego miejsca.
+\section{Generowanie drzewa}
+Generowanie drzewa przebiega w następujących etapach:
+\begin{itemize}
+\item generowanie szkieletu
+\item stworzenie geometrii
+\item teksturowanie
+\item edycja
+\end{itemize}
+\begin{center}
+	\includegraphics[width=120mm]{images/colonization/generation.png}
+	\captionof{figure}{Etapy tworzenia modelu drzewa \cite{spaceColonization}}
+	\label{two_segments}
+\end{center}
+\subsection{Algorytm kolonizacyjny}
+Algorytm kolonizacji przestrzeni dalej nazywany algorytmem kolonizacyjnym opiera się na biologicznym aspekcie rywalizacji roślin o dostępną wokół nich przestrzeń. 
+Po raz pierwszy został zaprezentowany w 2007 roku \cite{spaceColonization}, będąc rozszerzeniem na przestrzeń trójwymiarową metody generowania liści przy wykorzystaniu systemów cząsteczkowych \cite{particleMethod}. 
+Podstawową ich ideą było umieszczanie cząstek w obrysie liścia, a następnie śledzenie ich ruchu w kierunku szypułki uwzględniając wzajemne przyciąganie cząstek. 
+Z biologicznego punktu widzenia miało to uzasadnienie jako śledzenie trasy transportu substancji niezbędnych do życia rośliny. 
+W podejściu kolonizacyjnym symuluje się iteracyjny wzrost gałęzi drzewa, aż do wykorzystania całego dostępnego miejsca.
 
 
 Słowniczek:\\
 węzeł drzewa - odcinek w przestrzeni trójwymiarowej reprezentujący część gałęzi\\
 atraktor - pkt w przestrzeni trójwymiarowej, do którego osiągniecia dążą węzły drzewa\\
 korona - podzbiór punktów przestrzeni trójwymiarowej\\
+\subsection{Opis skrócony}
+\begin{center}
+	\includegraphics[width=120mm]{images/colonization/colonization.png}
+	\captionof{figure}{Etapy algorytmu kolonizacyjnego \cite{spaceColonization}}
+	\label{two_segments}
+\end{center}
 
+
+\subsection{Algorytm}
 Dane algorytmu: \\
 korona, zbior parametrow: \\
 dist(a,b) - funkcja zwracająca odległość euklidesową między dwoma punktami przestrzeni  \\

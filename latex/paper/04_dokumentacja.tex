@@ -2,11 +2,13 @@
 
 \section{Diagramy klas}
 
-\section{Opis formatu .obj i procedury eksportu}
-Format .OBJ został opracowany przez firmę Wavefront Technologies i ze względu na swoją prostotę stał się szybko
-popularny wśród programów do obróbki grafiki trójwymiarowej. Format tworzy plik tekstowy z rozszerzeniem .obj 
+\section{Eksport modelu}
+Ponieważ format danych używany w programie nie jest zgodny z powszechnie uznanymi formatami modeli trójwymiarowych, aby zachować kompatybilność należy przeprowadzić eksport modelu do 
+formatu zewnętrznego. Format .OBJ zgodnie wymaganiami jest obsługiwany przez program Blender.
+Został on opracowany przez firmę Wavefront Technologies i ze względu na swoją prostotę stał się szybko
+popularny wśród programów do obróbki grafiki trójwymiarowej. Na format składa się tekstowy z rozszerzeniem .obj 
 zawierający opis geometrii obiektu, dodatkowo format przewiduje odwołanie do pliku z rozszerzeniem .mtl zawierającym
-opis materiałów (kolorów, tekstur itp.).
+opis materiałów (kolorów i tekstur).
 \subsection{Struktura pliku .obj}
 Plik jest podzielony na linie, z czego każda linia moze zawierać:
 \begin{itemize}
@@ -36,7 +38,9 @@ się w kolejnych liniach mogących zawierać:
 \item map\_Ka [nazwa pliku]: tekstura 
 \end{itemize}
 \subsection{Procedura eksportu}
-
+Model drzewa jest eksportowany w dwóch etapach, jako dwie osobne grupy jednego obiektu. Pierwszą grupę stanowi pień drzewa, drugą natomiast jego liście.
+Pozwala to na użycie różnych tekstur dla tych elementów drzewa. Program grupuje współrzędne wierzchołków i tekstur by zmniejszyć rozmiar tworzonego pliku, a następnie
+zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{models/tree0.mtl\} zawierający opis materiałów i ścieżki do tekstur. 
 \section{Opis interfejsu użytkownika}
 \subsection{Okno główne}
 {\includegraphics[width=140mm]{images/gui/mainWindow.png}}\\
@@ -51,4 +55,17 @@ A dalej to juz poszczególne zakładki z opisem, w sumie ze 3 strony
 \subsection{Opcje pnia}
 \subsection{Opcje liści}
 \subsection{Edytor}
-\section{Repozytorium git, buildowanie projektu, potrebne biblioteki}
+\section{Kompilacja projektu}
+\subsection{Wymagane biblioteki}
+Zgodnie z wymaganiami programi powinien posiadać możliwie małą ilość zależności. System powinien posiadać kompilator GCC oraz bibliotekę GTK+ z rozszerzeniem do obsługi OpenGL.
+Poniżej przedstawiono dokładne wersje bibliotek wymagane przez program.
+\begin{itemize}
+\item GTK+ 2.2
+\item GTKGLEXT 1.2
+\item MESA 7.8
+\item GCC 4.4.4
+\end{itemize}
+\subsection{Uruchomienie}
+Źródła programu zostały załączone na płycie CD, ponadto znajdują się na stronie https://code.google.com/p/treemaker/source/browse/.\\
+Po ich pobraniu wystarczy wydać polecenie make w katalogu ze źródłami by rozpocząć kompilację programu. Jeśli przebiegła ona pomyślnie został utworzony
+program wykonywalny o nazwie treemaker.
