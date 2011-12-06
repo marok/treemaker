@@ -56,39 +56,128 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 
 \subsection{Okno główne}
 \includegraphics[width=120mm]{images/gui/main_window.png}
+\begin{enumerate}
+	\item {Podgląd wygenerowanego drzewa.}
+	\item {Toolbar.}
+	\item {Panel z ustawieniami generatora.}
+\end{enumerate}
 
 \subsection{Podgląd wygenerowanego modelu}
 \includegraphics[width=120mm]{images/gui/model_view.png}
+\begin{enumerate}
+	\item {Siatka wyznaczająca poziom ziemi.}
+	\item {Układ współrzędnych.}
+	\item {Model drzewa.}
+	\item {Aktywna korona.}
+	\item {Nieaktywna korona.}
+\end{enumerate}
 
 \subsection{Toolbar}
 \includegraphics[width=50mm]{images/gui/toolbar.png}
+\begin{enumerate}
+	\item {Resetuj konfigurację.}
+	\item {Wczytaj konfigurację.}
+	\item {Zapisz konfigurację.}
+	\item {Generuj nowy model.}
+	\item {Odśwież model.}
+	\item {Eksportuj model.}
+\end{enumerate}
 
 \subsection{Opcje algorytmu}
-\includegraphics[width=35mm]{images/gui/algorithms_panel.png}
+\begin{tabular}{lr}
+\parbox[b]{95mm}{
+\begin{enumerate}
+	\item {Wybór algorytmu generującego drzewo.}
+	\item {Ziarno generatora pseudo-losowego.}
+	\item {Odległość pomiędzy sąsiednimi węzłami w drzewie.}
+	\item {Liczba atraktorów, z których generowane jest drzewo.}
+	\item {Influence distance - promień przyciągania atraktorów do drzewa.}
+	\item {Kill distance - ?.}
+\end{enumerate}
+} &
+\includegraphics[width=35mm]{images/gui/algorithms_panel.png} \\
+\end{tabular}
+
 
 
 \subsection{Opcje korony}
-\includegraphics[width=35mm]{images/gui/crown_panel.png}
+\begin{tabular}{lr}
+\parbox[b]{95mm}{
+\begin{enumerate}
+	\item {Typ korony (sfera, ścięty stożek, bryła obrotowa oparta o krzywą sklejalną trzeciego stopnia).}
+	\item {Dodaj koronę.}
+	\item {Lista dodanych koron.}
+	\item {Współrzędna X wybranej korony.}
+	\item {Współrzędna Y wybranej korony.}
+	\item {Współrzędna Z wybranej korony.}
+	\item {TODO widok dla każdego typu korony}
+\end{enumerate}
+} &
+\includegraphics[width=35mm]{images/gui/crown_panel.png} \\
+\end{tabular}
 
 
 \subsection{Opcje wyświetlania}
-\includegraphics[width=35mm]{images/gui/rendering_panel.png}
-
+\begin{tabular}{lr}
+\parbox[b]{95mm}{
+\begin{enumerate}
+	\item {Wyświetla dodane korony.}
+	\item {Wyświetla liście.}
+	\item {Wyświetla korę.}
+	\item {Wyświetla trawę.}
+\end{enumerate}
+} &
+\includegraphics[width=35mm]{images/gui/rendering_panel.png}\\
+\end{tabular}
 
 \subsection{Opcje pnia}
-\includegraphics[width=35mm]{images/gui/trunk_panel.png}
-
+\begin{tabular}{lr}
+\parbox[b]{95mm}{
+\begin{enumerate}
+	\item {Współczynnik $radius factor$. Wpływa na grubość pnia przy łączeniu gałęzi.}
+	\item {Współczynnik $a$.}
+	\item {Współczynnik $m$.}
+	\item {Liczba punktów tworzących segment.}
+	\item {Liczba tekstur potrzebną do owinięcia pnia.}
+	\item {Stosunek rozmiaru tekstury do odległości mierzonej wzdłuż pnia.}
+\end{enumerate}
+} &
+\includegraphics[width=35mm]{images/gui/trunk_panel.png}\\
+\end{tabular}
 
 \subsection{Opcje liści}
-\includegraphics[width=35mm]{images/gui/leaves_panel.png}
+\begin{tabular}{lr}
+\parbox[b]{95mm}{
+\begin{enumerate}
+	\item {Liczba liści doczepianych do wygenerowanego modelu.}
+	\item {Lista rodzajów liści.}
+	\item {Rozmiar danego liścia.}
+	\item {?}
+	\item {Współczynnik wpływający na liczbę liści danego typu.}
+	\item {Dodawanie nowego typu liścia.}
+\end{enumerate}
+} &
+\includegraphics[width=35mm]{images/gui/leaves_panel.png}\\
+\end{tabular}
+
+
 
 
 \subsection{Edytor}
-\includegraphics[width=35mm]{images/gui/editor_panel.png}
+\begin{tabular}{lr}
+\parbox[b]{95mm}{
 \begin{enumerate}
 	\item {Tryb zaznaczania gałęzi - odpowiednio: cała gałęź, od punktu do końca gałęzi oraz od punktu do punktu}
 	\item {Zastosuj dla wszystkich dzieci - edycji podlegają też gałęzie wychodzące z edytowanego fragmentu}
+	\item {Przycinanie gałęzi}
+	\item {Wygładzanie gałęzi (zwiększana jest rozdzielczość gałęzi)}
+	\item {Zmniejszanie gałęzi}
+	\item {Dociążanie gałęzi}
+	\item {Działanie przeciwne do opcji 6}
 \end{enumerate}
+} &
+\includegraphics[width=35mm]{images/gui/editor_panel.png} \\
+\end{tabular}
 
 \section{Kompilacja projektu}
 \subsection{Wymagane biblioteki}
