@@ -2,6 +2,11 @@
 
 \section{Diagramy klas}
 
+\begin{center}
+	\includegraphics[width=130mm]{images/treemaker_uml}
+	\label{treemaker_uml}
+\end{center}
+
 \section{Eksport modelu}
 Ponieważ format danych używany w programie nie jest zgodny z powszechnie uznanymi formatami modeli trójwymiarowych, aby zachować kompatybilność należy przeprowadzić eksport modelu do 
 formatu zewnętrznego. Format .OBJ zgodnie wymaganiami jest obsługiwany przez program Blender.
@@ -9,6 +14,8 @@ Został on opracowany przez firmę Wavefront Technologies i ze względu na swoj�
 popularny wśród programów do obróbki grafiki trójwymiarowej. Na format składa się tekstowy z rozszerzeniem .obj 
 zawierający opis geometrii obiektu, dodatkowo format przewiduje odwołanie do pliku z rozszerzeniem .mtl zawierającym
 opis materiałów (kolorów i tekstur).
+
+
 \subsection{Struktura pliku .obj}
 Plik jest podzielony na linie, z czego każda linia moze zawierać:
 \begin{itemize}
@@ -25,6 +32,8 @@ Plik jest podzielony na linie, z czego każda linia moze zawierać:
 Warto nadmienić, iż przy definiowaniu trójkątów podajemy indeksy (numerowane od 1) poszczególnych współrzędnych w znajdujących się w pliku.
 Istotne jest również to, iż współrzędne tekstury i wektora normalnego trójkąta są opcjonalne, a sam wektor normalny może być odtworzony poprawnie,
 nawet jeśli nie został zawarty w pliku dzięki podaniu współrzędnych wierzchołków zgodnie z ruchem wskazówek zegara.
+
+
 \subsection{Struktura pliku .mtl}
 Plik .mtl może zawierać definicje wielu materiałów. Podobnie jak plik .obj jest to plik tekstowy z informacjami znajdującymi
 się w kolejnych liniach mogących zawierać:
@@ -37,24 +46,50 @@ się w kolejnych liniach mogących zawierać:
 \item d  [x]        : przezroczystosc
 \item map\_Ka [nazwa pliku]: tekstura 
 \end{itemize}
+
+
 \subsection{Procedura eksportu}
 Model drzewa jest eksportowany w dwóch etapach, jako dwie osobne grupy jednego obiektu. Pierwszą grupę stanowi pień drzewa, drugą natomiast jego liście.
 Pozwala to na użycie różnych tekstur dla tych elementów drzewa. Program grupuje współrzędne wierzchołków i tekstur by zmniejszyć rozmiar tworzonego pliku, a następnie
 zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{models/tree0.mtl\} zawierający opis materiałów i ścieżki do tekstur. 
 \section{Opis interfejsu użytkownika}
-\subsection{Okno główne}
-{\includegraphics[width=140mm]{images/gui/mainWindow.png}}\\
-\vspace{5mm}
-Trzeba znalesc cos co ladnie zaznacza i maluje po takim obrazku zeby zaznaczyc widok drzewa dodac literke A i nadole opisac ze A to jest widok drzewa
-Opis okna glownego: widok drzewa, panel opcji, toolbar
-Opis toolbara, zapisu/odczytu/eksportu
 
-A dalej to juz poszczególne zakładki z opisem, w sumie ze 3 strony
+\subsection{Okno główne}
+\includegraphics[width=120mm]{images/gui/main_window.png}
+
+\subsection{Podgląd wygenerowanego modelu}
+\includegraphics[width=120mm]{images/gui/model_view.png}
+
+\subsection{Toolbar}
+\includegraphics[width=50mm]{images/gui/toolbar.png}
+
+\subsection{Opcje algorytmu}
+\includegraphics[width=35mm]{images/gui/algorithms_panel.png}
+
+
 \subsection{Opcje korony}
+\includegraphics[width=35mm]{images/gui/crown_panel.png}
+
+
 \subsection{Opcje wyświetlania}
+\includegraphics[width=35mm]{images/gui/rendering_panel.png}
+
+
 \subsection{Opcje pnia}
+\includegraphics[width=35mm]{images/gui/trunk_panel.png}
+
+
 \subsection{Opcje liści}
+\includegraphics[width=35mm]{images/gui/leaves_panel.png}
+
+
 \subsection{Edytor}
+\includegraphics[width=35mm]{images/gui/editor_panel.png}
+\begin{enumerate}
+	\item {Tryb zaznaczania gałęzi - odpowiednio: cała gałęź, od punktu do końca gałęzi oraz od punktu do punktu}
+	\item {Zastosuj dla wszystkich dzieci - edycji podlegają też gałęzie wychodzące z edytowanego fragmentu}
+\end{enumerate}
+
 \section{Kompilacja projektu}
 \subsection{Wymagane biblioteki}
 Zgodnie z wymaganiami programi powinien posiadać możliwie małą ilość zależności. System powinien posiadać kompilator GCC oraz bibliotekę GTK+ z rozszerzeniem do obsługi OpenGL.
