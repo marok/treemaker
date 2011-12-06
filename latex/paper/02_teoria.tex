@@ -148,3 +148,25 @@ Liście są rozkładane są na gałęziach w sposób losowy. Rozkład nie jest r
 \end{description}
 
 \section{Teksturowanie}
+Aplikacja obsługuje jedynie tekstury w formacie 24bit BMP. 
+Ponadto wymiary tekstur w pikselach muszą być potęgą dwójki.
+Dla tekstur liści aplikacja interpretuje kolor czarny jako ${100\%}$ przeźroczystość tekstury.
+
+Ułożenie tekstury kory na pniu można regulować za pomocą parametrów:
+\begin{itemize}
+\item ${kx}$ -ilość tekstur potrzebną do owinięcia pnia
+\item ${ky}$ - stosunek rozmiaru tekstury do odległości mierzonej wzdłuż pnia
+\end{itemize}
+Poniżej przedstawiono przykładowy fragment pnia drzewa utworzony dla ${kx=2}$ i ${ky=(0.2..0.5)}$
+\begin{center}
+	\includegraphics[width=140mm]{images/textures/ky.png}
+	\captionof{figure}{Wpływ współczynnika ky na wygląd pnia. }
+	\label{ky_texture}
+\end{center}
+Poniżej przedstawiono przykładowy fragment pnia drzewa utworzony dla ${ky=0.5}$ i ${kx=(1..4)}$
+\begin{center}
+	\includegraphics[width=140mm]{images/textures/kx.png}
+	\captionof{figure}{Wpływ współczynnika kx na wygląd pnia. }
+	\label{kx_texture}
+\end{center}
+
