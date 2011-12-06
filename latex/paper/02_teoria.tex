@@ -30,7 +30,7 @@ Generowanie drzewa przebiega w następujących etapach:
 \begin{center}
 	\includegraphics[width=120mm]{images/colonization/generation.png}
 	\captionof{figure}{Etapy tworzenia modelu drzewa \cite{spaceColonization}}
-	\label{two_segments}
+	\label{colonization_generation}
 \end{center}
 \subsection{Algorytm kolonizacyjny}
 Algorytm kolonizacji przestrzeni dalej nazywany algorytmem kolonizacyjnym opiera się na biologicznym aspekcie rywalizacji roślin o dostępną wokół nich przestrzeń. 
@@ -48,7 +48,7 @@ korona - podzbiór punktów przestrzeni trójwymiarowej\\
 \begin{center}
 	\includegraphics[width=120mm]{images/colonization/colonization.png}
 	\captionof{figure}{Etapy algorytmu kolonizacyjnego \cite{spaceColonization}}
-	\label{two_segments}
+	\label{colonization_colonization}
 \end{center}
 
 
@@ -82,12 +82,34 @@ Rośliny, w szczególności drzewa, są bardzo złożonymi strukturami. Projektu
 
 
 \subsection{Model węzła}
-Węzeł jest opisywny przez położenie(P) oraz promień(R). Na ich podstawie wyliczany jest segment. Segment jest zbiorem przynajmniej 3 punktów leżących na okręgu o środku w punkcie P i promieniu R. Normalna do płaszczyzny tworzonej przez punkty segmentu oraz punkt P jest wyliczana w następujący sposób: $\vec{n}=\frac{\vec{AP}}{\abs{AP}}+\frac{\vec{PB}}{\abs{PB}}$, gdzie A - poprzednik P; B - następnik P. Jeśli węzeł A lub B nie istnieje, to odpowiednio pierwszy lub drugi składnik sumy przyjmuje wartość 0.
+Węzeł charakteryzuje się dwoma parametrami: położeniem(P) oraz promieniem(R). Na ich podstawie wyliczany jest segment, który składa się z przynajmniej 3 punktów leżących na okręgu o środku w punkcie P i promieniu R. Normalna do płaszczyzny tworzonej przez punkty segmentu oraz punkt P jest wyliczana w następujący sposób: $\vec{n}=\frac{\vec{AP}}{|\vec{AP}|}+\frac{\vec{PB}}{|\vec{PB}|}$, gdzie A - poprzednik P; B - następnik P. Jeśli węzeł A lub B nie istnieje, to odpowiednio pierwszy lub drugi składnik sumy przyjmuje wartość 0.
 
-TODO wyznaczanie promienia węzła.
+Promień danego węzła jest wyznaczany w nastepujący sposób:
+$$
+  R[node] = \left\{ 
+  \begin{array}{l l}
+    0.1 & \textrm{jeśli $size[node.children] == 0$}\\
+    m*\sqrt[rf]{\sum_{i} R[node.children(i)]^{rf}}+a & \textrm{jeśli $size[node.children] > 0$}\\
+  \end{array} \right.
+$$
+Oznaczenia:
+\begin{description}
+	\item[node] struktura otrzymana z algorytmu kolonizacyjnego;
+	\item[node.children] lista wskaźników na węzły potomne;
+	\item[\textrm{R[node]}] promień gałęzi w $node$;
+	\item[\textrm{size[node.children]}] liczba elementów w liście $node.children$;
+	\item[rf, m, a] współczynniki wpływające na grubość gałęzi (domyślne wartości: $rf=1.8$, $m=1$, $a=0$)
+\end{description}
 
 \begin{center}
-	\includegraphics[width=100mm]{images/model/two_segments.png}
+	\includegraphics[width=130mm]{images/model/node_radius.pdf}
+	\captionof{figure}{Obliczone promienie węzłów dla przykładowego drzewa.}
+	\label{node_radius}
+\end{center}
+
+
+\begin{center}
+	\includegraphics[width=130mm]{images/model/two_segments.png}
 	\captionof{figure}{Dwa wyrenderowane segmenty wokół węzłów P1 i P2}
 	\label{two_segments}
 \end{center}
@@ -95,20 +117,34 @@ TODO wyznaczanie promienia węzła.
 \subsection{Model gałęzi}
 Dobrym przybliżeniem gałęzi jest uogólniony walec (ang. generalized cylinder). Jest to powierzchnia w przestrzeni $R^3$, której przekrój poprzeczny jest krzywą zamkniętą.
 
-Gałąź jest reprezentowana przez listę kolejnych węzłów. Węzeł o najniższym indeksie znajduje się na początku gałęzi(rozwidlenie bądź początek drzewa). Aby gałąź utworzyła uogólniony walec, łączymy ze sobą odpowiednie punkty segmentów sąsiednich węzłów (rys. \ref{two_segments} oraz \ref{branching}).
+Gałąź jest reprezentowana przez listę kolejnych węzłów. Węzeł o najniższym indeksie znajduje się na jej początku(rozwidlenie bądź początek drzewa). Aby gałąź utworzyła uogólniony walec, łączymy ze sobą odpowiednie punkty segmentów sąsiednich węzłów (rys. \ref{two_segments}).
 
 Gałąź może być początkiem kolejnych konarów, dlatego posiada kolekcję gałęzi potomnych.
 
-TODO wyznaczanie gałęzi.
-
 \begin{center}
 	\includegraphics[width=130mm]{images/model/branching.png}
-	\captionof{figure}{Łączenie gałęzi.}
+	\captionof{figure}{Fragment drzewa. Gałąź główna(kolor brązowy) w widocznym obszarze posiada 3 gałęzie potomne(kolor zielony).}
 	\label{branching}
 \end{center}
 \subsection{Model liścia}
-Liść cechuje się dwiema właściwościami: normalną do powierzchnii liścia oraz wektorem wyznaczającym kierunek liścia. Oba wektory są do siebie prostopadłe.
+Liść cechuje się dwiema właściwościami: normalną do powierzchnii liścia oraz wektorem wyznaczającym kierunek liścia. Oba wektory są do siebie prostopadłe. Liść jest związany z konkretnym węzłem.
 
-TODO rysunek z liściem i wektorami.
+\begin{center}
+	\includegraphics[width=80mm]{images/model/leaf_vects.png}
+	\captionof{figure}{Liść z zaznaczonymi wektorami normalnym(zielony) i kierunkowym(czerwony). }
+	\label{leaf_vect}
+\end{center}
+
+Wektor normalny jest wyznaczany na podstawie położenia liścia względem punktu (0,0,0). Dodatkowo jest obciążany wektorem grawitacji, którego współrzędna Z jest losowa z zakresu $\langle-0.9;0\rangle$. 
+
+
+
+Liście są rozkładane są na gałęziach w sposób losowy. Rozkład nie jest równomierny. Prawdopodobieństwo umiejscowienia liścia na końcu gałęzi jest znacznie większe niż na początku. Efekt ten uzyskaliśmy w następujący sposób: $node\_id = \lceil\sqrt{rand()}*(nodes\_length-1)\rceil$.
+
+\begin{description}
+	\item[node\_id] indeks węzła w danej gałęzi, do którego zostanie doczepiony liść
+	\item[nodes\_length] jest liczbą węzłów należących do danej gałęzi.
+	\item[rand()] zmienna losowa o rozkładzie równomiernym z zakresu $(0;1\rangle$
+\end{description}
 
 \section{Teksturowanie}
