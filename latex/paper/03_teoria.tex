@@ -6,17 +6,20 @@
 Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Massachusets Institute of Technology \cite{jankowski} powstał pierwszy
 komputer wyposażony w grafoskop. Obecnie większość użytkowników nie potrafi sobie wyobrazić komputera bez graficznego interfejsu.
 Coraz większe możliwości nowoczesnych komputerów są motorem napędowym rozmaitych badań nad komputerowymi modelami świata rzeczywistego.
-Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiajac w 1962r\cite{ulam} drzewo jako samoorganizującą się
+
+Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiajac w 1962r. \cite{ulam} drzewo jako samoorganizującą się
 strukturę. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestreń.
 Honda zaproponował w 1971r. modelowanie drzew jako stuktury rekursywnej opisanej
-zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji\cite{honda}. Dopiero w latach osiemdziesiatych
-możliwości uwczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 85r \cite{bloomenthal}
+zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji \cite{honda}.
+
+Dopiero w latach osiemdziesiatych
+możliwości uwczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 1985r. \cite{bloomenthal}
 przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzielić na dwie grupy:
 \begin{itemize}
 \item od ogółu do szczegółu, czyli modelowanie z zadanymi parametrami wyglądu drzewa
 \item od szczegółu do ogółu, czyli opisanie pewnym zbiorem parametrów budowy drzewa
 \end{itemize}
-Problem stworzenia modelu drzewa możemy podzielić na stworzenie modelów jego składowych np gałęzi, kory, liści, czy kwiatów i późniejsze
+Problem stworzenia modelu drzewa możemy podzielić na stworzenie modeli jego składowych np. gałęzi, kory, liści, czy kwiatów i późniejsze
 ich połączenie w jedną całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części.
 
 \section{Generowanie drzewa}
@@ -39,11 +42,13 @@ Podstawową ich ideą było umieszczanie cząstek w obrysie liścia, a następni
 Z biologicznego punktu widzenia miało to uzasadnienie jako śledzenie trasy transportu substancji niezbędnych do życia rośliny. 
 W podejściu kolonizacyjnym symuluje się iteracyjny wzrost gałęzi drzewa, aż do wykorzystania całego dostępnego miejsca.
 
-
-Słowniczek:\\
-węzeł drzewa - odcinek w przestrzeni trójwymiarowej reprezentujący część gałęzi\\
-atraktor - pkt w przestrzeni trójwymiarowej, do którego osiągniecia dążą węzły drzewa\\
-korona - podzbiór punktów przestrzeni trójwymiarowej\\
+\newpage
+Pojęcia:
+\begin{description}
+	\item[węzeł drzewa] odcinek w przestrzeni trójwymiarowej reprezentujący część gałęzi
+	\item[atraktor] punkt w przestrzeni trójwymiarowej, do którego osiągniecia dążą węzły drzewa
+	\item[korona] podzbiór punktów przestrzeni trójwymiarowej
+\end{description}
 \subsection{Opis skrócony}
 \begin{center}
 	\includegraphics[width=120mm]{images/colonization/colonization.png}
@@ -53,12 +58,20 @@ korona - podzbiór punktów przestrzeni trójwymiarowej\\
 
 
 \subsection{Algorytm}
-Dane algorytmu: \\
-korona, zbior parametrow: \\
-dist(a,b) - funkcja zwracająca odległość euklidesową między dwoma punktami przestrzeni  \\
+
+Dane algorytmu:
+\begin{my_itemize}
+	\item{korona}
+	\item{di - influence distance}
+	\item{dk - kill distance}
+	\item{D - node length}
+	\item{points - liczba atraktorów}
+	\item{dist(a,b) - funkcja zwracająca odległość euklidesową między dwoma punktami przestrzeni}
+\end{my_itemize}
+
 \begin{verbatim}
   rozmieść atraktory wewnątrz korony drzewa
-  dodaj do drzewa wezel glowny
+  dodaj do drzewa węzeł główny
   dopóki istnieją atraktory:
     dla kazdego atraktora a :
       wyznacz najbliższy węzeł drzewa n
@@ -66,20 +79,15 @@ dist(a,b) - funkcja zwracająca odległość euklidesową między dwoma punktami
         oblicz wektor n->a
       dodaj nowy wezel do drzewa (n-a)
   dla kazdego atraktora
-    jesli istnieje wezel drzewa w odleglosci <=dk
-      usun atraktor
+    jeśli istnieje wezeł drzewa w odległosci <=dk
+      usuń atraktor
 \end{verbatim}
-Parametry: \\
-di - influence distance\\
-dk - kill distance\\
-D - node length\\
-points - liczba atraktorów\\
 
-Ponieważ istnieją parametry uniemożliwiające zakonczenie algorytmu np dk<<D warunek konca obliczen na potrzeby implementacji został zastąpiony sprawdzeniem, czy w poprzedniej iteracji został utworzony jakiś nowy węzeł drzewa.
+Ponieważ istnieją parametry uniemożliwiające zakończenie algorytmu np. $dk \ll D$, warunek końca obliczeń na potrzeby implementacji został zastąpiony sprawdzeniem, czy w poprzedniej iteracji utworzono jakiś nowy węzeł drzewa.
 
 \section{Tworzenie geometrii modelu}
 \subsection{Wstęp}
-Rośliny, w szczególności drzewa, są bardzo złożonymi strukturami. Projektując model drzewa trzeba zwrócić uwagę na wiele aspektów takich jak: sposób łączenia gałęzi, rozłożenie liści na drzewie, położenie pojedynczego liścia w przestrzeni, sposób przyłączenie liścia do gałęzi.
+Rośliny, w szczególności drzewa, są bardzo złożonymi strukturami. Projektując model drzewa trzeba zwrócić uwagę na wiele aspektów takich jak: sposób łączenia gałęzi, przyrost grubości gałęzi, rozłożenie liści na drzewie, położenie pojedynczego liścia w przestrzeni, sposób przyłączenie liścia do gałęzi.
 
 
 \subsection{Model węzła}
@@ -140,7 +148,7 @@ Wektor normalny jest wyznaczany na podstawie położenia liścia względem punkt
 
 
 
-Liście są rozkładane są na gałęziach w sposób losowy. Rozkład nie jest równomierny. Prawdopodobieństwo umiejscowienia liścia na końcu gałęzi jest znacznie większe niż na początku. Efekt ten uzyskaliśmy w następujący sposób: $node\_id = \lceil\sqrt{rand()}*(nodes\_length-1)\rceil$.
+Liście są rozkładane są na gałęziach w sposób losowy, przy czym rozkład nie jest równomierny. Prawdopodobieństwo umiejscowienia liścia na końcu gałęzi jest znacznie większe niż na początku. Efekt ten uzyskaliśmy w następujący sposób: $node\_id = \lceil\sqrt{rand()}*(nodes\_length-1)\rceil$.
 
 \begin{description}
 	\item[node\_id] indeks węzła w danej gałęzi, do którego zostanie doczepiony liść

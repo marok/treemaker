@@ -22,6 +22,14 @@
 \hyphenpenalty=1000
 \tolerance=300
 
+\newenvironment{my_itemize}{
+\begin{itemize}
+  \setlength{\itemsep}{2pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
+
+
 \begin{document}
 
 % Strona tytułowa
