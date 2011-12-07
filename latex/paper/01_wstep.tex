@@ -1,18 +1,20 @@
 \chapter{Wstęp}
 
 \section{Cel pracy}
-\begin{itemize}
-	\item{Stworzenie narzędzia pozwalającego na łatwe generowanie trójwymiarowych modeli drzew}
-	\item{Zastosowania}
-	\begin{itemize}
-		\item{Ułatwienie pracy grafikom komputerowym}
-		\item{Gry, animacje, wizualizacje i mapy 3D}
-	\end{itemize}
-\end{itemize}
+Celem niniejszego projektu inżynierskiego jest stworzenie narzędzia pozwalającego na łatwe 
+tworzenie trójwymiarowych modeli drzew. Narzędzie ma być przeznaczone dla osób zajmujących
+się grafiką komputerową. Ręczne modelowanie skomplikowanej struktury drzew jest bardzo czasochłonne,
+dlatego też tworzenie modelów przy użyciu naszej aplikacji ma być przede wszystki łatwe i szybkie.
+W idealnym przypadku do stworzenia modelu potrzebne byłoby kilkanaście sekund. Ponieważ większość
+grafików komputerowych posiada swój ulubiony program do pracy, nasza aplikacja powinna zapewnić
+łatwy sposób na przeniesienie wygenerowanego modelu do innych narzędzi, nawet tych jeszcze nie istniejących.
+Narzędzie może znaleźć zastosowanie podczas tworzenia gier, animacji, wizualizacji architektonicznych
+czy map trójwymiarowych.
+\\
+Trzeba cos tu jeszcze dowalic zeby zapelnic strone
 
 
-
-
+\newpage
 \section{Funkcjonalność}
 \begin{itemize}
 	\item{Modyfikacja parametrów algorytmu generującego}
@@ -24,27 +26,116 @@
 	\begin{itemize}
 		\item{usuwanie gałęzi}
 		\item{wygładzanie gałęzi}
-		\item{zmiana ilośi liści}
-		\item{wybor tekstur kory i liści}
+		\item{zmiana ilości liści}
+		\item{wybór tekstur kory i liści}
 	\end{itemize}
 
 	\item{Eksport do formatu obsługiwanego przez program Blender}
 \end{itemize}
 
 \section{Zadania do wykonania i podział pracy}
-\begin{itemize}
-	\item{Algorytm kolonizacji przestrzenii - Łukasz Odzioba}
-	\item{Algorytm cząsteczkowy - Łukasz Odzioba}
-	\item{Tworzenie modelu drzewa na podstawie struktury zwróconej przez algorytm generowania(obliczanie grubości gałęzi w węzłach, opracowanie i zaimplementowanie sposobu łączenia gałęzi) - Mariusz Okrój}
-	\item{Obrys korony drzewa tworzony na podstawie brył - Mariusz Okrój}
-	\item{Zapis i odczyt ustawień programu z pliku - Łukasz Odzioba}
-	\item{Teksturowanie pnia drzewa - Łukasz Odzioba}
-	\item{Teksturowanie liści - Łukasz Odzioba}
-	\item{Rozmieszczenie liści na drzewie - Mariusz Okrój}
-	\item{Eksport modelu do formatu wspieranego przez program Blender - Łukasz Odzioba}
-	\item{Zaimplementowanie edytora pozwalającego obrabiać wygenerowany model - Mariusz Okrój}
-\end{itemize}
+W tabeli poniżej zebrano najważniejsze zadania do wykonania wraz z ich podziałem na osoby odpowiedzialne
+za wykonanie poszczególnych etapów.
+\begin{center}    
+    \begin{longtable}{|p{120mm}|p{16mm}|} \hline
+    Algorytm kolonizacji przestrzeni & ŁO \\ \hline
+    Zapis i odczyt ustawień programu z pliku  & ŁO \\ \hline
+    Teksturowanie modelu drzewa & ŁO \\ \hline
+    Eksport modelu do formatu wspieranego przez program Blender & ŁO \\ \hline
+    \hline
+    Tworzenie geometrii drzewa & MO \\ \hline
+    Obrys korony drzewa tworzony na podstawie brył & MO \\ \hline
+    Edytor do obróbki wygenerowanego modelu  & MO \\ \hline
+    Rozmieszczenie liści na drzewie & MO \\ \hline
+    \hline
+    Opracowanie literatury & ŁO MO  \\  \hline
+    Interfejs użytkownika & ŁO MO \\ \hline
+    Renderowanie modelu drzewa & ŁO MO \\ \hline
+    Stworzenie przykładowych modeli drzew & ŁO MO \\ \hline
+    \end{longtable}
+\end{center}
 
 
+\newpage
 \section{Harmonogram}
+Wstępny harmonogram prac został ustalony na początku tworzenia projektu. W trakcie pracy był później często
+modyfikowany, a końcowy uproszony harmonogram przedstawia tabela umieszczona poniżej. Prace nad mniejszymi aspektami
+tworzonego systemu trwały w czasie całego okresu tworzenia, i nie zostały one zawarte w tabeli. 
+\\\indent Wszystkie etapy zostały dzielone na trzy fazy, w ramach których zadania do wykonania zostały posortowane
+po czasie ich rozpoczęcia, a następnie zakończenia.\\ \\
+    \indent Faza analizy i projektowania
+	\begin{longtable}{|p{85mm}|p{42mm}|} \hline
+	
 
+    Zapoznanie się z istniejącymi narzędziami do generowania drzew &
+    1.10.2011 -- 7.10.2011
+    
+    \\ \hline
+    Wybranie algorytmów generowania drzewa do implementacji&
+    1.10.2011 -- 7.10.2011
+    \\ \hline
+
+    Opracowanie literatury&
+    1.10.2011 -- 31.10.2011
+    \\ \hline
+
+    Specyfikacja wymagań funkcjonalnych&
+    15.10.2011 -- 25.10.2011
+    \\ \hline
+    
+    Projektowanie interfejsu użytkownika &
+    15.10.2011 -- 1.11.2011
+    \\ \hline
+
+    Wybór formatu eksportu modelu &
+    7.11.2011 -- 14.11.2011
+        \\ \hline
+
+    
+    \end{longtable}
+	
+     Faza implementacji
+    \begin{longtable}{|p{85mm}|p{42mm}|} \hline
+    Implementacja algorytmu kolonizacyjnego &
+    8.10.2011 -- 15.10.2011
+    \\ \hline
+
+    Implementacja algorytmów tworzenia geometrii drzewa &
+    16.10.2011 -- 31.11.2011 
+    \\ \hline
+
+    Implementacja renederowania modelu drzewa &
+    16.10.2011 -- 31.11.2011
+    \\ \hline
+
+    Implmentacja interfejsu użytkownika &
+    1.11.2011 -- 30.11.2011
+    \\ \hline
+
+    Implementacja edytora modelu &
+    15.11.2011 -- 30.11.2011
+    \\ \hline
+
+    Implementacja eksportu modelu do formatu .OBJ&
+    15.11.2011 -- 30.11.2011
+    \\ \hline
+	
+   
+    
+    \end{longtable}
+	
+    Faza wykończeniowa
+    \begin{longtable}{|p{85mm}|p{42mm}|} \hline
+    Testowanie aplikacji
+    & 1.12.2011 -- 7.12.2011
+    \\ \hline
+
+    Przygotowanie przykładowych modeli drzew
+    & 1.12.2011 -- 7.12.2011
+    \\ \hline
+	
+    Opracowanie dokumentacji projektu
+    & 1.11.2011 -- 7.12.2011
+    \\ \hline
+	
+    \end{longtable}

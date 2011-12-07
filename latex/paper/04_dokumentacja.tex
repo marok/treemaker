@@ -19,15 +19,15 @@ opis materiałów (kolorów i tekstur).
 \subsection{Struktura pliku .obj}
 Plik jest podzielony na linie, z czego każda linia moze zawierać:
 \begin{itemize}
-\item komentarz: zaczynający się od znaku '\#'
-\item odwołanie do pliku z materiałami: mtllib [nazwa pliku .mtl]
-\item nakaz uzycia materiału: usemtl [nazwa materiału]
-\item definicje obiektu: o [nazwa obiektu]
-\item definicje grupy: g [nazwa grupy]
-\item współrzędne wierzchołka v [x] [y] [z]
-\item współrzędne wektora normalnego vn [x] [y] [z]
-\item współrzędne tekstury vt [x] [y]
-\item definicja trójkąta f [v1/vn1/vt1] [v2/vn2/vt2] [v3/vn3/vt3]
+\item '\#' : komentarz 
+\item mtllib [nazwa pliku .mtl] :odwołanie do pliku z materiałami
+\item usemtl [nazwa materiału]  :nakaz uzycia materiału
+\item o [nazwa obiektu]         :definicję obiektu
+\item g [nazwa grupy]           :definicję grupy: 
+\item v [x] [y] [z]             :współrzędne wierzchołka
+\item vn [x] [y] [z]            :współrzędne wektora normalnego
+\item vt [x] [y]                :współrzędne tekstury
+\item f [v1/vn1/vt1] [v2/vn2/vt2] [v3/vn3/vt3] :definicja trójkąta 
 \end{itemize}
 Warto nadmienić, iż przy definiowaniu trójkątów podajemy indeksy (numerowane od 1) poszczególnych współrzędnych w znajdujących się w pliku.
 Istotne jest również to, iż współrzędne tekstury i wektora normalnego trójkąta są opcjonalne, a sam wektor normalny może być odtworzony poprawnie,
@@ -38,6 +38,7 @@ nawet jeśli nie został zawarty w pliku dzięki podaniu współrzędnych wierzc
 Plik .mtl może zawierać definicje wielu materiałów. Podobnie jak plik .obj jest to plik tekstowy z informacjami znajdującymi
 się w kolejnych liniach mogących zawierać:
 \begin{itemize}
+\item '\#' : komentarz 
 \item newmtl [nazwa materiału]: definicja materiału
 \item Ka [r] [g] [b]: ambient kolor
 \item Kd [r] [g] [b]: diffuse kolor
