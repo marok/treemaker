@@ -13,7 +13,7 @@ Honda zaproponował w 1971r. modelowanie drzew jako stuktury rekursywnej opisane
 zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji \cite{honda}.
 
 Dopiero w latach osiemdziesiatych
-możliwości uwczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 1985r. \cite{bloomenthal}
+możliwości ówczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 1985r. \cite{bloomenthal}
 przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzielić na dwie grupy:
 \begin{itemize}
 \item od ogółu do szczegółu, czyli modelowanie z zadanymi parametrami wyglądu drzewa
@@ -22,7 +22,7 @@ przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzieli
 Problem stworzenia modelu drzewa możemy podzielić na stworzenie modeli jego składowych np. gałęzi, kory, liści, czy kwiatów i późniejsze
 ich połączenie w jedną całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części.
 
-\section{Generowanie drzewa}
+\section{Generowanie struktury drzewa}
 Generowanie drzewa przebiega w następujących etapach:
 \begin{itemize}
 \item generowanie szkieletu
@@ -156,9 +156,9 @@ Liście są rozkładane są na gałęziach w sposób losowy, przy czym rozkład 
 	\item[rand()] zmienna losowa o rozkładzie równomiernym z zakresu $(0;1\rangle$
 \end{description}
 
-\subsection{Wygładzanie gałęzi przy pomocy algorytmu Chaikina \cite{smoothing}}
+\subsection{Wygładzanie gałęzi przy pomocy algorytmu Chaikina}
 \subsubsection{Wstęp}
-W 1974r. George Chaikin opublikował algorytm generowania krzywych ze skończonej liczby punktów kontrolnych. Algorytm ten okazał się bardzo interesujący przez niski stopień swojej komplikacji. Opiera się jedynie na ścinaniu wierzchołków początkowego wielokąta.
+W 1974r. George Chaikin opublikował algorytm generowania krzywych ze skończonej liczby punktów kontrolnych \cite{smoothing}. Algorytm ten okazał się bardzo interesujący przez niski stopień swojej komplikacji. Opiera się jedynie na ścinaniu wierzchołków początkowego wielokąta.
 
 Tworzenie krzywej następuje iteracyjnie. Proces można można powtarzać, aż do osiągnięcia wymaganej rozdzielczości krzywej (rys. \ref{chaikin_1}).
 
