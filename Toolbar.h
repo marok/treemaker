@@ -2,6 +2,7 @@
 #define _TOOLBAR_H
 #include <gtk/gtk.h>
 #include "Exporter.h"
+#include <time.h>
 #include "Panels.h"
 
 class Toolbar {
@@ -41,7 +42,10 @@ class Toolbar {
 	
 	static void  generateClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		t->cm->init();
+clock_t start, stop;                                                       
+float time; 
+start=clock();
+t->cm->init();
 		t->cm->generate();
 		if(model!=NULL)
 			delete model;
@@ -49,6 +53,9 @@ class Toolbar {
 		t->params->tp->setCirclePointsValue();
 		model = new  Model3d(t->cm->getRoot(),t->params);
 		model->generateModel();
+stop=clock();
+		cout<<(long long int)(stop-start)*1000/ CLOCKS_PER_SEC<<endl;; 
+	  
 		DrawMethods::render();
 	}
 	

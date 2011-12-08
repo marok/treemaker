@@ -1,14 +1,11 @@
 \chapter{Specyfikacja wymagań}
-Najlepiej wedlug tego dokumentu:
-http://entropy.echelon.pl/miguel/print.php?id=11
-Wymagania:\\
-\begin{itemize}
-\item Kto ma tego uzywac
-\item Do czego
-\item Po co robimy ten program
-\end{itemize}
-\begin{enumerate}
+Użytkownikiem aplikacji mają być osoby posiadające podstawową wiedzę dotyczącą grafiki trójwymiarowej,
+chcące łatwo i szybko stworzyć model drzewa i wykorzystać go do swoich celów. Z powyższego założenia
+wynika istotna kwestia, mianowicie obsługa narzędzia musi byc prosta i intuicyjna. \\
 
+\section{Wymagania funkcjonalne} 
+Poniżej zebrano wymagania funkcjonalne aplikacji.
+\begin{enumerate}
 \item Aplikacja ma być przeznaczona dla systemu Linux. 
 \begin{enumerate}
 \item Aplikacja ma być napisana w języku C++.
@@ -47,15 +44,13 @@ Wymagania:\\
 \section{Ograniczenia aplikacji}
 Ponieważ generowanie modelu drzewa jest tematem bardzo szerokim, podczas projektowania
 aplikacji przyjęto pewne założenia ograniczające jego funkcjonalność. Było to niezbędne ze
-względu na krótki czas realizacji projektu.
+względu na krótki czas na realizację projektu.
 
-Ograniczyliśmi się do:
+Możliwości aplikacji ograniczone są do:
 \begin{itemize}
-	\item {małych drzew liściastych}
-	\item {wygląd jedynie poglądowy bez zaawansowanego oświetlenia, wygładzania krawędzi}
-	\item {teksturowanie pnia tylko jedną teksturą jednocześnie}
-	\item {brak korzeni}
-	\item {brak owoców i kwiatów}
+	\item {generowania małych drzew liściastych}
+	\item {rendering modelu jest jedynie poglądowy bez zaawansowanego oświetlenia, wygładzania krawędzi}
+	\item {teksturowanie jest możliwe tylko jedną teksturą jednocześnie}
+	\item {model drzewa nie uwzględnia systemu korzeni, owoców i kwiatów}
 	\item {brak modelu fizycznego drzewa}
-	\item {zamiast tekstury liscia mozna wybrac teksture galezi (?)}
 \end{itemize}
