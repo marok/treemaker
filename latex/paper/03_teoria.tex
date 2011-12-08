@@ -204,7 +204,7 @@ Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzc
 
 
 \begin{itemize}
-	\item{Dla $i=1$ lub $i=n$: jeden punkt pochodny równy $P_i$}
+	\item{Dla $i=1$ lub $i=n$: $L_i = R_i = P_i$}
 	\item{Dla $i=2$: $L_i = \frac{1}{2}P_{i-1} + \frac{1}{2}P_i$ oraz $R_i = \frac{3}{4}P_i + \frac{1}{4}P_{i+1}$}
 	\item{Dla $i=n-1$: $L_i = \frac{1}{4}P_{i-1} + \frac{3}{4}P_i$ oraz $R_i = \frac{1}{2}P_i + \frac{1}{2}P_{i+1}$}
 	\item{Dla pozostałych przypadków: $L_i = \frac{1}{4}P_{i-1} + \frac{3}{4}P_i$ oraz $R_i = \frac{3}{4}P_i + \frac{1}{4}P_{i+1}$}
@@ -213,7 +213,21 @@ Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzc
 \begin{center}
 	\includegraphics[width=130mm]{images/model/chaikin_branch.pdf}
 	\captionof{figure}{Kolejne iteracje algorytmu Chaikina dla łamanej otwartej.}
-	\label{node_radius}
+	\label{chaikin_branch}
+\end{center}
+
+\subsection{Korona - TODO}
+Algorytm kolonizacyjny w pierwszym kroku rozmieszcza atraktory wewnątrz danej podprzestrzenii, która to determinuje swoim kształtem wygląd wygenerowango drzewa. Wybór typu korony został ograniczony do 3 kształtów.
+\begin{itemize}
+	\item{sfera - możliwość zmiany promienia}
+	\item{ścięty stożek - możliwość zmiany wysokości oraz promiania dolnej i górnej podstawy}
+	\item{\textit{spline crown} - korona tworzona na skutek obrotu krzywej sklejalnej trzeciego stopnia wokół osi OX}
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width=130mm]{images/model/crowns.png}
+	\captionof{figure}{Typy koron (sfera, ścięty stożek, \textit{spline crown})}
+	\label{crowns}
 \end{center}
 
 \section{Teksturowanie}
