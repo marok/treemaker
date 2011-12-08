@@ -9,7 +9,7 @@
 
 \section{Eksport modelu}
 Ponieważ format danych używany w programie nie jest zgodny z powszechnie uznanymi formatami modeli trójwymiarowych, aby zachować kompatybilność należy przeprowadzić eksport modelu do 
-formatu zewnętrznego. Format .OBJ zgodnie wymaganiami jest obsługiwany przez program Blender.
+formatu zewnętrznego. Format .OBJ zgodnie z wymaganiami jest obsługiwany przez program Blender.
 Został on opracowany przez firmę Wavefront Technologies i ze względu na swoją prostotę stał się szybko
 popularny wśród programów do obróbki grafiki trójwymiarowej. Na format składa się plik tekstowy z rozszerzeniem .obj 
 zawierający opis geometrii obiektu. Dodatkowo format przewiduje odwołanie do pliku z rozszerzeniem .mtl zawierającym
@@ -52,14 +52,14 @@ się w kolejnych liniach mogących zawierać:
 \subsection{Procedura eksportu}
 Model drzewa jest eksportowany w dwóch etapach, jako dwie osobne grupy jednego obiektu. Pierwszą grupę stanowi pień drzewa, natomiast drugą jego liście.
 Pozwala to na użycie różnych tekstur dla tych elementów drzewa. Program grupuje współrzędne wierzchołków i tekstur by zmniejszyć rozmiar tworzonego pliku, a następnie
-zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{models/tree0.mtl\} zawierający opis materiałów i ścieżki do tekstur. 
+zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{models/tree0.mtl\} zawierający opis materiałów i ścieżek do tekstur. 
 \section{Opis interfejsu użytkownika}
 
 \subsection{Okno główne}
 \includegraphics[width=120mm]{images/gui/main_window.png}
 \begin{enumerate}
-	\item {Podgląd wygenerowanego drzewa.}
-	\item {Toolbar.}
+	\item {Podgląd wygenerowanego modelu drzewa.}
+	\item {Przybornik.}
 	\item {Panel z ustawieniami generatora.}
 \end{enumerate}
 
@@ -73,20 +73,20 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 	\item {Nieaktywna korona.}
 \end{enumerate}
 
-\subsection{Toolbar}
+\subsection{Przybornik}
 \includegraphics[width=50mm]{images/gui/toolbar.png}
 \begin{enumerate}
-	\item {Resetuj konfigurację.}
-	\item {Wczytaj konfigurację.}
-	\item {Zapisz konfigurację.}
-	\item {Generuj nowy model.}
-	\item {Odśwież model.}
-	\item {Eksportuj model.}
+	\item {Resetuj konfigurację - ustawia domyślne wartości wszystkich parametrów.}
+	\item {Wczytaj konfigurację - wczytuje konfigurację programu z pliku. }
+	\item {Zapisz konfigurację - zapisuje konfigurację do pliku.}
+	\item {Generuj nowy model - tworzy nowy model na podstawie parametrów widocznych w zakładce \textit{Algorithms}, \textit{C}(ustawienia koron), \textit{T}(ustawienia dotyczące modelowania pnia), \textit{L}(ustawienia liści).}
+	\item {Odśwież model - model jest uaktualniany korzystając z parametrów zawartych w zakładce \textit{L} oraz \textit{T}. Nie jest wywoływany algorytm generowania drzewa.}
+	\item {Eksportuj model - model drzewa jest eksportowany do formatu OBJ. Tworzone są dwa pliki \textit{models/tree0.obj} oraz \textit{models/tree0.mtl}.}
 \end{enumerate}
 
 \subsection{Opcje algorytmu}
 \begin{tabular}{lr}
-\parbox[b]{95mm}{
+\parbox[c]{95mm}{
 \begin{enumerate}
 	\item {Wybór algorytmu generującego drzewo.}
 	\item {Ziarno generatora pseudo-losowego.}
@@ -96,31 +96,77 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 	\item {Kill distance - odległość od atraktora do węzła drzewa po osiągnięciu której atraktor jest usuwany.}
 \end{enumerate}
 } &
-\includegraphics[width=35mm]{images/gui/algorithms_panel.png} \\
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/algorithms_panel.png}
+}\\
 \end{tabular}
 
 
 
 \subsection{Opcje korony}
 \begin{tabular}{lr}
-\parbox[b]{95mm}{
+\parbox[c]{95mm}{
 \begin{enumerate}
-	\item {Typ korony (sfera, ścięty stożek, bryła obrotowa oparta o krzywą sklejalną trzeciego stopnia).}
-	\item {Dodaj koronę.}
-	\item {Lista dodanych koron.}
+	\item {Typ korony - do wyboru: sfera, ścięty stożek, \textit{spline crown}.}
+	\item {Dodaj koronę - dodaje koronę do generatora.}	
+	\item {Lista dodanych koron - koron może być więcej niż 1. Atraktory są rozmieszczane we wszystkich koronach z listy(w każdej jest identyczna liczba atraktorów równa $liczba\_atraktorów/liczba\_koron$).}
 	\item {Współrzędna X wybranej korony.}
 	\item {Współrzędna Y wybranej korony.}
 	\item {Współrzędna Z wybranej korony.}
-	\item {TODO widok dla każdego typu korony}
+	\item {Usuń wybraną koronę.}
+	\item {Parametry charakterystyczne dla każdego typu korony.}
 \end{enumerate}
 } &
-\includegraphics[width=35mm]{images/gui/crown_panel.png} \\
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/crown_panel.png}
+}\\
 \end{tabular}
 
+\subsubsection{Sfera}
+\begin{tabular}{lr}
+\parbox[c]{95mm}{
+\begin{enumerate}
+	\item {Promień sfery.}
+\end{enumerate}
+} &
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/sphere_crown.png}
+}\\
+\end{tabular}
+
+\subsubsection{Ścięty stożek}
+\begin{tabular}{lr}
+\parbox[c]{95mm}{
+\begin{enumerate}
+	\item {Wysokość.}
+	\item {Promień górnej podstawy.}
+	\item {Promień dolnej podstawy.}
+\end{enumerate}
+} &
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/truncated_cone_crown.png}
+}\\
+\end{tabular}
+
+\subsubsection{\textit{Spline crown}}
+\begin{tabular}{lr}
+\parbox[c]{95mm}{
+\begin{enumerate}
+	\item {Lista z węzłami interpolującymi.}
+	\item {Dodaj węzeł interpolujący.}
+	\item {Usuń węzeł interpolujący.}
+	\item {Współrzędna X wybranego węzła interpolującego.}
+	\item {Współrzędna Y wybranego węzła interpolującego.}
+\end{enumerate}
+} &
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/spline_crown.png}
+}\\
+\end{tabular}
 
 \subsection{Opcje wyświetlania}
 \begin{tabular}{lr}
-\parbox[b]{95mm}{
+\parbox[c]{95mm}{
 \begin{enumerate}
 	\item {Wyświetla dodane korony.}
 	\item {Wyświetla liście.}
@@ -128,27 +174,39 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 	\item {Wyświetla trawę.}
 \end{enumerate}
 } &
-\includegraphics[width=35mm]{images/gui/rendering_panel.png}\\
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/rendering_panel.png}
+}\\
 \end{tabular}
 
 \subsection{Opcje pnia}
+
+\begin{threeparttable}
+
 \begin{tabular}{lr}
-\parbox[b]{95mm}{
+\parbox[c]{95mm}{
 \begin{enumerate}
-	\item {Współczynnik $radius factor$. Wpływa na grubość pnia przy łączeniu gałęzi.}
-	\item {Współczynnik $a$.}
-	\item {Współczynnik $m$.}
+	\item {Współczynnik $radius factor$. Wpływa na grubość pnia przy łączeniu gałęzi. $\tnote{1}$}
+	\item {Współczynnik $a$.$\tnote{1}$}
+	\item {Współczynnik $m$.$\tnote{1}$}
 	\item {Liczba punktów tworzących segment.}
 	\item {Liczba tekstur potrzebną do owinięcia pnia.}
 	\item {Stosunek rozmiaru tekstury do odległości mierzonej wzdłuż pnia.}
 \end{enumerate}
 } &
-\includegraphics[width=35mm]{images/gui/trunk_panel.png}\\
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/trunk_panel.png}
+}\\
 \end{tabular}
+\begin{tablenotes}
+	\item[1] Wpływ współczynników na wygląd pnia dokładnie opisany w podrozdziale \ref{subsec:node_model} na stronie \pageref{subsec:node_model}.
+\end{tablenotes}
+
+\end{threeparttable}
 
 \subsection{Opcje liści}
 \begin{tabular}{lr}
-\parbox[b]{95mm}{
+\parbox[c]{95mm}{
 \begin{enumerate}
 	\item {Liczba liści doczepianych do wygenerowanego modelu.}
 	\item {Lista rodzajów liści.}
@@ -158,7 +216,9 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 	\item {Dodawanie nowego typu liścia.}
 \end{enumerate}
 } &
-\includegraphics[width=35mm]{images/gui/leaves_panel.png}\\
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/leaves_panel.png}
+}\\
 \end{tabular}
 
 
@@ -166,18 +226,20 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 
 \subsection{Edytor}
 \begin{tabular}{lr}
-\parbox[b]{95mm}{
+\parbox[c]{95mm}{
 \begin{enumerate}
-	\item {Tryb zaznaczania gałęzi - odpowiednio: cała gałęź, od punktu do końca gałęzi oraz od punktu do punktu}
-	\item {Zastosuj dla wszystkich dzieci - edycji podlegają też gałęzie wychodzące z edytowanego fragmentu}
-	\item {Przycinanie gałęzi}
-	\item {Wygładzanie gałęzi (zwiększana jest rozdzielczość gałęzi)}
-	\item {Zmniejszanie gałęzi}
-	\item {Dociążanie gałęzi}
-	\item {Działanie przeciwne do opcji 6}
+	\item {Tryb zaznaczania gałęzi - odpowiednio: cała gałęź, od punktu do końca gałęzi oraz od punktu do punktu.}
+	\item {Zastosuj dla wszystkich dzieci - edycji podlegają też gałęzie wychodzące z edytowanego fragmentu i dalej rekursywnie wszyscy potomkowie.}
+	\item {Przycinanie gałęzi.}
+	\item {Wygładzanie gałęzi - gałęzie są modyfikowane przy użyciu algorytmu Chaikina.}
+	\item {Zmniejszanie rozdzielczości gałęzi - co drugi węzeł gałęzi jest usuwany. Gałęzie wychodzące z usuwanych węzłów są przesuwane do węzłów położonych niżej.}
+	\item {Dociążanie gałęzi - od współrzędnej $Z$ danego węzła jest odejmowana pewna stała, która rośnie wprost proporcjonalnie do odległości węzła od osi drzewa.}
+	\item {Odciązanie gałęzi - analogicznie do opcji 6.}
 \end{enumerate}
 } &
-\includegraphics[width=35mm]{images/gui/editor_panel.png} \\
+\parbox[c]{35mm}{
+\includegraphics[width=35mm]{images/gui/editor_panel.png}
+}\\
 \end{tabular}
 
 \section{Kompilacja projektu}

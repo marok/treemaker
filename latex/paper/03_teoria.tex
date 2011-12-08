@@ -7,7 +7,7 @@ Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Mass
 komputer wyposażony w grafoskop. Obecnie większość użytkowników nie potrafi sobie wyobrazić komputera bez graficznego interfejsu.
 Coraz większe możliwości nowoczesnych komputerów są motorem napędowym rozmaitych badań nad komputerowymi modelami świata rzeczywistego.
 
-Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiajac w 1962r. \cite{ulam} drzewo jako samoorganizującą się
+Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiając w 1962r. \cite{ulam} drzewo jako samoorganizującą się
 strukturę. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestreń.
 Honda zaproponował w 1971r. modelowanie drzew jako stuktury rekursywnej opisanej
 zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji \cite{honda}.
@@ -20,7 +20,7 @@ przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzieli
 \item od szczegółu do ogółu, czyli opisanie pewnym zbiorem parametrów budowy drzewa
 \end{itemize}
 Problem stworzenia modelu drzewa możemy podzielić na stworzenie modeli jego składowych np. gałęzi, kory, liści, czy kwiatów i późniejsze
-ich połączenie w jedną całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części.
+ich połączenie w całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części.
 
 \section{Generowanie struktury drzewa}
 Generowanie drzewa przebiega w następujących etapach:
@@ -91,6 +91,9 @@ Rośliny, w szczególności drzewa, są bardzo złożonymi strukturami. Projektu
 
 
 \subsection{Model węzła}
+
+\label{subsec:node_model}
+
 Węzeł charakteryzuje się dwoma parametrami: położeniem(P) oraz promieniem(R). Na ich podstawie wyliczany jest segment, który składa się z przynajmniej 3 punktów leżących na okręgu o środku w punkcie P i promieniu R. Wektor normalny do płaszczyzny tworzonej przez punkty segmentu oraz punkt P jest wyliczany w następujący sposób: $\vec{n}=\frac{\vec{AP}}{|\vec{AP}|}+\frac{\vec{PB}}{|\vec{PB}|}$, gdzie A - poprzednik P; B - następnik P. Jeśli węzeł A lub B nie istnieje, to odpowiednio pierwszy lub drugi składnik sumy przyjmuje wartość 0.
 
 Promień danego węzła jest wyznaczany w nastepujący sposób:
@@ -148,7 +151,7 @@ Wektor normalny jest wyznaczany na podstawie położenia liścia względem punkt
 
 
 
-Liście są rozkładane są na gałęziach w sposób losowy, przy czym rozkład nie jest równomierny. Prawdopodobieństwo umiejscowienia liścia na końcu gałęzi jest znacznie większe niż na początku. Efekt ten uzyskaliśmy w następujący sposób: $node\_id = \lceil\sqrt{rand()}*(nodes\_length-1)\rceil$.
+Liście są rozkładane na gałęziach w sposób losowy, przy czym rozkład nie jest równomierny. Prawdopodobieństwo umiejscowienia liścia na końcu gałęzi jest znacznie większe niż na początku. Efekt ten uzyskaliśmy w następujący sposób: $node\_id = \lceil\sqrt{rand()}*(nodes\_length-1)\rceil$.
 
 \begin{description}
 	\item[node\_id] indeks węzła w danej gałęzi, do którego zostanie doczepiony liść
@@ -216,14 +219,31 @@ Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzc
 	\label{chaikin_branch}
 \end{center}
 
-\subsection{Korona - TODO}
-Algorytm kolonizacyjny w pierwszym kroku rozmieszcza atraktory wewnątrz danej podprzestrzenii, która to determinuje swoim kształtem wygląd wygenerowango drzewa. Wybór typu korony został ograniczony do 3 kształtów.
-\begin{itemize}
-	\item{sfera - możliwość zmiany promienia}
-	\item{ścięty stożek - możliwość zmiany wysokości oraz promiania dolnej i górnej podstawy}
-	\item{\textit{spline crown} - korona tworzona na skutek obrotu krzywej sklejalnej trzeciego stopnia wokół osi OX}
-\end{itemize}
+\subsection{Korona}
+Algorytm kolonizacyjny w pierwszym kroku rozmieszcza atraktory wewnątrz danej podprzestrzenii, która to determinuje swoim kształtem wygląd wygenerowango drzewa. Wybór typu korony został ograniczony do 3 kształtów. Każdy z typów jest opisany przez położenie w przestrzenii oraz właściwości charakterystyczne dla niego.
 
+\begin{table}[h]
+\begin{center}
+\begin{threeparttable}
+\begin{tabular}{| l | l |}
+	\hline
+	\textbf{Typ} & \textbf{Właściwości}\\
+	\hline
+	sfera & promień\\
+	\hline
+	ścięty stożek & promień dolny, promień górny, wysokość\\
+	\hline
+	\textit{spline crown\tnote{1}} & węzły interpolacji\\
+	\hline
+\end{tabular}
+
+\begin{tablenotes}
+	\item[1] korona tworzona przez obrót funkcji sklejalnej trzeciego stopnia wokół OX
+\end{tablenotes}
+\end{threeparttable}
+\end{center}
+\caption{Typy koron wraz z charakterystycznymi właściwościami.}
+\end{table}
 \begin{center}
 	\includegraphics[width=130mm]{images/model/crowns.png}
 	\captionof{figure}{Typy koron (sfera, ścięty stożek, \textit{spline crown})}
