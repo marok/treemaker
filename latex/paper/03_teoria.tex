@@ -126,7 +126,7 @@ Oznaczenia:
 \subsection{Model gałęzi}
 Dobrym przybliżeniem gałęzi jest uogólniony walec (ang. generalized cylinder). Jest to powierzchnia w przestrzeni $R^3$, której przekrój poprzeczny jest krzywą zamkniętą.
 
-Gałąź jest reprezentowana przez listę kolejnych węzłów. Węzeł o najniższym indeksie znajduje się na jej początku(rozwidlenie bądź początek drzewa). Aby gałąź utworzyła uogólniony walec, łączymy ze sobą odpowiednie punkty segmentów sąsiednich węzłów (rys. \ref{two_segments}).
+Gałąź jest reprezentowana przez listę kolejnych węzłów o największych średnicach idąc od dołu drzewa. Pozostałe węzły są początkami gałęzi potomnych. Przez połączenie ze sobą odpowiednich punktów z segmentów sąsiednich węzłów otrzymujemy uogólniony walec (rys. \ref{two_segments}).
 
 Gałąź może być początkiem kolejnych konarów, dlatego posiada kolekcję gałęzi potomnych.
 
@@ -155,6 +155,66 @@ Liście są rozkładane są na gałęziach w sposób losowy, przy czym rozkład 
 	\item[nodes\_length] jest liczbą węzłów należących do danej gałęzi.
 	\item[rand()] zmienna losowa o rozkładzie równomiernym z zakresu $(0;1\rangle$
 \end{description}
+
+\subsection{Wygładzanie gałęzi przy pomocy algorytmu Chaikina \cite{smoothing}}
+\subsubsection{Wstęp}
+W 1974r. George Chaikin opublikował algorytm generowania krzywych ze skończonej liczby punktów kontrolnych. Algorytm ten okazał się bardzo interesujący przez niski stopień swojej komplikacji. Opiera się jedynie na ścinaniu wierzchołków początkowego wielokąta.
+
+Tworzenie krzywej następuje iteracyjnie. Proces można można powtarzać, aż do osiągnięcia wymaganej rozdzielczości krzywej (rys. \ref{chaikin_1}).
+
+\begin{center}
+	\includegraphics[width=80mm]{images/model/chaikin_1.png}
+	\captionof{figure}{Kolejne iteracje algorytmu Chaikina. \cite{smoothing}}
+	\label{chaikin_1}
+\end{center}
+
+\subsubsection{Opis algorytmu}
+
+Dla danego wielokąta \{$P_1$, $P_2$, ..., $P_n$\} wyznaczamy wielokąt pochodny \{$R_1$, $L_1$, $R_2$, $L_2$, ..., $R_n$, $L_n$\}, gdzie
+$L_i = \frac{1}{4}P_{i-1} + \frac{3}{4}P_i$ oraz $R_i = \frac{3}{4}P_i + \frac{1}{4}P_{i+1}$.
+Nowo powstały wielokąt składa się z $2n$ wierzchołków.
+
+\begin{center}
+	\begin{picture}(200,100)
+		\put(10,10){\circle*{5}}
+		\put(5,15){$P_{i-1}$}
+	
+		\put(90,70){\circle*{5}}
+		\put(85,75){$P_i$}
+	
+		\put(190,20){\circle*{5}}
+		\put(175,25){$P_{i+1}$}
+	
+		\put(10,10){\line(4,3){80}}
+		\put(90,70){\line(2,-1){100}}
+		
+		\put(70,55){\circle*{5}}
+		\put(65,60){$L_i$}
+		\put(115,57.5){\circle*{5}}
+		\put(110,62.5){$R_i$}
+		
+		\multiput(70,55)(10,0){5}{\line(1,0){5}}
+		
+	\end{picture}
+	\captionof{figure}{Wierzchołki pochodne dla $P_i$.}
+\end{center}
+
+\subsubsection{Zastosowanie algorytmu Chaikina dla gałęzi}
+Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzchołków pochodnych, wymaga 2 sąsiadów. Chcąc zastosować wcześniej wspomnianą metodę dla gałęzi (łamana otwarta), trzeba wprowadzić pewne modyfikacje podczas przekształcania jej końców.
+
+
+\begin{itemize}
+	\item{Dla $i=1$ lub $i=n$: jeden punkt pochodny równy $P_i$}
+	\item{Dla $i=2$: $L_i = \frac{1}{2}P_{i-1} + \frac{1}{2}P_i$ oraz $R_i = \frac{3}{4}P_i + \frac{1}{4}P_{i+1}$}
+	\item{Dla $i=n-1$: $L_i = \frac{1}{4}P_{i-1} + \frac{3}{4}P_i$ oraz $R_i = \frac{1}{2}P_i + \frac{1}{2}P_{i+1}$}
+	\item{Dla pozostałych przypadków: $L_i = \frac{1}{4}P_{i-1} + \frac{3}{4}P_i$ oraz $R_i = \frac{3}{4}P_i + \frac{1}{4}P_{i+1}$}
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width=130mm]{images/model/chaikin_branch.pdf}
+	\captionof{figure}{Kolejne iteracje algorytmu Chaikina dla łamanej otwartej.}
+	\label{node_radius}
+\end{center}
 
 \section{Teksturowanie}
 Aplikacja obsługuje jedynie tekstury w formacie 24bit BMP. 
