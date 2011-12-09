@@ -7,12 +7,12 @@ Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Mass
 komputer wyposażony w grafoskop \cite{jankowski}. Obecnie większość użytkowników nie potrafi sobie wyobrazić komputera bez interfejsu graficznego.
 Coraz większe możliwości nowoczesnych komputerów są motorem napędowym rozmaitych badań nad komputerowymi modelami świata rzeczywistego.
 
-Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiając w 1962r. drzewo jako samoorganizującą się
-strukturę \cite{ulam}. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestreń.
-Honda zaproponował w 1971r. modelowanie drzew jako stuktury rekursywnej opisanej
+Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ułam, przedstawiając w 1962r. drzewo jako samo-organizującą się
+strukturę \cite{ulam}. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestrzeń.
+Honda zaproponował w 1971r. modelowanie drzew jako struktury rekursywnej opisanej
 zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji \cite{honda}.
 
-Dopiero w latach osiemdziesiatych
+Dopiero w latach osiemdziesiątych
 możliwości ówczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 1985r. 
 przedstawiająca proces modelowania klonu \cite{bloomenthal}. Podejścia do tematu generowania drzew możemy podzielić na trzy grupy:
 \begin{itemize}
@@ -45,7 +45,7 @@ W podejściu kolonizacyjnym symuluje się iteracyjny wzrost gałęzi drzewa, aż
 \newpage
 W dalszych rozważaniach będziemy używali następujących pojęć:\begin{description}
 	\item[węzeł drzewa] odcinek w przestrzeni trójwymiarowej reprezentujący część gałęzi
-	\item[atraktor] punkt w przestrzeni trójwymiarowej, do którego osiągniecia dążą węzły drzewa
+	\item[atraktor] punkt w przestrzeni trójwymiarowej, do którego osiągnięcia dążą węzły drzewa
 	\item[korona] podprzestrzeń przestrzeni trójwymiarowej
 \end{description}
 \subsection{Opis skrócony}
@@ -100,7 +100,7 @@ Rośliny, w szczególności drzewa, są bardzo złożonymi strukturami. Projektu
 
 Węzeł charakteryzuje się dwoma parametrami: położeniem(P) oraz promieniem(R). Na ich podstawie wyliczany jest segment, który składa się z przynajmniej 3 punktów leżących na okręgu o środku w punkcie P i promieniu R. Wektor normalny do płaszczyzny tworzonej przez punkty segmentu oraz punkt P jest wyliczany w następujący sposób: $\vec{n}=\frac{\vec{AP}}{|\vec{AP}|}+\frac{\vec{PB}}{|\vec{PB}|}$, gdzie A - poprzednik P; B - następnik P. Jeśli węzeł A lub B nie istnieje, to odpowiednio pierwszy lub drugi składnik sumy przyjmuje wartość 0.
 
-Promień danego węzła jest wyznaczany w nastepujący sposób:
+Promień danego węzła jest wyznaczany w następujący sposób:
 $$
   R[node] = \left\{ 
   \begin{array}{l l}
@@ -143,7 +143,7 @@ Gałąź może być początkiem kolejnych konarów, dlatego posiada kolekcję ga
 	\label{branching}
 \end{center}
 \subsection{Model liścia}
-Liść cechuje się dwiema właściwościami: normalną do powierzchnii liścia oraz wektorem wyznaczającym kierunek liścia. Oba wektory są do siebie prostopadłe. Liść jest związany z konkretnym węzłem.
+Liść cechuje się dwiema właściwościami: wektorem normalnym do powierzchni liścia oraz wektorem wyznaczającym kierunek liścia. Oba wektory są do siebie prostopadłe. Liść jest związany z konkretnym węzłem.
 
 \begin{center}
 	\includegraphics[width=80mm]{images/model/leaf_vects.png}
@@ -207,7 +207,7 @@ Nowo powstały wielokąt składa się z $2n$ wierzchołków.
 \end{center}
 
 \subsubsection{Zastosowanie algorytmu Chaikina dla gałęzi}
-Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzchołków pochodnych, wymaga 2 sąsiadów. Chcąc zastosować wcześniej wspomnianą metodę dla gałęzi (łamana otwarta), trzeba wprowadzić pewne modyfikacje podczas przekształcania jej końców.
+Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzchołków pochodnych wymaga 2 sąsiadów. Chcąc zastosować wcześniej wspomnianą metodę dla gałęzi (łamana otwarta), trzeba wprowadzić pewne modyfikacje podczas przekształcania jej końców.
 
 
 \begin{itemize}
@@ -224,7 +224,7 @@ Algorytm Chaikina w podstawowej wersji dla każdego punktu do wyznaczenia wierzc
 \end{center}
 
 \subsection{Korona}
-Algorytm kolonizacyjny w pierwszym kroku rozmieszcza atraktory wewnątrz danej podprzestrzenii, która to determinuje swoim kształtem wygląd wygenerowango drzewa. Wybór typu korony został ograniczony do 3 kształtów. Każdy z typów jest opisany przez położenie w przestrzenii oraz właściwości charakterystyczne dla niego.
+Algorytm kolonizacyjny w pierwszym kroku rozmieszcza atraktory wewnątrz danej podprzestrzeni, która to determinuje swoim kształtem wygląd wygenerowanego drzewa. Wybór typu korony został ograniczony do 3 kształtów. Każdy z typów jest opisany przez położenie w przestrzeni oraz właściwości charakterystyczne dla niego.
 
 \begin{table}[h]
 \begin{center}
@@ -242,7 +242,7 @@ Algorytm kolonizacyjny w pierwszym kroku rozmieszcza atraktory wewnątrz danej p
 \end{tabular}
 
 \begin{tablenotes}
-	\item[1] korona tworzona przez obrót funkcji sklejalnej trzeciego stopnia wokół OX
+	\item[1] korona tworzona przez obrót funkcji sklejalnej trzeciego stopnia wokół osi OX
 \end{tablenotes}
 \end{threeparttable}
 \end{center}

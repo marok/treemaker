@@ -1,6 +1,6 @@
 \chapter{Dokumentacja}
 
-\section{Diagramy klas}
+\section{Uproszczony diagram klas}
 
 \begin{center}
 	\includegraphics[scale=0.55]{images/treemaker_uml}
@@ -9,7 +9,7 @@
 
 \section{Eksport modelu}
 Ponieważ format danych używany w programie nie jest zgodny z powszechnie uznanymi formatami modeli trójwymiarowych, aby zachować kompatybilność należy przeprowadzić eksport modelu do 
-formatu zewnętrznego. Format .OBJ zgodnie z wymaganiami jest obsługiwany przez program Blender.
+formatu zewnętrznego. Format .OBJ jest obsługiwany przez program Blender.
 Został on opracowany przez firmę Wavefront Technologies i ze względu na swoją prostotę stał się szybko
 popularny wśród programów do obróbki grafiki trójwymiarowej. Na format składa się plik tekstowy z rozszerzeniem .obj 
 zawierający opis geometrii obiektu. Dodatkowo format przewiduje odwołanie do pliku z rozszerzeniem .mtl zawierającym
@@ -17,7 +17,7 @@ opis materiałów (kolorów i tekstur).
 
 
 \subsection{Struktura pliku .obj}
-Plik jest podzielony na linie, z czego każda linia moze zawierać:
+Plik jest podzielony na linie, z czego każda linia może zawierać:
 \begin{itemize}
 \item '\#' : komentarz 
 \item mtllib [nazwa pliku .mtl] :odwołanie do pliku z materiałami
@@ -200,8 +200,9 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 	\item {Współczynnik $a$.$\tnote{1}$}
 	\item {Współczynnik $m$.$\tnote{1}$}
 	\item {Liczba punktów tworzących segment.}
-	\item {Liczba tekstur potrzebną do owinięcia pnia.}
+	\item {Liczba tekstur potrzebna do owinięcia pnia.}
 	\item {Stosunek rozmiaru tekstury do odległości mierzonej wzdłuż pnia.}
+	\item {Podgląd tekstury pnia.}
 \end{enumerate}
 } &
 \parbox[c]{35mm}{
@@ -209,7 +210,7 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 }\\
 \end{tabular}
 \begin{tablenotes}
-	\item[1] Wpływ współczynników na wygląd pnia dokładnie opisany w podrozdziale \ref{subsec:node_model} na stronie \pageref{subsec:node_model}.
+	\item[1] Wpływ współczynników na wygląd pnia dokładnie opisany na stronie \pageref{subsec:node_model}.
 \end{tablenotes}
 
 \end{threeparttable}
@@ -240,13 +241,13 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 \begin{tabular}{lr}
 \parbox[c]{95mm}{
 \begin{enumerate}
-	\item {Tryb zaznaczania gałęzi - odpowiednio: cała gałęź, od punktu do końca gałęzi oraz od punktu do punktu.}
+	\item {Tryb zaznaczania gałęzi - odpowiednio: cała gałąź, od punktu do końca gałęzi oraz od punktu do punktu.}
 	\item {Zastosuj dla wszystkich dzieci - edycji podlegają też gałęzie wychodzące z edytowanego fragmentu i dalej rekursywnie wszyscy potomkowie.}
 	\item {Przycinanie gałęzi.}
 	\item {Wygładzanie gałęzi - gałęzie są modyfikowane przy użyciu algorytmu Chaikina.}
 	\item {Zmniejszanie rozdzielczości gałęzi - co drugi węzeł gałęzi jest usuwany. Gałęzie wychodzące z usuwanych węzłów są przesuwane do węzłów położonych niżej.}
 	\item {Dociążanie gałęzi - od współrzędnej $Z$ danego węzła jest odejmowana pewna stała, która rośnie wprost proporcjonalnie do odległości węzła od osi drzewa.}
-	\item {Odciązanie gałęzi - analogicznie do opcji 6.}
+	\item {Odciążanie gałęzi - analogicznie do opcji 6.}
 \end{enumerate}
 } &
 \parbox[c]{35mm}{
@@ -257,7 +258,7 @@ zapisuje je do pliku \{models/tree0.obj\}. Dodatkowo program tworzy plik \{model
 \newpage
 \section{Kompilacja projektu}
 \subsection{Wymagane biblioteki}
-Zgodnie z wymaganiami programi powinien posiadać możliwie małą ilość zależności. System powinien posiadać kompilator GCC oraz bibliotekę GTK+ z rozszerzeniem do obsługi OpenGL.
+Zgodnie z wymaganiami program powinien posiadać możliwie małą liczbę zależności. System powinien posiadać kompilator GCC oraz bibliotekę GTK+ z rozszerzeniem do obsługi OpenGL.
 Poniżej przedstawiono dokładne wersje bibliotek wymagane przez program.
 \begin{itemize}
 \item GTK+ 2.2

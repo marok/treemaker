@@ -6,29 +6,29 @@ wynika istotna kwestia, mianowicie obsługa narzędzia musi być prosta i intuic
 \section{Wymagania funkcjonalne} 
 Poniżej zebrano wymagania funkcjonalne aplikacji.
 \begin{enumerate}
-\item Aplikacja ma być przeznaczona dla systemu Linux. 
-\begin{enumerate}
-\item Aplikacja ma być napisana w języku C++.
-\item Aplikacja ma działać w trybie graficznym.
-\item Kontrolki aplikacji mają wyświetlać podpowiedzi, po najechaniu na nie kursorem.
-\item Aplikacja powinna korzystać z jak najmniejszej liczby zewnętrznych bibliotek.
-\end{enumerate}
+\item Aplikacja działająca pod systemem Linux: 
+\begin{itemize}
+\item napisana w języku C++,
+\item działająca w trybie graficznym,
+\item wyświetlająca podpowiedzi po najechaniu kursorem na kontrolkę,
+\item korzystająca z jak najmniejszej liczby zewnętrznych bibliotek.
+\end{itemize}
 \item Aplikacja ma umożliwiać zmianę parametrów algorytmu generowania.
 \item Generowanie modelu nie powinno trwać dłużej niż kilka sekund.
 \item Aplikacja ma umożliwiać wybór tekstur liści i kory.
-\begin{enumerate}
-\item Aplikacja ma obsługiwać format 24bit BMP. 
-\item Aplikacja ma umożliwiać wybór kliku tekstur liści.
-\item Użytkownik ma mieć możliwość wskazania pliku z teksturą.
-\end{enumerate}
+\begin{itemize}
+\item Obsługa formatu 24bit BMP. 
+\item Możliwość wyboru kliku tekstur liści.
+\item Możliwość wskazania plików z teksturami.
+\end{itemize}
 \item  Aplikacja ma umożliwiać zapis i odczyt aktualnych ustawień do i z pliku.
-\begin{enumerate}
-\item Użytkownik ma mieć możliwość wyboru nazwy pliku.
+\begin{itemize}
+\item Możliwość wyboru nazwy pliku.
 \item Plik z ustawieniami powinien być plikiem tekstowym ASCII.
-\end{enumerate}
+\end{itemize}
 \item Aplikacja ma umożliwiać eksport modelu drzewa do formatu .OBJ.
 \item Użytkownik ma mieć możliwość edycji modelu drzewa w trybie \\WYSWIG.
-\begin{enumerate}
+\begin{itemize}
 \item Wybór aktywnej gałęzi.
 \item Zmiana współczynnika grawitacji dla aktywnej gałęzi.
 \item Usunięcie aktywnej gałęzi.
@@ -38,7 +38,7 @@ Poniżej zebrano wymagania funkcjonalne aplikacji.
 \item Zmiana liczby liści danego typu.
 \item Zaznaczenie szypułki liścia.
 \item Modyfikacja ułożenia tekstury kory.
-\end{enumerate}
+\end{itemize}
 \end{enumerate}
 
 \section{Ograniczenia aplikacji}
@@ -50,7 +50,7 @@ Możliwości aplikacji ograniczone są do:
 \begin{itemize}
 	\item {generowania małych drzew liściastych}
 	\item {rendering modelu jest jedynie poglądowy, bez zaawansowanego oświetlenia, wygładzania krawędzi}
-	\item {teksturowanie jest możliwe tylko jedną teksturą jednocześnie}
+	\item {teksturowanie pnia jest możliwe tylko jedną teksturą jednocześnie}
 	\item {model drzewa nie uwzględnia systemu korzeni, owoców i kwiatów}
 	\item {brak modelu fizycznego drzewa}
 \end{itemize}
