@@ -122,7 +122,9 @@ class MainWindow
 
 		glEnable (GL_DEPTH_TEST);
 		glDepthFunc (GL_LEQUAL);
-		glClearColor (0.8, 0.8, 1, 0.0);
+		//glClearColor (0.8, 0.8, 1, 0.0);
+	glClearColor (1, 1, 1, 0.0);
+		
 		gdk_gl_glPolygonOffsetEXT (proc, 1.0, 1.0);
 		//glEnable (GL_CULL_FACE);
 		glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);

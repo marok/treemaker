@@ -1,34 +1,34 @@
-\chapter{Wstęp teoretyczny}
+\chapter{Teoria}
 
 
 
 \section{Historia i stan obecny dziedziny}
-Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Massachusets Institute of Technology \cite{jankowski} powstał pierwszy
-komputer wyposażony w grafoskop. Obecnie większość użytkowników nie potrafi sobie wyobrazić komputera bez graficznego interfejsu.
+Dynamiczny rozwój grafiki komputerowej obserwujemy od roku 1950 kiedy to w Massachusets Institute of Technology  powstał pierwszy
+komputer wyposażony w grafoskop \cite{jankowski}. Obecnie większość użytkowników nie potrafi sobie wyobrazić komputera bez interfejsu graficznego.
 Coraz większe możliwości nowoczesnych komputerów są motorem napędowym rozmaitych badań nad komputerowymi modelami świata rzeczywistego.
 
-Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiając w 1962r. \cite{ulam} drzewo jako samoorganizującą się
-strukturę. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestreń.
+Prekursorem w dziedzinie wizualizacji drzew był polski matematyk Stanisław Ulam, przedstawiając w 1962r. drzewo jako samoorganizującą się
+strukturę \cite{ulam}. Jego model wykorzystujący automaty komórkowe opierał się na rywalizacji węzłów  drzewa o przestreń.
 Honda zaproponował w 1971r. modelowanie drzew jako stuktury rekursywnej opisanej
 zbiorem parametrów takich jak kąt rozgałęzień, czy stosunek długości między kolejnymi poziomami rekurencji \cite{honda}.
 
 Dopiero w latach osiemdziesiatych
-możliwości ówczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 1985r. \cite{bloomenthal}
-przedstawiająca proces modelowania klonu. Podejście do tematu możemy podzielić na dwie grupy:
+możliwości ówczesnych komputerów pozwoliły na trójwymiarową wizualizację drzew, czego przykładem może być praca Bloomenthala z 1985r. 
+przedstawiająca proces modelowania klonu \cite{bloomenthal}. Podejścia do tematu generowania drzew możemy podzielić na trzy grupy:
 \begin{itemize}
 \item od ogółu do szczegółu, czyli modelowanie z zadanymi parametrami wyglądu drzewa
 \item od szczegółu do ogółu, czyli opisanie pewnym zbiorem parametrów budowy drzewa
+\item podejścia hybrydowe
 \end{itemize}
 Problem stworzenia modelu drzewa możemy podzielić na stworzenie modeli jego składowych np. gałęzi, kory, liści, czy kwiatów i późniejsze
-ich połączenie w całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części.
+ich połączenie w całość. Na chwilę obecną istnieją zaawansowane metody generowania zarówno całych drzew, jak i poszczególnych jego części składowych.
 
 \section{Generowanie struktury drzewa}
-Generowanie drzewa przebiega w następujących etapach:
+Generowanie struktury drzewa przebiega w następujących etapach:
 \begin{itemize}
 \item generowanie szkieletu
 \item stworzenie geometrii
 \item teksturowanie
-\item edycja
 \end{itemize}
 \begin{center}
 	\includegraphics[width=120mm]{images/colonization/generation.png}
@@ -43,11 +43,10 @@ Z biologicznego punktu widzenia miało to uzasadnienie jako śledzenie trasy tra
 W podejściu kolonizacyjnym symuluje się iteracyjny wzrost gałęzi drzewa, aż do wykorzystania całego dostępnego miejsca.
 
 \newpage
-Pojęcia:
-\begin{description}
+W dalszych rozważaniach będziemy używali następujących pojęć:\begin{description}
 	\item[węzeł drzewa] odcinek w przestrzeni trójwymiarowej reprezentujący część gałęzi
 	\item[atraktor] punkt w przestrzeni trójwymiarowej, do którego osiągniecia dążą węzły drzewa
-	\item[korona] podzbiór punktów przestrzeni trójwymiarowej
+	\item[korona] podprzestrzeń przestrzeni trójwymiarowej
 \end{description}
 \subsection{Opis skrócony}
 \begin{center}
@@ -55,17 +54,22 @@ Pojęcia:
 	\captionof{figure}{Etapy algorytmu kolonizacyjnego \cite{spaceColonization}}
 	\label{colonization_colonization}
 \end{center}
+\begin{itemize}
+\item a - losowanie atraktorów wewnątrz korony
+\item b,c - kolejne iteracje symulujące wzrost drzewa
+\item d,e - przetwarzanie wygenerowanego modelu
+\end{itemize}
 
 
 \subsection{Algorytm}
 
 Dane algorytmu:
 \begin{my_itemize}
-	\item{korona}
-	\item{di - influence distance}
-	\item{dk - kill distance}
-	\item{D - node length}
-	\item{points - liczba atraktorów}
+	\item{di - odległość w jakiej węzły drzewa poszukują atraktorów}
+	\item{dk - odległość po osiągnięciu której atraktor jest usuwany}
+	\item{D - długość węzłów drzewa}
+	\item{point[N] - lista atraktorów znajdujących się wewnątrz korony}
+	\item{N - liczba atraktorów}
 	\item{dist(a,b) - funkcja zwracająca odległość euklidesową między dwoma punktami przestrzeni}
 \end{my_itemize}
 
@@ -75,12 +79,12 @@ Dane algorytmu:
   dopóki istnieją atraktory:
     dla kazdego atraktora a :
       wyznacz najbliższy węzeł drzewa n
-       jesli dist(n,a) <=di
-        oblicz wektor n->a
+       jesli dist(n,a) <= di
+        oblicz wektor (n-a)
       dodaj nowy wezel do drzewa (n-a)
   dla kazdego atraktora
-    jeśli istnieje wezeł drzewa w odległosci <=dk
-      usuń atraktor
+    jeśli istnieje wezeł drzewa w odległosci <= dk
+      usuń atraktor z listy
 \end{verbatim}
 
 Ponieważ istnieją parametry uniemożliwiające zakończenie algorytmu np. $dk \ll D$, warunek końca obliczeń na potrzeby implementacji został zastąpiony sprawdzeniem, czy w poprzedniej iteracji utworzono jakiś nowy węzeł drzewa.
