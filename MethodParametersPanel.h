@@ -136,7 +136,7 @@ public:
 		hideWidgets(cm->params->methodParams->ACTIVEMETHOD_DEFAULT);
 		return paramsWidget;
 	}
-	
+
 	void updatePanel()
 	{
 		MethodParameters *mp = cm->params->methodParams;
@@ -156,7 +156,7 @@ public:
 
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjustments["attraction:"]), mp->attraction);
 	}
-	
+
 };
 
 

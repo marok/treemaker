@@ -4,21 +4,21 @@
 class LeafModel
 {
 public:
-	
+
 	//wektor normalny do powierzchni liścia
 	Vector3d *norm;
-	
+
 	//wektor określający kierunek liścia na powierzchni
 	Vector3d *dir;
-	
+
 	//wektory norm i dir muszą być do siebie prostopadłe
-	
+
 	LeafModel()
 	{
 		norm = NULL;
 		dir = NULL;
 	}
-	
+
 	~LeafModel()
 	{
 		if(norm)

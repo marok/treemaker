@@ -26,7 +26,7 @@ public:
 		this->position = new Point3d(&absoultePosition);
 		this->position->sub(&branchAbsolutePosition);
 		this->segment = new Segment();
-	
+
 		this->r = r;
 		this->leaf = NULL;
 	}

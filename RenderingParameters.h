@@ -16,7 +16,7 @@ public:
 	RenderingParameters() {
 		setDefault();
 	}
-	
+
 	void setDefault()
 	{
 		showEnvelopes=SHOWENVELOPE_DEFAULT;
@@ -24,7 +24,7 @@ public:
 		showBark=SHOWBARK_DEFAULT;
 		showGrass=SHOWGRASS_DEFAULT;
 	}
-	
+
 	/* Serialization methods */
 	void save(ofstream &s)
 	{

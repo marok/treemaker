@@ -37,7 +37,7 @@ public:
 		vbox = gtk_vbox_new(FALSE,1);
 		gtk_container_add (GTK_CONTAINER (paramsWidget), vbox);
 
-		
+
 #define PACK_CHECKBOX(var_name, paramname,label,hint)\
 		var_name = gtk_check_button_new_with_label(label);\
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(var_name),params->rp->paramname);\
@@ -57,7 +57,7 @@ public:
 
 		return paramsWidget;
 	}
-	
+
 	void updatePanel()
 	{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkShowEnv), params->rp->showEnvelopes);

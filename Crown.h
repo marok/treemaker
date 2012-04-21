@@ -25,7 +25,7 @@ public:
 		this->activeSubcrown = -1;
 		setDefault();
 	}
-	
+
 	void setDefault()
 	{
 		subcrowns.clear();

@@ -39,7 +39,12 @@ class ColonizationMethod:public GenerationMethod
 
 		int runda = 0;
 
+
 		while (left && runda++ < 2000 && nodes.size () < 8000) {
+
+			while (gtk_events_pending()) {
+				gtk_main_iteration_do(FALSE);
+			}
 			left = aPoints.size ();
 
 			bool added = 0;
@@ -93,7 +98,7 @@ class ColonizationMethod:public GenerationMethod
 
 						Vector3d tmp = Vector3d (s);
 
-						
+
 						Vector3d tmp2 = Vector3d (p);
 
 						tmp.sub (&tmp2);
@@ -101,18 +106,18 @@ class ColonizationMethod:public GenerationMethod
 					}
 					sum.normalize ();
 					sum.mul (params->methodParams->D);
-					
-					
-					
+
+
+
 					Node *newNode = new Node(&nodes[i]->point);
 
-					
-					
+
+
 					newNode->point.x += sum.d[0];
 					newNode->point.y += sum.d[1];
 					newNode->point.z += sum.d[2];
-					
-					
+
+
 					added = 1;
 					int duplication = 0;
 
@@ -146,22 +151,24 @@ class ColonizationMethod:public GenerationMethod
 			}
 		}
 	}
-	
+
 public:
 	vector < Node *> nodes;	//tree nodes
 	vector < Point3d *> aPoints;	//attraction points
 
 	//MethodParameters *params;
 	//Crown *crown;
-
+	GtkWidget *bar;
 	Parameters *params;
 	ColonizationMethod(Parameters *params)
 	{
-	  this->params=params;
-	//	this->params = params->methodParams;
-	//	crown = params->crown;
+		this->params=params;
+		//	this->params = params->methodParams;
+		//	crown = params->crown;
 	}
-
+	void setBar(GtkWidget *pbar) {
+		bar=pbar;
+	}
 	void init ()
 	{
 		for(unsigned int i=0; i<nodes.size(); i++)

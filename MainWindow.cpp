@@ -91,6 +91,8 @@ enum TreemakerMode
 
 TreemakerMode tmMode = MODE_GENERATOR;
 
+
+
 class MainWindow
 {
 	GtkWidget *window;
@@ -428,6 +430,7 @@ class MainWindow
 
 		return menu;
 	}
+	
 	GtkWidget *createWindow (GdkGLConfig * glconfig) {
 		GtkWidget *window;
 
@@ -578,6 +581,13 @@ class MainWindow
 
 		gtk_widget_show(notebook);
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
+		
+		
+		//gtk_progress_bar_update((GtkProgressBar*)progress_bar,1);
+		//gtk_progress_set_show_text ((GtkProgressBar*)progress_bar,gint 1);
+		gtk_widget_show(tbar->progress_bar);
+		gtk_box_pack_start(GTK_BOX(vbox),tbar->progress_bar,FALSE,FALSE,1);
+
 
 		windowWidget=window;
 		return window;

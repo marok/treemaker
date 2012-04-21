@@ -118,7 +118,7 @@ class DrawMethods {
 		}
 		glPopMatrix();
 	}
-	
+
 	static void
 	drawEnvelopeSphere(SphereCrown *sphereCrown, bool active)
 	{
@@ -465,17 +465,17 @@ if(mode==GL_SELECT)\
 			Subcrown *sub = c->subcrowns.at(i);
 			switch(sub->shape)
 			{
-				case SPLINE:
-					drawEnvelopeSpline(SPLINE_CROWN(sub), crown->activeSubcrown == (int)i, SPLINE_CROWN(sub)->activePoint);
-					break;
-				case TRUNCATEDCONE:
-					drawEnvelopeTruncatedCone(TRUNCATEDCONE_CROWN(sub),crown->activeSubcrown == (int)i);
-					break;
-				case SPHERE:
-					drawEnvelopeSphere(SPHERE_CROWN(sub), crown->activeSubcrown == (int)i);
-					break;
-				default:
-					break;
+			case SPLINE:
+				drawEnvelopeSpline(SPLINE_CROWN(sub), crown->activeSubcrown == (int)i, SPLINE_CROWN(sub)->activePoint);
+				break;
+			case TRUNCATEDCONE:
+				drawEnvelopeTruncatedCone(TRUNCATEDCONE_CROWN(sub),crown->activeSubcrown == (int)i);
+				break;
+			case SPHERE:
+				drawEnvelopeSphere(SPHERE_CROWN(sub), crown->activeSubcrown == (int)i);
+				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -560,7 +560,7 @@ if(mode==GL_SELECT)\
 		initLeavesTextures(params);
 
 		glColor4f(0.0, 0, 0, 0); // reset gl color
-		
+
 
 		glEnable(GL_BLEND);// Turn Blending On
 		glDisable(GL_DEPTH_TEST);
@@ -572,28 +572,28 @@ if(mode==GL_SELECT)\
 
 		unsigned int type=params->lp->types[lastTypeId].first;
 		//float size=params->lp->types[lastTypeId].second;
-		
+
 		Point2d petiole = params->lp->leaves[type].petiole;
-		
+
 		/*ustalenie położenia liścia*/
 		Vector3d a, b, *tmp1, *tmp2;
 		tmp1 = dir->crossProduct(norm);
 		tmp1->normalize();
 		tmp1->mul(1-petiole.x);
-		
+
 		tmp2 = dir->crossProduct(norm);
 		tmp2->normalize();
 		tmp2->mul(-1.0*petiole.x);
-		
+
 		a.add(dir);
 		a.add(tmp1);
-		
-		
+
+
 		b.add(dir);
 		b.add(tmp2);
-		
-		
-		
+
+
+
 #define TEXTURIZE\
 		glBegin(GL_TRIANGLES);\
 		{\
@@ -642,7 +642,7 @@ if(mode==GL_SELECT)\
 	static void drawLeaves(BranchModel *bm, Parameters *params,unsigned int cnt)
 	{
 		if(!bm) return;
-		
+
 		for(unsigned int i=0; i<bm->nodeModelList.size(); i++)
 			if(bm->nodeModelList[i]->leaf)
 			{

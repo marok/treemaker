@@ -57,7 +57,7 @@ class CrownParametersPanel: public IPanel {
 		sprintf(buffX, "%.1f", sub->x);
 		sprintf(buffY, "%.1f", sub->y);
 		sprintf(buffZ, "%.1f", sub->z);
-		
+
 		strcpy(buffShape, sub->shape == SPLINE?"Spline":(sub->shape == TRUNCATEDCONE?"Truncated Cone":"Sphere"));
 
 		GtkTreeIter iter;
@@ -134,7 +134,7 @@ class CrownParametersPanel: public IPanel {
 		}
 		DrawMethods::render();
 	}
-	
+
 	static void crownRUpChanged( GtkAdjustment *adj ,gpointer data )
 	{
 		CrownParametersPanel *panel = (CrownParametersPanel*) data;
@@ -144,7 +144,7 @@ class CrownParametersPanel: public IPanel {
 		}
 		DrawMethods::render();
 	}
-	
+
 	static void crownRChanged( GtkAdjustment *adj ,gpointer data )
 	{
 		CrownParametersPanel *panel = (CrownParametersPanel*) data;
@@ -189,17 +189,17 @@ class CrownParametersPanel: public IPanel {
 		gint active=gtk_combo_box_get_active(GTK_COMBO_BOX(panel->crownTypeCombo));
 		switch(active)
 		{
-			case 0:
-				sub = new SplineCrown(0,0,0, panel->params->methodParams);
-				break;
-			case 1:
-				sub = new TruncatedConeCrown(
-					0,0,0,
-					1,1,1);
-				break;
-			case 2:
-				sub = new SphereCrown(0,0,5,5);
-				break;
+		case 0:
+			sub = new SplineCrown(0,0,0, panel->params->methodParams);
+			break;
+		case 1:
+			sub = new TruncatedConeCrown(
+			    0,0,0,
+			    1,1,1);
+			break;
+		case 2:
+			sub = new SphereCrown(0,0,5,5);
+			break;
 		}
 
 		panel->params->crown->subcrowns.push_back(sub);
@@ -348,12 +348,12 @@ public:
 		PACK_LABEL_AND_SLIDER("X:", xAdj, -20, crownXChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Y:", yAdj, -20, crownYChanged, "sdfgdfg", -1);
 		PACK_LABEL_AND_SLIDER("Z:", zAdj, 0, crownZChanged, "sdfgdfg", -1);
-		
+
 		/*TruncatedCone parameters*/
 		PACK_LABEL_AND_SLIDER("H:", hAdj, 0, crownHChanged, "sdfgdfg", TRUNCATEDCONE);
 		PACK_LABEL_AND_SLIDER("R UP:", rUpAdj, 0, crownRUpChanged, "sdfgdfg", TRUNCATEDCONE);
 		PACK_LABEL_AND_SLIDER("R DOWN:", rDownAdj, 0, crownRDownChanged, "sdfgdfg", TRUNCATEDCONE);
-		
+
 		/*Sphere parameters*/
 		PACK_LABEL_AND_SLIDER("R:", rAdj, 0, crownRChanged, "sdfgdfg", SPHERE);
 
@@ -375,14 +375,14 @@ public:
 		gtk_widget_show(crownWidget);
 		return crownWidget;
 	}
-	
+
 	void updatePanel()
 	{
 		gtk_list_store_clear(crownStore);
 		populateCrownList();
 		showWidgets(-1);
 	}
-	
+
 };
 
 

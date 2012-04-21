@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   IPanel.h
  * Author: marok
  *

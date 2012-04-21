@@ -5,7 +5,6 @@ SOURCES = MainWindow.cpp
 
 default:
 	g++ -g -Wall $(CONFIG) $(SOURCES) -lglut -o $(EXECUTABLE)
-
 clean :
 	rm -rf $(EXECUTABLE)
 	rm -rf *~

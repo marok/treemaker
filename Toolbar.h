@@ -4,12 +4,20 @@
 #include "Exporter.h"
 #include <time.h>
 #include "Panels.h"
-
 class Toolbar {
 	Parameters *params;
 	ColonizationMethod *cm;
 	GtkWidget *mainWindow;
 	Panels *panels;
+	gboolean working;
+
+	static gboolean inc_progress(gpointer data) {
+		Toolbar *t=(Toolbar*)data;
+		GtkWidget *progress_bar=(GtkWidget*)t->progress_bar;
+
+		gtk_progress_bar_pulse((GTK_PROGRESS_BAR(progress_bar)));
+		return t->working;
+	}
 
 	static void  newClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
@@ -39,35 +47,34 @@ class Toolbar {
 			file.close();
 		}
 	}
-	
+
 	static void  generateClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-clock_t start, stop;                                                       
-float time; 
-start=clock();
-t->cm->init();
+		t->working=1;
+		g_timeout_add(100,inc_progress,t);
+		t->cm->init();
+		t->cm->setBar(t->progress_bar);
+
 		t->cm->generate();
 		if(model!=NULL)
 			delete model;
-		
 		t->params->tp->setCirclePointsValue();
 		model = new  Model3d(t->cm->getRoot(),t->params);
 		model->generateModel();
-stop=clock();
-		cout<<(long long int)(stop-start)*1000/ CLOCKS_PER_SEC<<endl;; 
-	  
 		DrawMethods::render();
+		t->working=0;
 	}
-	
+
+
 	static void  refreshClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		
+
 		if(!model)
 			return;
-		
+
 		t->params->tp->setCirclePointsValue();
 		model->refreshModel();
-		
+
 		DrawMethods::render();
 	}
 	static void  convertClicked(GtkWidget *widget,gpointer data) {
@@ -84,6 +91,8 @@ stop=clock();
 	}
 
 public:
+	GtkWidget *progress_bar;
+
 	Toolbar(GtkWidget *mainWindow,Parameters *params,ColonizationMethod *cm, Panels *panels) {
 		this->params=params;
 		this->cm=cm;
@@ -122,6 +131,11 @@ public:
 #undef ADD_ITEM
 #undef ADD_SEPARATOR
 		gtk_widget_show_all(toolbar);
+		//Tworzymy progress_bar
+		progress_bar =gtk_progress_bar_new ();
+		gtk_progress_bar_set_pulse_step((GtkProgressBar*) progress_bar,0.05);
+
+
 		return toolbar;
 	}
 };

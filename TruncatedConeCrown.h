@@ -23,7 +23,7 @@ public:
 	TruncatedConeCrown() {
 		this->shape=TRUNCATEDCONE;
 	}
-	
+
 	std::vector<Point3d *> generatePoints(int n) {
 		int points_num = n;
 		float r_max = r_up > r_down? r_up: r_down;
@@ -35,7 +35,7 @@ public:
 		while (points_num) {
 			float r_rand = sqrt(RANDF()) * r_max;
 			float h_rand = RANDF() * h;
-			
+
 			if((r_up-r_rand)*(0-h_rand)-(h-h_rand)*(r_down-r_rand) > 0)
 				continue;
 

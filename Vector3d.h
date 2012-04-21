@@ -58,7 +58,7 @@ public:
 		                    - this->d[0]*a->d[2] + this->d[2]*a->d[0],
 		                    this->d[0]*a->d[1] - this->d[1]*a->d[0]);
 	}
-	
+
 	float dotProduct(Vector3d * a)
 	{
 		return this->d[0]*a->d[0] + this->d[1]*a->d[1] + this->d[2]*a->d[2];

@@ -30,13 +30,14 @@ class Exporter {
 			file<<"f ";
 			for(unsigned int j=0; j<3; j++)
 			{
-			// assert(faces[i].vt[j]<=4);
-			  #ifdef OBJGEOMETRYONLY
-			  file<<faces[i].v[j]<<" ";
-			#else
-			  file<<faces[i].v[j]<<"/"<<faces[i].vt[j]<<" ";
-			#endif
-			}  file<<endl;
+				// assert(faces[i].vt[j]<=4);
+#ifdef OBJGEOMETRYONLY
+				file<<faces[i].v[j]<<" ";
+#else
+				file<<faces[i].v[j]<<"/"<<faces[i].vt[j]<<" ";
+#endif
+			}
+			file<<endl;
 
 		}
 	}
@@ -52,19 +53,19 @@ class Exporter {
 			}
 		return found;
 	}
-	int findTexture(Point2d *a){
-	    int found=0;
+	int findTexture(Point2d *a) {
+		int found=0;
 		if(abs(0-a->x)<0.01) a->x=0;
 		if(abs(0-a->y)<0.01) a->y=0;
-		
+
 		if(abs(1-a->x)<0.01) a->x=1;
 		if(abs(1-a->y)<0.01) a->y=1;
-	    for(unsigned int i=0;i<vt.size();i++)
-	      if(a->x==vt[i].x&&a->y==vt[i].y){
-		found=i+1;
-		break;
-	      }
-	    return found;
+		for(unsigned int i=0; i<vt.size(); i++)
+			if(a->x==vt[i].x&&a->y==vt[i].y) {
+				found=i+1;
+				break;
+			}
+		return found;
 	}
 	//Dodaje trojkat do listy faces bez normalnych i wsp. tekstury
 	void addTriangleVertex(Point3d &a,Point3d &b,Point3d &c,Face &f) {
@@ -91,12 +92,12 @@ class Exporter {
 			} else f.v[i]=ids[i]+vOffset;
 		}
 	}
-	void addTriangleTexture(Point2d &at,Point2d &bt,Point2d &ct,Face &f){
-	  Point2d *p[3]={&at,&bt,&ct};
-	  int ids[3];
-	  for(unsigned int i=0;i<3;i++)
-	    ids[i]=findTexture(p[i]);
-	  for(unsigned int i=0;i<3;i++) {
+	void addTriangleTexture(Point2d &at,Point2d &bt,Point2d &ct,Face &f) {
+		Point2d *p[3]= {&at,&bt,&ct};
+		int ids[3];
+		for(unsigned int i=0; i<3; i++)
+			ids[i]=findTexture(p[i]);
+		for(unsigned int i=0; i<3; i++) {
 			if(ids[i]==0) { //not found
 				switch(i) {
 				case 0:
@@ -114,10 +115,10 @@ class Exporter {
 		}
 	}
 	void addTriangle(Point3d a,Point3d b,Point3d c,Point2d at,Point2d bt,Point2d ct) {
-	  Face f;
-	  addTriangleVertex(a,b,c,f);
-	  addTriangleTexture(at,bt,ct,f);
-	  faces.push_back(f);
+		Face f;
+		addTriangleVertex(a,b,c,f);
+		addTriangleTexture(at,bt,ct,f);
+		faces.push_back(f);
 	}
 	void exportBranch(BranchModel *bm)
 	{
@@ -201,71 +202,71 @@ class Exporter {
 #undef GV
 		}
 	}
-	void exportLeaf(Point3d *p, Vector3d *dir, Vector3d *norm,Parameters *params,unsigned int cnt){
+	void exportLeaf(Point3d *p, Vector3d *dir, Vector3d *norm,Parameters *params,unsigned int cnt) {
 
 		unsigned int lastTypeId=cnt;
 		//float size=params->lp->leaves[0].leafSize;
 		if(params->lp->types.size()==0) return;
 		unsigned int type=params->lp->types[lastTypeId].first;
 		//float size=params->lp->types[lastTypeId].second;
-		
+
 		Point2d petiole = params->lp->leaves[type].petiole;
-		
+
 		Vector3d a, b, *tmp1, *tmp2;
 		tmp1 = dir->crossProduct(norm);
 		tmp1->normalize();
 		tmp1->mul(petiole.x);
-		
+
 		tmp2 = dir->crossProduct(norm);
 		tmp2->normalize();
 		tmp2->mul(petiole.x-1);
-		
+
 		a.add(dir);
 		a.add(tmp1);
-		
-		
+
+
 		b.add(dir);
 		b.add(tmp2);
-		
-		#define FT(va,s,t,u) Point3d va(p->x+s,p->y+t,p->z+u); 
-		#define TT(va,u,v) Point2d va(u,v);
+
+#define FT(va,s,t,u) Point3d va(p->x+s,p->y+t,p->z+u);
+#define TT(va,u,v) Point2d va(u,v);
 		TT(at,petiole.x, 1.0f);
 		FT(av,0,0,0);
 		TT(bt,1.0f, 0.0f);
 		FT(bv,a.d[0],a.d[1],a.d[2]);
 		TT(ct,0.0f, 0.0f);
 		FT(cv,b.d[0],b.d[1],b.d[2]);
-		
+
 		TT(dt,petiole.x, 1.0f);
 		FT(dv,0,0,0);
 		TT(et,0.0f, 0.0f);
 		FT(ev,b.d[0],b.d[1],b.d[2]);
 		TT(ft,0.0f, 1.0f);
 		FT(fv,tmp2->d[0],tmp2->d[1],tmp2->d[2]);
-		
+
 		TT(gt,petiole.x, 1.0f);
 		FT(gv,0,0,0);
 		TT(ht,1.0f, 1.0f);
 		FT(hv,tmp1->d[0],tmp1->d[1],tmp1->d[2]);
 		TT(it,1.0f, 0.0f);
 		FT(iv,a.d[0],a.d[1],a.d[2]);
-		#undef FT
-		#undef TT
-		
+#undef FT
+#undef TT
+
 		addTriangle(av,bv,cv,at,bt,ct);
 		addTriangle(dv,ev,fv,dt,et,ft);
 		addTriangle(gv,hv,iv,gt,ht,it);
 
 	}
-	
-	
+
+
 	void clean() {
 		v.clear();
 		vt.clear();
 		faces.clear();
 	}
 
-  public:
+public:
 	void init(char *filename) {
 		vtOffset=vOffset=0;
 		file.open(filename);
@@ -283,12 +284,12 @@ class Exporter {
 		this->params=params;
 		for(unsigned int i=0; i<model->branches.size(); i++)
 			exportBranch(model->branches[i]);
-		
+
 	}
 	void exportLeaves(BranchModel *bm, Parameters *params,unsigned int cnt)
 	{
 		if(!bm) return;
-		
+
 		for(unsigned int i=0; i<bm->nodeModelList.size(); i++)
 			if(bm->nodeModelList[i]->leaf)
 			{
@@ -305,7 +306,7 @@ class Exporter {
 
 
 	}
-	void saveTrunk(){
+	void saveTrunk() {
 		file<<"usemtl bark0"<<endl;
 		file<<"o Trunk"<<endl;
 		file<<"# List of Vertices, with (x,y,z) coordinates"<<endl;
@@ -318,7 +319,7 @@ class Exporter {
 		vtOffset+=vt.size();
 		clean();
 	}
-	void saveLeaves(){
+	void saveLeaves() {
 		file<<"usemtl leaf0"<<endl;
 		file<<"o Leaves"<<endl;
 		file<<"# List of Vertices, with (x,y,z) coordinates"<<endl;

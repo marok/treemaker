@@ -21,7 +21,7 @@ class Model3d {
 	Node *root;
 	BranchModel *bm;
 	Parameters *params;
-	
+
 
 	void computeSegment(BranchModel *bm) {
 		Vector3d *norm;
@@ -70,7 +70,7 @@ class Model3d {
 	{
 		Vector3d *U, *V;
 		float factor;
-		
+
 
 		if (abs(norm->d[0]) >= abs(norm->d[1])) {
 			factor = 1 / sqrt(norm->d[0] * norm->d[0] + norm->d[2] * norm->d[2]);
@@ -89,7 +89,7 @@ class Model3d {
 
 		float angleDiff = 0;
 		bool angleDiffComputed = false;
-		
+
 		for (int i = 0; i < params->tp->circlePoints; i++) {
 			Vector3d *u, *v;
 			u = new Vector3d();
@@ -114,19 +114,19 @@ class Model3d {
 				Vector3d *b = new Vector3d(prvNode->position, nodeModel->position);
 				Vector3d *n = a->crossProduct(b);
 				n->normalize();
-				
+
 				Vector3d *c = new Vector3d(nodeModel->segment->circlePts[0]);
-			
+
 				angleDiff = M_PI_2 - acos(n->dotProduct(c)/(n->length()*c->length()));
 				angleDiffComputed = true;
 				i--;
-				
+
 				delete a;
 				delete b;
 				delete n;
 				delete c;
 			}
-			
+
 			//printf("%d. %f %f %f %f %f %f\n",i,node->point.x,node->point.y,node->point.z, node->segment->circlePts[i]->x,node->segment->circlePts[i]->y,node->segment->circlePts[i]->z);
 
 			delete(u);
@@ -139,43 +139,43 @@ class Model3d {
 	void computeConnectedPts(BranchModel *bm)
 	{
 
-		
-                int nodeModelListLen = bm->nodeModelList.size();
 
-                for(int i=0; i<nodeModelListLen - 1; i++)
-                {
-                        NodeModel *root = bm->nodeModelList.at(i);
-                        NodeModel *child = bm->nodeModelList.at(i+1);
+		int nodeModelListLen = bm->nodeModelList.size();
 
-                        Vector3d *r = new Vector3d(root->segment->circlePts[0]);
-                        Point3d *p = new Point3d(child->position);
-                        p->x += r->d[0];
-                        p->y += r->d[1];
-                        p->z += r->d[2];
+		for(int i=0; i<nodeModelListLen - 1; i++)
+		{
+			NodeModel *root = bm->nodeModelList.at(i);
+			NodeModel *child = bm->nodeModelList.at(i+1);
 
-                        int index;
-                        float minDistance;
-                        for (int i = 0; i < params->tp->circlePoints; i++) {
-                                if (i == 0) {
-                                        index = i;
-                                        Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
-                                        minDistance = p->getDistance(&segPoint);
-                                } else {
-                                        Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
-                                        float currentDistance = p->getDistance(&segPoint);
-                                        if (currentDistance < minDistance) {
-                                                minDistance = currentDistance;
-                                                index = i;
-                                        }
-                                }
-                        }
-                        child->segment->index = index;
-                }
+			Vector3d *r = new Vector3d(root->segment->circlePts[0]);
+			Point3d *p = new Point3d(child->position);
+			p->x += r->d[0];
+			p->y += r->d[1];
+			p->z += r->d[2];
 
-                int len = bm->childBranches.size();
-                for (int i = 0; i < len; i++) {
-                        computeConnectedPts(bm->childBranches.at(i));
-                }
+			int index;
+			float minDistance;
+			for (int i = 0; i < params->tp->circlePoints; i++) {
+				if (i == 0) {
+					index = i;
+					Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
+					minDistance = p->getDistance(&segPoint);
+				} else {
+					Point3d segPoint = child->getSegmentPointRel2BranchAt(i);
+					float currentDistance = p->getDistance(&segPoint);
+					if (currentDistance < minDistance) {
+						minDistance = currentDistance;
+						index = i;
+					}
+				}
+			}
+			child->segment->index = index;
+		}
+
+		int len = bm->childBranches.size();
+		for (int i = 0; i < len; i++) {
+			computeConnectedPts(bm->childBranches.at(i));
+		}
 	}
 
 
@@ -275,7 +275,7 @@ class Model3d {
 	int smoothBranch(BranchModel *bm, int start, int end)
 	{
 
-		//wywołania rekursywne 
+		//wywołania rekursywne
 		if(selection->applyForChildren)
 		{
 			//dla całej gałęzi
@@ -294,24 +294,24 @@ class Model3d {
 				}
 			}
 		}
-		
+
 		int addedNodes = 0;
-		
+
 		Point3d points[3];
 
 		if(start == 0)
 			start++;
-		
+
 		if(start == -1)
 			start = 1;
 		if(end == -1)
 			end = (int) bm->nodeModelList.size()-1;
-		
+
 		if(end < (int)bm->nodeModelList.size()-1)
 			end++;
-		
-		
-		
+
+
+
 		//pomijamy pierwszy i ostatni element
 		for(int i=start; i<end; i++)
 		{
@@ -340,7 +340,7 @@ class Model3d {
 				i++;
 				end++;
 				addedNodes++;
-				
+
 				bm->nodeModelList[i]->position->x = 0.75*points[1].x + 0.25*points[2].x;
 				bm->nodeModelList[i]->position->y = 0.75*points[1].y + 0.25*points[2].y;
 				bm->nodeModelList[i]->position->z = 0.75*points[1].z + 0.25*points[2].z;
@@ -357,7 +357,7 @@ class Model3d {
 				i++;
 				end++;
 				addedNodes++;
-				
+
 				bm->nodeModelList[i]->position->x = 0.5*points[1].x + 0.5*points[2].x;
 				bm->nodeModelList[i]->position->y = 0.5*points[1].y + 0.5*points[2].y;
 				bm->nodeModelList[i]->position->z = 0.5*points[1].z + 0.5*points[2].z;
@@ -373,16 +373,16 @@ class Model3d {
 				i++;
 				end++;
 				addedNodes++;
-				
+
 				bm->nodeModelList[i]->position->x = 0.75*points[1].x + 0.25*points[2].x;
 				bm->nodeModelList[i]->position->y = 0.75*points[1].y + 0.25*points[2].y;
 				bm->nodeModelList[i]->position->z = 0.75*points[1].z + 0.25*points[2].z;
 			}
 		}
-		
+
 		return addedNodes;
 	}
-	
+
 	//funkcja zwraca wszystkie gałązie startujące w danym węźle
 	//parentBranch - gałąź na której leży węzeł nm
 	//WARNING! szybkie to to nie jest xD - aby ulepszyć trzeba trochę przebudować Model3d
@@ -394,16 +394,16 @@ class Model3d {
 			if(parentBranch->childBranches[i]->position == nm->position)
 				result.push_back(parentBranch->childBranches[i]);
 		}
-		
+
 		return result;
 	}
-	
+
 	//Usuwa co drugi węzeł gałęzi. Jeśli z węzła wychodzi inna gałąź to gałąź jest przesuwana w górę gałęzi.
 	//Zwraca liczbę usunietych węzłów, wartosc ma sens tylko w trybie zaznaczania point_point
 	int decBranchResolution(BranchModel *bm, int start, int end)
 	{
-		
-		
+
+
 		int deletedNodes = 0;
 		if(selection->applyForChildren)
 		{
@@ -420,17 +420,17 @@ class Model3d {
 				}
 			}
 		}
-		
-		
+
+
 		if(bm->nodeModelList.size() <= 2)
 			return 0;
-		
-		
+
+
 		if(start == -1)
 			start = 0;
 		if(end == -1)
 			end = bm->nodeModelList.size()-1;
-		
+
 		//pętlę inkrementujemy o 1 ponieważ w każdej inkrementacji usuwamy bieżący element
 		for(int i=start+1; i < end; i++)
 		{
@@ -445,12 +445,12 @@ class Model3d {
 			NodeModel *node2delete = bm->nodeModelList[i];
 			bm->nodeModelList.erase(bm->nodeModelList.begin()+i);
 			delete node2delete;
-			
+
 			//zmniejszamy end ponieważ ubywa elementów w kolekcji
 			end--;
 			deletedNodes++;
 		}
-		
+
 		return deletedNodes;
 	}
 
@@ -473,7 +473,7 @@ class Model3d {
 			printBranches(bm->childBranches.at(i), ind+1);
 		}
 	}
-	
+
 	void populateVectorBranches(BranchModel *bm)
 	{
 		if(!bm)
@@ -482,7 +482,7 @@ class Model3d {
 		for(unsigned int i=0; i<bm->childBranches.size(); i++)
 			populateVectorBranches(bm->childBranches[i]);
 	}
-	
+
 	void removeBranch(BranchModel *branch)
 	{
 		BranchModel *parentBranch = branch->parentBranch;
@@ -497,7 +497,7 @@ class Model3d {
 
 		delete branch;
 	}
-	
+
 	void cutBranch(BranchModel *bm, int nodeToCutIndex)
 	{
 		if(nodeToCutIndex == -1)
@@ -505,7 +505,7 @@ class Model3d {
 			removeBranch(bm);
 			return;
 		}
-		
+
 		for(unsigned int i = nodeToCutIndex; i<bm->nodeModelList.size(); i++)
 		{
 			NodeModel *nodeToCut = bm->nodeModelList[i];
@@ -518,11 +518,11 @@ class Model3d {
 		}
 		bm->nodeModelList.erase(bm->nodeModelList.begin()+nodeToCutIndex, bm->nodeModelList.end());
 	}
-	
+
 	void computeLeavesPosition()
 	{
 		int leavesCnt = params->lp->leavesCount;
-		
+
 		while(leavesCnt)
 		{
 			int branchId = rand() % branches.size();
@@ -532,25 +532,25 @@ class Model3d {
 			if(!node->leaf)
 			{
 				node->leaf = new LeafModel();
-				
+
 				Point3d nodeP = branch->getAbsoluteNodePosition(node);
 				node->leaf->norm = new Vector3d(branches[0]->position, &nodeP);
 				node->leaf->norm->normalize();
-				
+
 				Vector3d gravity = Vector3d(0,0,-0.9*(float)rand()/(float)RAND_MAX);
 				node->leaf->norm->add(&gravity);
 				node->leaf->norm->normalize();
-				
+
 				Vector3d v = Vector3d(node->position, branch->nodeModelList[nodeId-1]->position);
-				
+
 				node->leaf->dir = node->leaf->norm->crossProduct(&v);
 				node->leaf->dir->normalize();
-				
+
 				leavesCnt--;
 			}
 		}
 	}
-	
+
 	void clearLeaves()
 	{
 		for(unsigned int i = 0; i < branches.size(); i++)
@@ -566,7 +566,7 @@ class Model3d {
 			}
 		}
 	}
-	
+
 	void addGravityToTheBranch(BranchModel *bm, float factor)
 	{
 		for(unsigned int i=0; i<bm->nodeModelList.size(); i++)
@@ -574,15 +574,15 @@ class Model3d {
 			Point3d castOZ = Point3d(0,0,bm->nodeModelList[i]->position->z);
 			bm->nodeModelList[i]->position->z -= (factor*(float)i*castOZ.getDistance(bm->nodeModelList[i]->position));
 		}
-		
+
 		if(selection->applyForChildren)
 		{
 			for(unsigned int i = 0; i<bm->childBranches.size(); i++)
 				addGravityToTheBranch(bm->childBranches[i], factor);
 		}
-			
+
 	}
-	
+
 	void subGravityToTheBranch(BranchModel *bm, float factor)
 	{
 		for(int i=(int)bm->nodeModelList.size()-1; i >= 0; i--)
@@ -590,25 +590,25 @@ class Model3d {
 			Point3d castOZ = Point3d(0,0,bm->nodeModelList[i]->position->z);
 			bm->nodeModelList[i]->position->z += (factor*(float)i*castOZ.getDistance(bm->nodeModelList[i]->position));
 		}
-		
+
 		if(selection->applyForChildren)
 		{
 			for(int i = (int) bm->childBranches.size()-1; i>=0; i--)
 				subGravityToTheBranch(bm->childBranches[i], factor);
 		}
 	}
-	
+
 
 public:
 	vector<BranchModel *> branches; //tablica zawierająca wszystkie gałęzie
 
 	BranchSelection *selection;
-	
+
 	Model3d(Node *root, Parameters *params) {
 		this->root = root;
 		this->params = params;
 		this->bm = NULL;
-		
+
 		selection = new BranchSelection();
 	}
 
@@ -631,12 +631,12 @@ public:
 
 		computeRadius(root,0);
 		this->bm = node2BranchModel(root, NULL, new Point3d());
-		
+
 		computeSegment(this->bm);
 		computeConnectedPts(this->bm);
 		computeLeavesPosition();
 	}
-	
+
 	void refreshModel()
 	{
 		computeSegment(this->bm);
@@ -644,15 +644,15 @@ public:
 		clearLeaves();
 		computeLeavesPosition();
 	}
-	
+
 	void removeMarkedBranch()
 	{
 		int i = selection->getMarkedBranch();
 		if(i != -1)
 		{
 			BranchModel *markedBranch = branches[i];
-			
-			
+
+
 			if(selection->getMode() == SELECTION_ALL)
 			{
 				removeBranch(markedBranch);
@@ -660,14 +660,14 @@ public:
 			{
 				cutBranch(markedBranch, selection->getMarkedNodes()[0]);
 			}
-			
+
 			branches.clear();
 			populateVectorBranches(this->bm);
-			
+
 			selection->unmarkBranch();
 		}
 	}
-	
+
 	void smoothMarkedBranch()
 	{
 		int i = selection->getMarkedBranch();
@@ -684,16 +684,16 @@ public:
 				addedNodes = this->smoothBranch(marked, selection->getMarkedNodes()[0], selection->getMarkedNodes()[1]);
 				selection->incMarkedArea(addedNodes);
 			}
-			
+
 			computeSegment(marked);
 			computeConnectedPts(marked);
 		}
 	}
-	
+
 	void addGravity()
 	{
 		const float factor = 0.01;
-		
+
 		int i = selection->getMarkedBranch();
 		if(i != -1)
 		{
@@ -702,11 +702,11 @@ public:
 				addGravityToTheBranch(marked,factor);
 		}
 	}
-	
+
 	void subGravity()
 	{
 		const float factor = 0.01;
-		
+
 		int i = selection->getMarkedBranch();
 		if(i != -1)
 		{
@@ -715,7 +715,7 @@ public:
 				subGravityToTheBranch(marked,factor);
 		}
 	}
-	
+
 	void decMarkedBranchResolution()
 	{
 		int i = selection->getMarkedBranch();

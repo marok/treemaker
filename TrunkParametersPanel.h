@@ -10,7 +10,7 @@ class TrunkParametersPanel: public IPanel {
 	GtkWidget *vbox;
 	GtkWidget *mainWindow;
 	GtkWidget *image;
-	
+
 	GtkObject *adjRFac, *adjAVal, *adjMVal, *adjCirc, *adjKx, *adjKy;
 
 #define UNROLL_CALLBACK(param)\
@@ -41,7 +41,7 @@ class TrunkParametersPanel: public IPanel {
 		}
 		gtk_widget_destroy(dialog);
 	}
-	
+
 public:
 	TrunkParametersPanel(GtkWidget *window,Parameters *params) {
 		this->params=params;
@@ -53,7 +53,7 @@ public:
 
 		GtkTooltips *tooltips=gtk_tooltips_new();
 		GtkWidget *button,*scale,*label,*hbox;
-		
+
 
 		vbox=gtk_vbox_new(FALSE,1);
 
@@ -104,7 +104,7 @@ public:
 
 		return trunkWidget;
 	}
-	
+
 	void updatePanel()
 	{
 		gtk_adjustment_set_value(GTK_ADJUSTMENT(adjRFac), params->tp->radiusFactor);
