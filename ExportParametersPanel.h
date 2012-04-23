@@ -31,10 +31,6 @@ class ExportParametersPanel: public IPanel
 			gtk_widget_destroy(dialog);
 			xpp->params->xp->filename=filename;
 			xpp->updatePanel();
-			//ofstream file(filename);
-
-			//	t->params->save(file);
-			//file.close();
 		}
 	}
 
