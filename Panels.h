@@ -10,6 +10,7 @@ class Panels
 	RenderingParametersPanel *rpp;
 	TrunkParametersPanel *tpp;
 	LeavesParametersPanel *lpp;
+	ExportParametersPanel *xpp;
 	EditPanel *ep;
 
 	std::vector<IPanel*> panels;
@@ -19,7 +20,8 @@ public:
 	       RenderingParametersPanel *rpp,
 	       TrunkParametersPanel *tpp,
 	       LeavesParametersPanel *lpp,
-	       EditPanel *ep)
+	       EditPanel *ep,
+	       ExportParametersPanel *xpp)
 	{
 		this->mpp = mpp;
 		panels.push_back(mpp);
@@ -38,6 +40,9 @@ public:
 
 		this->ep = ep;
 		panels.push_back(ep);
+
+		this->xpp=xpp;
+		panels.push_back(xpp);
 	}
 
 	MethodParametersPanel* getMPP()
@@ -68,6 +73,11 @@ public:
 	EditPanel *getEP()
 	{
 		return ep;
+	}
+
+	ExportParametersPanel *getXP()
+	{
+		return xpp;
 	}
 
 	void updatePanels()

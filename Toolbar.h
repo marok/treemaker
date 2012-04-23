@@ -77,17 +77,22 @@ class Toolbar {
 
 		DrawMethods::render();
 	}
-	static void  convertClicked(GtkWidget *widget,gpointer data) {
+	static void  exportClicked(GtkWidget *widget,gpointer data) {
 		Toolbar *t=(Toolbar*)data;
-		g_print("convertClicked\n");
-		char filename[]="models/tree0.obj";
-		Exporter ex;
-		ex.init(filename);
-		ex.exportTrunk(model, t->params);
-		ex.saveTrunk();
-		ex.exportLeaves(model ? model->getRootBranch() : NULL, t->params, 0);
-		ex.saveLeaves();
-		ex.close();
+		if(model!=NULL) {
+			const char *filename=t->params->xp->filename.c_str();
+			t->working=1;
+			g_timeout_add(100,inc_progress,t);
+			Exporter ex;
+			ex.init(filename,t->params);
+			ex.exportMaterials();
+			ex.exportTrunk(model);
+			ex.saveTrunk();
+			ex.exportLeaves(model ? model->getRootBranch() : NULL, 0);
+			ex.saveLeaves();
+			ex.close();
+			t->working=0;
+		}
 	}
 
 public:
@@ -126,7 +131,7 @@ public:
 		ADD_ITEM(GTK_STOCK_EXECUTE,generateClicked,"Generates new model based on current parameters");
 		ADD_ITEM(GTK_STOCK_REFRESH,refreshClicked,"Refreshes current model");
 		ADD_SEPARATOR
-		ADD_ITEM(GTK_STOCK_CONVERT,convertClicked,"Convert model to external format");
+		ADD_ITEM(GTK_STOCK_CONVERT,exportClicked,"Export model to external format");
 
 #undef ADD_ITEM
 #undef ADD_SEPARATOR

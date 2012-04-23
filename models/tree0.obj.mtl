@@ -1,0 +1,38 @@
+# Leaves
+newmtl leaf0_256.bmp
+Ka 1.0 0.0 0.0
+Ka 1.0 0.0 0.0
+Kd 1.0000 0.0000 0.0000
+Ks 1.0000 1.0000 1.0000
+d 1
+Ns 0
+map_Kd leaf0_256.bmp
+
+newmtl leaf1_512.bmp
+Ka 1.0 0.0 0.0
+Ka 1.0 0.0 0.0
+Kd 1.0000 0.0000 0.0000
+Ks 1.0000 1.0000 1.0000
+d 1
+Ns 0
+map_Kd leaf1_512.bmp
+
+newmtl leaf2_512.bmp
+Ka 1.0 0.0 0.0
+Ka 1.0 0.0 0.0
+Kd 1.0000 0.0000 0.0000
+Ks 1.0000 1.0000 1.0000
+d 1
+Ns 0
+map_Kd leaf2_512.bmp
+
+# Bark
+newmtl bark0_256.bmp
+Ka 1.0 0.0 0.0
+Ka 1.0 0.0 0.0
+Kd 1.0000 0.0000 0.0000
+Ks 1.0000 1.0000 1.0000
+d 1
+Ns 0
+map_Kd bark0_256.bmp
+

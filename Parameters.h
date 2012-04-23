@@ -3,16 +3,18 @@
 #include "RenderingParameters.h"
 #include "TrunkParameters.h"
 #include "LeavesParameters.h"
+#include "ExportParameters.h"
 #include "Crown.h"
 #include "SplineCrown.h"
 #include "TruncatedConeCrown.h"
-#define TREEMAKER_VERSION "treemaker-ver0.1"
+#define TREEMAKER_VERSION "treemaker-ver0.2"
 class Parameters {
 	void init() {
 		clean();
 		rp=new RenderingParameters();
 		tp=new TrunkParameters();
 		lp=new LeavesParameters();
+		xp=new ExportParameters();
 		methodParams = new MethodParameters();
 		crown = new Crown(methodParams);
 	}
@@ -23,6 +25,7 @@ public:
 	LeavesParameters	*lp;
 	Crown                   *crown;
 	MethodParameters 	*methodParams;
+	ExportParameters	*xp;
 
 	void clean() {
 	}
@@ -34,6 +37,7 @@ public:
 		methodParams->setDefault();
 		lp->setDefault();
 		crown->setDefault();
+		xp->setDefault();
 	}
 
 	Parameters() {
@@ -49,6 +53,7 @@ public:
 		lp->save(s);
 		methodParams->save(s);
 		crown->save(s);
+		xp->save(s);
 	}
 	void load(ifstream &s)
 	{
@@ -61,6 +66,7 @@ public:
 		lp->load(s);
 		methodParams->load(s);
 		crown->load(s);
+		xp->load(s);
 	}
 };
 #endif

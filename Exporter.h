@@ -17,8 +17,11 @@ class Exporter {
 	int vOffset;
 	int vtOffset;
 	void writeVertices() {
-		for(unsigned int i=0; i<v.size(); i++)
+		for(unsigned int i=0; i<v.size(); i++) {
+			if(params->xp->invert)
+				v[i].rotate90x();
 			file<<"v "<<v[i].x<<" "<<v[i].y<<" "<<v[i].z<<endl;
+		}
 	}
 	void writeTextures() {
 		for(unsigned int i=0; i<vt.size(); i++)
@@ -265,9 +268,14 @@ class Exporter {
 		vt.clear();
 		faces.clear();
 	}
-
+	void waitForGui() {
+		while (gtk_events_pending()) {
+			gtk_main_iteration_do(FALSE);
+		}
+	}
 public:
-	void init(char *filename) {
+	void init(const char *filename,Parameters *params) {
+		this->params=params;
 		vtOffset=vOffset=0;
 		file.open(filename);
 		printf("saving...");
@@ -279,17 +287,19 @@ public:
 		file<<"mtllib tree0.mtl"<<endl;
 		//file<<"o Tree"<<endl;
 	}
-	void exportTrunk(Model3d *model, Parameters *params)
+	void exportTrunk(Model3d *model)
 	{
 		this->params=params;
-		for(unsigned int i=0; i<model->branches.size(); i++)
+		for(unsigned int i=0; i<model->branches.size(); i++) {
+			waitForGui();
 			exportBranch(model->branches[i]);
+		}
 
 	}
-	void exportLeaves(BranchModel *bm, Parameters *params,unsigned int cnt)
+	void exportLeaves(BranchModel *bm, unsigned int cnt)
 	{
 		if(!bm) return;
-
+		waitForGui();
 		for(unsigned int i=0; i<bm->nodeModelList.size(); i++)
 			if(bm->nodeModelList[i]->leaf)
 			{
@@ -301,12 +311,46 @@ public:
 
 		for(unsigned int i = 0; i< bm->childBranches.size(); i++)
 		{
-			exportLeaves(bm->childBranches.at(i),params,cnt);
+			exportLeaves(bm->childBranches.at(i),cnt);
 		}
 
 
 	}
+	void exportMaterials() {
+		ofstream mtlfile;
+		string fname=params->xp->filename+".mtl";
+		mtlfile.open(fname.c_str());
+		mtlfile<<"# Leaves"<<endl;
+		for(unsigned int i=0; i<params->lp->leaves.size(); i++) {
+			char *name=strrchr(params->lp->leaves[i].leafTexPath,'/')+1;
+			if(name==(void*)1) name=params->lp->leaves[i].leafTexPath;
+			mtlfile<<"newmtl "<<name<<endl;
+			mtlfile<<"Ka 1.0 0.0 0.0"<<endl;
+			mtlfile<<"Ka 1.0 0.0 0.0"<<endl;
+			mtlfile<<"Kd 1.0000 0.0000 0.0000"<<endl;
+			mtlfile<<"Ks 1.0000 1.0000 1.0000"<<endl;
+			mtlfile<<"d 1"<<endl;
+			mtlfile<<"Ns 0"<<endl;
+			mtlfile<<"map_Kd "<<name<<endl;
+			mtlfile<<endl;
+		}
+		mtlfile<<"# Bark"<<endl;
+		char *name=strrchr(params->tp->barkPath,'/')+1;
+		if(name==(void*)1) name=params->tp->barkPath;
+		mtlfile<<"newmtl "<<name<<endl;
+		mtlfile<<"Ka 1.0 0.0 0.0"<<endl;
+		mtlfile<<"Ka 1.0 0.0 0.0"<<endl;
+		mtlfile<<"Kd 1.0000 0.0000 0.0000"<<endl;
+		mtlfile<<"Ks 1.0000 1.0000 1.0000"<<endl;
+		mtlfile<<"d 1"<<endl;
+		mtlfile<<"Ns 0"<<endl;
+		mtlfile<<"map_Kd "<<name<<endl;
+		mtlfile<<endl;
+		mtlfile.close();
+	}
+
 	void saveTrunk() {
+		waitForGui();
 		file<<"usemtl bark0"<<endl;
 		file<<"o Trunk"<<endl;
 		file<<"# List of Vertices, with (x,y,z) coordinates"<<endl;
@@ -320,6 +364,7 @@ public:
 		clean();
 	}
 	void saveLeaves() {
+		waitForGui();
 		file<<"usemtl leaf0"<<endl;
 		file<<"o Leaves"<<endl;
 		file<<"# List of Vertices, with (x,y,z) coordinates"<<endl;

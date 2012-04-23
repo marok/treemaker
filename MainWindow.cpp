@@ -30,6 +30,8 @@
 #include "LeavesParametersPanel.h"
 #include "CrownParametersPanel.h"
 #include "EditPanel.h"
+#include "ExportParameters.h"
+#include "ExportParametersPanel.h"
 #include "Toolbar.h"
 
 #include "Spline.h"
@@ -82,6 +84,7 @@ ParticleMethod *pm = NULL;
 
 Model3d *model = NULL;
 Parameters *parameters = NULL;
+Panels *panels;
 
 enum TreemakerMode
 {
@@ -97,7 +100,6 @@ class MainWindow
 {
 	GtkWidget *window;
 	GdkGLConfig *glconfig;
-	Panels *panels;
 
 	static void realize (GtkWidget * widget, gpointer data) {
 		GdkGLContext *glcontext = gtk_widget_get_gl_context (widget);
@@ -124,8 +126,8 @@ class MainWindow
 
 		glEnable (GL_DEPTH_TEST);
 		glDepthFunc (GL_LEQUAL);
-		//glClearColor (0.8, 0.8, 1, 0.0);
-	glClearColor (1, 1, 1, 0.0);
+		glClearColor (0.8, 0.8, 1, 0.0);
+	//glClearColor (1, 1, 1, 0.0);
 		
 		gdk_gl_glPolygonOffsetEXT (proc, 1.0, 1.0);
 		//glEnable (GL_CULL_FACE);
@@ -199,7 +201,8 @@ class MainWindow
 		DrawMethods::drawWireframe();
 	
 		DrawMethods::drawTreeModel (parameters, tmMode == MODE_GENERATOR?TRUE:FALSE);
-
+		panels->updatePanels();
+		
 		if(coordinates) {
 			DrawMethods::drawCoordinates (GL_RENDER);
 
@@ -518,13 +521,14 @@ class MainWindow
 
 		
 		/*** Panels initialization ***/
-		Panels *panels = new Panels(
+		panels = new Panels(
 			new MethodParametersPanel(cm,pm,parameters->tp),
 			new CrownParametersPanel(window,parameters),
 			new RenderingParametersPanel(parameters),
 			new TrunkParametersPanel(window,parameters),
 			new LeavesParametersPanel(window,parameters),
-			new EditPanel()
+			new EditPanel(),
+			new ExportParametersPanel(window,parameters)
 			);
 		
 		
@@ -578,7 +582,10 @@ class MainWindow
 		label = gtk_label_new("E");
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getEP()->createPanel(),label);
 		
-
+		label = gtk_label_new("X");
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook),panels->getXP()->createPanel(),label);
+		
+		
 		gtk_widget_show(notebook);
 		gtk_box_pack_start(GTK_BOX(vbox),notebook,FALSE,FALSE,1);
 		

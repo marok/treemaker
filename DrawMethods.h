@@ -210,6 +210,7 @@ class DrawMethods {
 			//j1 - indeks nastepnego pkt child
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				// printf("i0=%d\n",i0);
+				triangles+=2;
 				int j0 = (index + i0) % tp->circlePoints;
 
 				int i1 = (i0+1)%tp->circlePoints;
@@ -245,7 +246,6 @@ class DrawMethods {
 				glTexCoord2f(prevCoords[!(i&1)][i0].x,prevCoords[!(i&1)][i0].y);
 				VERTEX_TRANS(rootAbs, (*root->segment->circlePts[i0]));
 
-				triangles+=2;
 			}
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
@@ -280,7 +280,7 @@ class DrawMethods {
 
 			for (int i0 = 0; i0 < tp->circlePoints; i0++) {
 				int j0 = (index + i0) % tp->circlePoints;
-
+				triangles+=2;
 
 				//glVertex3f(root->segment->circlePts[i0]->x,root->segment->circlePts[i0]->y,root->segment->circlePts[i0]->z);
 				//glVertex3f(child->segment->circlePts[j0]->x,child->segment->circlePts[j0]->y,child->segment->circlePts[j0]->z);
@@ -299,7 +299,6 @@ class DrawMethods {
 				VERTEX_TRANS(childAbs, (*child->segment->circlePts[j1]));
 				VERTEX_TRANS(nodeAbs, (*node->segment->circlePts[i0]));
 				glEnd();
-				triangles+=2;
 			}
 		}
 
@@ -560,7 +559,7 @@ if(mode==GL_SELECT)\
 		initLeavesTextures(params);
 
 		glColor4f(0.0, 0, 0, 0); // reset gl color
-
+		triangles+=2;
 
 		glEnable(GL_BLEND);// Turn Blending On
 		glDisable(GL_DEPTH_TEST);
@@ -663,7 +662,7 @@ if(mode==GL_SELECT)\
 	{
 		glPushMatrix();
 		TrunkParameters *tp = params->tp;
-		//triangles=0
+		params->xp->triangles=triangles=0;
 		if (generatorMode) {
 			if (params->rp->showGrass)
 				drawGrass();
@@ -685,8 +684,7 @@ if(mode==GL_SELECT)\
 		} else {
 			drawTrunksEditMode(model, params);
 		}
-
-		//g_print("triangles: %d\n",triangles);
+		params->xp->triangles=triangles;
 		glPopMatrix();
 	}
 

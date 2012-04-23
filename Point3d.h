@@ -51,7 +51,11 @@ public:
 		y += p.y;
 		z += p.z;
 	}
-
+	void rotate90x() {
+		float t=y;
+		y=z;
+		z=-t;
+	}
 	void print ()
 	{
 		g_print ("p %f %f %f\n", x, y, z);
